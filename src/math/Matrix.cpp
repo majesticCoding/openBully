@@ -276,9 +276,9 @@ MyMatrix44 operator*(const MyMatrix44 &m1, const MyMatrix44 &m2) {
 	out.uy = m1.ry * m2.ux + m1.fy * m2.uy + m1.uy * m2.uz + m1.py * m2.uw;
 	out.uz = m1.rz * m2.ux + m1.fz * m2.uy + m1.uz * m2.uz + m1.pz * m2.uw;
 	out.uw = m1.rw * m2.ux + m1.fw * m2.uy + m1.uw * m2.uz + m1.pw * m2.uw;
-	out.ux = m1.rx * m2.px + m1.fx * m2.py + m1.ux * m2.pz + m1.px * m2.pw;
-	out.uy = m1.ry * m2.px + m1.fy * m2.py + m1.uy * m2.pz + m1.py * m2.pw;
-	out.uz = m1.rz * m2.px + m1.fz * m2.py + m1.uz * m2.pz + m1.pz * m2.pw;
-	out.uw = m1.rw * m2.px + m1.fw * m2.py + m1.uw * m2.pz + m1.pw * m2.pw;
+	out.px = m1.rx * m2.px + m1.fx * m2.py + m1.ux * m2.pz + m1.px * m2.pw;
+	out.py = m1.ry * m2.px + m1.fy * m2.py + m1.uy * m2.pz + m1.py * m2.pw;
+	out.pz = m1.rz * m2.px + m1.fz * m2.py + m1.uz * m2.pz + m1.pz * m2.pw;
+	out.pw = m1.rw * m2.px + m1.fw * m2.py + m1.uw * m2.pz + m1.pw * m2.pw;
 	return out;
 }
