@@ -19,6 +19,7 @@ int32_t &CCutsceneMgr::ms_numCutsceneObjs = *(int32_t*)0x20C5B18;
 char *CCutsceneMgr::ms_cutsceneName = (char*)0x20C5B20;
 AM_Hierarchy **CCutsceneMgr::ms_pHierarchies = (AM_Hierarchy **)0x20C4B38;
 CCutsceneObject **CCutsceneMgr::ms_pCutsceneObjects = (CCutsceneObject **)0x20C5B68;
+ActionController *CCutsceneMgr::ms_CutSceneActionController = (ActionController*)0x20C5C0C;
 
 CDirectoryTemplate<CDirectoryInfo> *CCutsceneMgr::ms_pCutsceneDir = (CDirectoryTemplate<CDirectoryInfo> *)0x20C4B34;
 
@@ -50,6 +51,8 @@ void CCutsceneMgr::Initialise(void) {
 	for (int32_t i = 0; i < NUM_CUTSCENEOBJS; i++) {
 		ms_pCutsceneObjects[i] = nullptr;
 	}
+
+	ms_CutSceneActionController = new ActionController();
 
 	printf("CCutsceneMgr was initialized!\n");
 }

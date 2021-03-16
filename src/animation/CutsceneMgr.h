@@ -3,6 +3,7 @@
 #include "Directory.h"
 #include "Hierarchy.h"
 #include "CutsceneObject.h"
+#include "ActionController.h"
 
 #define CUTSCNAMESIZE 72
 #define NUM_HIERARCHIES 10
@@ -28,6 +29,7 @@ public:
 	static char *ms_cutsceneName; //static char ms_cutsceneName[CUTSCNAMESIZE]
 	static AM_Hierarchy **ms_pHierarchies; //not sure about type.. static AM_Hierarchy *ms_pHierarchies[10]
 	static CCutsceneObject **ms_pCutsceneObjects; //static CCutsceneObject *ms_pCutsceneObjects[30]
+	static ActionController *ms_CutSceneActionController;
 
 	static void Initialise(void);
 	static void FinishMiniCutscene(void);
