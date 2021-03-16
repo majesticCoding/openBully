@@ -14,6 +14,7 @@ project "openBully"
     includedirs { "src/animation" }
     includedirs { "src/core" }
     includedirs { "src/math" }
+	includedirs { "src/objects" }
     includedirs { "src/peds" }
     includedirs { "src/pickups" }
     includedirs { "src/render" }
