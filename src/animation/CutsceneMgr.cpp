@@ -1,6 +1,14 @@
 #include "CutsceneMgr.h"
 #include "StreamManager.h"
 #include "ActionTree.h"
+#include "Screen.h"
+#include "Game.h"
+#include "Vector.h"
+#include "Population.h"
+#include "World.h"
+#include "ColStore.h"
+#include "WeaponInventory.h"
+#include "Streaming.h"
 
 bool &CCutsceneMgr::ms_loaded = *(bool*)0x20C5BE1;
 bool &CCutsceneMgr::ms_loadStatus = *(bool*)0x20C5BE2;
@@ -34,6 +42,7 @@ void CCutsceneMgr::InjectHooks(void) {
 	InjectHook(0x6C3BD0, &CCutsceneMgr::FinishMiniCutscene, PATCH_JUMP);
 	InjectHook(0x6C38A0, &CCutsceneMgr::Reset, PATCH_JUMP);
 	//InjectHook(0x6C3720, &CCutsceneMgr::Initialise, PATCH_JUMP);
+	InjectHook(0x6C3DE0, &CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory, PATCH_JUMP);
 }
 
 void CCutsceneMgr::Reset(void) {
@@ -56,8 +65,8 @@ void CCutsceneMgr::Initialise(void) {
 	//ms_pCutsceneDir = (CDirectory*)CDirectoryTemplate<CDirectoryInfo>(NUM_DIRENTRIES);
 	//ms_pCutsceneDir->ReadDirFile("CUTS\\CUTS.DIR");
 
-	memset(ms_pHierarchies, 0, NUM_HIERARCHIES * sizeof(ms_pHierarchies));
-	memset(ms_pCutsceneObjects, 0, NUM_CUTSCENEOBJS * sizeof(ms_pCutsceneObjects));
+	memset(ms_pHierarchies, NULL, NUM_HIERARCHIES * sizeof(ms_pHierarchies));
+	memset(ms_pCutsceneObjects, NULL, NUM_CUTSCENEOBJS * sizeof(ms_pCutsceneObjects));
 
 	ms_CutSceneActionController = new ActionController();
 
@@ -75,9 +84,33 @@ void CCutsceneMgr::FinishMiniCutscene(void) {
 
 void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
 	if (g_bIsEverythingRemovedForCutscene) {
-		
+		LoadingScreen("CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory()", "bEverythingRemoved");
+		CGame::DrasticTidyUpMemory(true);
 	}
 	else {
-		
+		LoadingScreen("CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory()", "Start");
+		CVector coors = FindPlayerCoors();
+		(*(CPopulation **)CPopulation::m_spInstance)->RemovePedsInSphere(coors, 120.0f);
+		CWorld::ClearExcitingStuffFromArea(CVector(0.0f, 0.0f, 0.0f), 4000.0f, 1); //declare CVector::Zero 1st param
+		CColStore::RemoveAllCollision();
+
+		if (CGame::m_pRadar != nullptr)
+			CGame::m_pRadar->RemoveRadarSections();
+
+		g_bIsEverythingRemovedForCutscene = true;
+
+		if (*(int32_t**)CWorld::Player != nullptr) { // CWorld::Player.pPed here, but currently this option
+			for (int32_t idx = MI_FIRSTWEAPON; idx <= MI_LASTWEAPON; idx++) {
+				if (CWeaponInventory::Find(idx) != -1)
+					CStreaming::SetModelIsDeletable(idx);
+			}
+		}
+
+		CStreaming::DeleteAllRwObjects();
+		CStreaming::RemoveUnusedModelsInLoadedList();
+
+		LoadingScreen("CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory()", "CGame::DrasticTidyUpMemory()");
+		CGame::DrasticTidyUpMemory(true);
+		LoadingScreen("CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory()", "End");
 	}
 }

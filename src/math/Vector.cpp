@@ -83,3 +83,7 @@ inline CVector operator*(CVector const &v, float coefficient) {
 inline float DotProduct(const CVector &v1, const CVector &v2) {
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
+
+CVector FindPlayerCoors(void) {
+	XCALL(0x446900);
+}

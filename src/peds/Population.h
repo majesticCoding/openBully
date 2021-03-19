@@ -7,6 +7,5 @@ public:
 	static CPopulation *m_spInstance;
 
 	void OnChangePeriod(void);
-
-	static void RemovePedsInSphere(CVector pos, float radius);
+	void RemovePedsInSphere(CVector pos, float radius);
 };

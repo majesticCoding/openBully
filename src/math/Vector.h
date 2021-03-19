@@ -47,3 +47,5 @@ CVector operator*(CVector const &v, float coefficient);
 
 float DotProduct(const CVector &v1, const CVector &v2);
 float calcNormalizingCoefficient(float f1, float lengthSquared);
+
+CVector FindPlayerCoors(void);
