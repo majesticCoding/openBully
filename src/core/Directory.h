@@ -3,10 +3,6 @@
 
 #define NUM_DIRENTRIES 864
 
-class CDirectory {
-
-};
-
 class CDirectoryInfo {
 
 };
@@ -15,8 +11,14 @@ class CDirectoryWithNamesInfo {
 
 };
 
+class CDirectoryBase {
+
+};
+
 template <class T>
-class CDirectoryTemplate {
+class CDirectoryTemplate : public CDirectoryBase {
+private:
+	char _pad[16];
 public:
 	CDirectoryTemplate(int32_t n);
 	~CDirectoryTemplate();
@@ -29,4 +31,8 @@ public:
 	void SetPositionSize(int32_t, uint32_t, uint32_t);
 	void Empty(void);
 	int32_t GetNumItems(void);
+};
+
+class CDirectory : public CDirectoryTemplate<class T> {
+
 };

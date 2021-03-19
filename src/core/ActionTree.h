@@ -1,6 +1,10 @@
 #pragma once
 #include "patcher.h"
 
+class ActionNode {
+
+};
+
 class ActionTreeName {
 public:
 	ActionTreeName(void);

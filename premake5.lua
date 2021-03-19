@@ -1,6 +1,6 @@
 workspace "openBully"
 	language "C++"
-	configurations { "Debug", "Release" }
+	configurations { "Release", "Debug" }
 	location "build"
 	symbols "Full"
 	
@@ -12,6 +12,7 @@ project "openBully"
 	files {"src/**.h", "src/**.cpp"}
 	includedirs { "src" }
     includedirs { "src/animation" }
+	includedirs { "src/collision" }
     includedirs { "src/core" }
     includedirs { "src/math" }
 	includedirs { "src/objects" }
@@ -19,3 +20,4 @@ project "openBully"
     includedirs { "src/pickups" }
     includedirs { "src/render" }
     includedirs { "src/scripts" }
+	includedirs { "src/weapons" }

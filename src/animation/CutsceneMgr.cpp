@@ -1,6 +1,6 @@
 #include "CutsceneMgr.h"
 #include "StreamManager.h"
-#include "Directory.h"
+#include "ActionTree.h"
 
 bool &CCutsceneMgr::ms_loaded = *(bool*)0x20C5BE1;
 bool &CCutsceneMgr::ms_loadStatus = *(bool*)0x20C5BE2;
@@ -21,11 +21,23 @@ AM_Hierarchy **CCutsceneMgr::ms_pHierarchies = (AM_Hierarchy **)0x20C4B38;
 CCutsceneObject **CCutsceneMgr::ms_pCutsceneObjects = (CCutsceneObject **)0x20C5B68;
 ActionController *CCutsceneMgr::ms_CutSceneActionController = (ActionController*)0x20C5C0C;
 
-CDirectoryTemplate<CDirectoryInfo> *CCutsceneMgr::ms_pCutsceneDir = (CDirectoryTemplate<CDirectoryInfo> *)0x20C4B34;
+CDirectory *CCutsceneMgr::ms_pCutsceneDir = (CDirectory *)0x20C4B34;
+
+ActionNode *g_pCutSceneActionTree = *(ActionNode **)0x20C4B30;
+
+bool &g_bIsEverythingRemovedForCutscene = *(bool*)0x20C5BE0; //custom name
+int32_t &MI_FIRSTWEAPON = *(int32_t*)0xA136B0;
+int32_t &MI_LASTWEAPON = *(int32_t*)0xA136B4;
+
 
 void CCutsceneMgr::InjectHooks(void) {
 	InjectHook(0x6C3BD0, &CCutsceneMgr::FinishMiniCutscene, PATCH_JUMP);
+	InjectHook(0x6C38A0, &CCutsceneMgr::Reset, PATCH_JUMP);
 	//InjectHook(0x6C3720, &CCutsceneMgr::Initialise, PATCH_JUMP);
+}
+
+void CCutsceneMgr::Reset(void) {
+	g_pCutSceneActionTree = nullptr;
 }
 
 void CCutsceneMgr::Initialise(void) {
@@ -41,16 +53,11 @@ void CCutsceneMgr::Initialise(void) {
 	ms_numObjectNames = 0;
 	ms_numCutsceneObjs = 0;
 
-	ms_pCutsceneDir = new CDirectoryTemplate<CDirectoryInfo>(NUM_DIRENTRIES);
-	ms_pCutsceneDir->ReadDirFile("CUTS\\CUTS.DIR");
+	//ms_pCutsceneDir = (CDirectory*)CDirectoryTemplate<CDirectoryInfo>(NUM_DIRENTRIES);
+	//ms_pCutsceneDir->ReadDirFile("CUTS\\CUTS.DIR");
 
-	for (int32_t i = 0; i < NUM_HIERARCHIES; i++) {
-		ms_pHierarchies[i] = nullptr;
-	}
-
-	for (int32_t i = 0; i < NUM_CUTSCENEOBJS; i++) {
-		ms_pCutsceneObjects[i] = nullptr;
-	}
+	memset(ms_pHierarchies, 0, NUM_HIERARCHIES * sizeof(ms_pHierarchies));
+	memset(ms_pCutsceneObjects, 0, NUM_CUTSCENEOBJS * sizeof(ms_pCutsceneObjects));
 
 	ms_CutSceneActionController = new ActionController();
 
@@ -64,4 +71,13 @@ void CCutsceneMgr::FinishMiniCutscene(void) {
 	ms_cutsceneProcessing = false;
 	ms_soundLoaded = false;
 	ms_MiniRunning = false;
+}
+
+void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
+	if (g_bIsEverythingRemovedForCutscene) {
+		
+	}
+	else {
+		
+	}
 }

@@ -24,7 +24,7 @@ public:
 	static int32_t &ms_numObjectNames;
 	static int32_t &ms_numCutsceneObjs;
 
-	static CDirectoryTemplate<CDirectoryInfo> *ms_pCutsceneDir;
+	static CDirectory *ms_pCutsceneDir;
 
 	static char *ms_cutsceneName; //static char ms_cutsceneName[CUTSCNAMESIZE]
 	static AM_Hierarchy **ms_pHierarchies; //not sure about type.. static AM_Hierarchy *ms_pHierarchies[10]
@@ -32,7 +32,9 @@ public:
 	static ActionController *ms_CutSceneActionController;
 
 	static void Initialise(void);
+	static void Reset(void);
 	static void FinishMiniCutscene(void);
+	static void RemoveEverythingBecauseCutsceneDoesntFitInMemory(void);
 
 	static void InjectHooks(void);
 };
