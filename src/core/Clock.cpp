@@ -7,6 +7,7 @@
 #include "Hud.h"
 #include "ActionTree.h"
 #include "GlobalButes.h"
+#include "WeaponInventory.h"
 #include "World.h"
 
 uint32_t &Clock::ms_nMillisecondsPerGameMinute = *(uint32_t*)0x9E51A4;

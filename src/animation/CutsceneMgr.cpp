@@ -91,7 +91,7 @@ void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
 		LoadingScreen("CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory()", "Start");
 		CVector coors = FindPlayerCoors();
 		(*(CPopulation **)CPopulation::m_spInstance)->RemovePedsInSphere(coors, 120.0f);
-		CWorld::ClearExcitingStuffFromArea(CVector(0.0f, 0.0f, 0.0f), 4000.0f, 1); //declare CVector::Zero 1st param
+		CWorld::ClearExcitingStuffFromArea(CVector::Zero, 4000.0f, 1);
 		CColStore::RemoveAllCollision();
 
 		if (CGame::m_pRadar != nullptr)
@@ -99,9 +99,9 @@ void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
 
 		g_bIsEverythingRemovedForCutscene = true;
 
-		if (*(int32_t**)CWorld::Player != nullptr) { // CWorld::Player.pPed here, but currently this option
+		if ((int32_t*)CWorld::Player != nullptr) { // CWorld::Player.pPed here, but currently this option
 			for (int32_t idx = MI_FIRSTWEAPON; idx <= MI_LASTWEAPON; idx++) {
-				if (CWeaponInventory::Find(idx) != -1)
+				if ( (*(CWeaponInventory**)(CWorld::Player + 0x1C4))->Find(idx) != -1)
 					CStreaming::SetModelIsDeletable(idx);
 			}
 		}

@@ -30,6 +30,8 @@ public:
 		return *this;
 	}
 
+	static CVector const &Zero;
+
 	void Normalize(void);
 	float Magnitude(void);
 	float MagnitudeSqr(void);

@@ -3,5 +3,5 @@
 
 class CWeaponInventory {
 public:
-	static int32_t Find(int32_t);
+	int32_t Find(int32_t);
 };

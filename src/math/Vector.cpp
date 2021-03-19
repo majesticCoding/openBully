@@ -2,6 +2,8 @@
 #include <limits>
 #include "Vector.h"
 
+CVector const &CVector::Zero = CVector(0.0f, 0.0f, 0.0f);
+
 void CVector::InjectHooks(void) {
 	InjectHook(0x414E10, &CVector::Normalize, PATCH_JUMP);
 	InjectHook(0x414E70, &CVector::LimitDirection, PATCH_JUMP);
