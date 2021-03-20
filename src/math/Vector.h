@@ -1,11 +1,15 @@
 #pragma once
 #include "patcher.h"
 
-typedef struct RwV3d {
+struct RwV3d {
 	float x;
 	float y;
 	float z;
-} Vector3;
+};
+
+struct Vector3 : public RwV3d {
+	float w;
+};
 
 class CVector : public RwV3d {
 public:
