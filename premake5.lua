@@ -12,6 +12,8 @@ project "openBully"
 	files {"src/**.h", "src/**.cpp"}
 	includedirs { "src" }
     includedirs { "src/animation" }
+	includedirs { "src/audio" }
+	includedirs { "src/classes" }
 	includedirs { "src/collision" }
     includedirs { "src/core" }
     includedirs { "src/math" }

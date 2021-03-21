@@ -23,6 +23,7 @@ public:
 	static bool &ms_loadStatus;
 	static int32_t &ms_numObjectNames;
 	static int32_t &ms_numCutsceneObjs;
+	static float &ms_cutsceneTimer;
 
 	static CDirectory *ms_pCutsceneDir;
 
@@ -35,6 +36,8 @@ public:
 	static void Reset(void);
 	static void FinishMiniCutscene(void);
 	static void RemoveEverythingBecauseCutsceneDoesntFitInMemory(void);
+	static void LoadCutsceneSound(char const *name);
+	static int16_t GetCutsceneTimeInMilleseconds(void);
 
 	static void InjectHooks(void);
 };

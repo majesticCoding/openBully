@@ -9,6 +9,7 @@
 #include "ColStore.h"
 #include "WeaponInventory.h"
 #include "Streaming.h"
+#include "AudioManager.h"
 
 bool &CCutsceneMgr::ms_loaded = *(bool*)0x20C5BE1;
 bool &CCutsceneMgr::ms_loadStatus = *(bool*)0x20C5BE2;
@@ -23,6 +24,8 @@ bool &CCutsceneMgr::ms_wasCutsceneSkipped = *(bool*)0x20C5BEA;
 
 int32_t &CCutsceneMgr::ms_numObjectNames = *(int32_t*)0x20C5BF0;
 int32_t &CCutsceneMgr::ms_numCutsceneObjs = *(int32_t*)0x20C5B18;
+
+float &CCutsceneMgr::ms_cutsceneTimer = *(float*)0x20C5B1C;
 
 char *CCutsceneMgr::ms_cutsceneName = (char*)0x20C5B20;
 AM_Hierarchy **CCutsceneMgr::ms_pHierarchies = (AM_Hierarchy **)0x20C4B38;
@@ -43,6 +46,8 @@ void CCutsceneMgr::InjectHooks(void) {
 	InjectHook(0x6C38A0, &CCutsceneMgr::Reset, PATCH_JUMP);
 	//InjectHook(0x6C3720, &CCutsceneMgr::Initialise, PATCH_JUMP);
 	InjectHook(0x6C3DE0, &CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory, PATCH_JUMP);
+	InjectHook(0x6C3AD0, &CCutsceneMgr::GetCutsceneTimeInMilleseconds, PATCH_JUMP);
+	InjectHook(0x6C38B0, &CCutsceneMgr::LoadCutsceneSound, PATCH_JUMP);
 }
 
 void CCutsceneMgr::Reset(void) {
@@ -113,4 +118,26 @@ void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
 		CGame::DrasticTidyUpMemory(true);
 		LoadingScreen("CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory()", "End");
 	}
+}
+
+void CCutsceneMgr::LoadCutsceneSound(char const *name) {
+	char fullName[260];
+	char *tmpNameCopy = const_cast<char *>(name);
+	char *pLastBackSlash = strrchr(const_cast<char *>(name), 92);
+	char *pLastSlash = strrchr(const_cast<char *>(name), 47);
+
+	if (pLastSlash < pLastBackSlash)
+		pLastSlash = pLastBackSlash;
+
+	if (pLastSlash != nullptr)
+		tmpNameCopy = pLastSlash++;
+
+	strcpy_s(fullName, tmpNameCopy);
+	strcat_s(fullName, ".rsm");
+	Screamer->PrepareForCutScene(fullName, 1.0f);
+	ms_soundLoaded = 1;
+}
+
+int16_t CCutsceneMgr::GetCutsceneTimeInMilleseconds(void) {
+	return static_cast<int16_t>(ms_cutsceneTimer * 1000.0); 
 }

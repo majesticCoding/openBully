@@ -61,6 +61,8 @@ void CClassSchedule::Init(void) {
 	GlobalButes::RegisterCB(ClassScheduleCB, this);
 
 	printf("ClassSchedule was initialized!\n");
+
+	delete path;
 }
 
 void CClassSchedule::Reset(void) {
