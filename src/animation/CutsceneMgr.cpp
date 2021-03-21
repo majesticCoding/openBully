@@ -135,7 +135,7 @@ void CCutsceneMgr::LoadCutsceneSound(char const *name) {
 	strcpy_s(fullName, tmpNameCopy);
 	strcat_s(fullName, ".rsm");
 	Screamer->PrepareForCutScene(fullName, 1.0f);
-	ms_soundLoaded = 1;
+	ms_soundLoaded = true;
 }
 
 int16_t CCutsceneMgr::GetCutsceneTimeInMilleseconds(void) {
