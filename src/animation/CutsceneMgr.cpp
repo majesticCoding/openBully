@@ -114,7 +114,7 @@ void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
 		LoadingScreen("CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory()", "Start");
 		CVector coors = FindPlayerCoors();
 		(*(CPopulation **)CPopulation::m_spInstance)->RemovePedsInSphere(coors, 120.0f);
-		CWorld::ClearExcitingStuffFromArea(CVector::Zero, 4000.0f, 1);
+		CWorld::ClearExcitingStuffFromArea(CVector::Zero, 4000.0f, true);
 		CColStore::RemoveAllCollision();
 
 		if (CGame::m_pRadar != nullptr)
