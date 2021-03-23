@@ -33,7 +33,9 @@ public:
 	static ActionController *ms_CutSceneActionController;
 
 	static void Initialise(void);
+	static void CutSceneStartInitialization(void);
 	static void Reset(void);
+	static void StartMiniCutscene(void);
 	static void FinishMiniCutscene(void);
 	static void RemoveEverythingBecauseCutsceneDoesntFitInMemory(void);
 	static void LoadCutsceneSound(char const *name);

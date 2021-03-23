@@ -10,6 +10,8 @@
 #include "WeaponInventory.h"
 #include "Streaming.h"
 #include "AudioManager.h"
+#include "sndStream.h"
+#include "Entity.h"
 
 bool &CCutsceneMgr::ms_loaded = *(bool*)0x20C5BE1;
 bool &CCutsceneMgr::ms_loadStatus = *(bool*)0x20C5BE2;
@@ -48,6 +50,7 @@ void CCutsceneMgr::InjectHooks(void) {
 	InjectHook(0x6C3DE0, &CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory, PATCH_JUMP);
 	InjectHook(0x6C3AD0, &CCutsceneMgr::GetCutsceneTimeInMilleseconds, PATCH_JUMP);
 	InjectHook(0x6C38B0, &CCutsceneMgr::LoadCutsceneSound, PATCH_JUMP);
+	InjectHook(0x6C3B90, &CCutsceneMgr::StartMiniCutscene, PATCH_JUMP);
 }
 
 void CCutsceneMgr::Reset(void) {
@@ -78,6 +81,21 @@ void CCutsceneMgr::Initialise(void) {
 	printf("CCutsceneMgr was initialized!\n");
 }
 
+void CCutsceneMgr::CutSceneStartInitialization(void) {
+	XCALL(0x6C3940);
+}
+
+void CCutsceneMgr::StartMiniCutscene(void) {
+	if (ms_running)
+		return;
+
+	CutSceneStartInitialization();
+	g_sndStream->SetPosition(nullptr, VOLUME1);
+	Screamer->PlayCutSceneAudio();
+	CCutsceneMgr::ms_running = true;
+	CCutsceneMgr::ms_MiniRunning = true;
+}
+
 void CCutsceneMgr::FinishMiniCutscene(void) {
 	g_StreamManager->StopStream(2);
 	m_MiniSoundReady = false;
@@ -104,9 +122,9 @@ void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
 
 		g_bIsEverythingRemovedForCutscene = true;
 
-		if ((int32_t*)CWorld::Player != nullptr) { // CWorld::Player.pPed here, but currently this option
+		if (&CWorld::Player != nullptr) { // CWorld::Player.pPed here, but currently this option
 			for (int32_t idx = MI_FIRSTWEAPON; idx <= MI_LASTWEAPON; idx++) {
-				if ( (*(CWeaponInventory**)(CWorld::Player + 0x1C4))->Find(idx) != -1)
+				if ( (*(CWeaponInventory**)(&CWorld::Player + 0x1C4))->Find(idx) != -1)
 					CStreaming::SetModelIsDeletable(idx);
 			}
 		}

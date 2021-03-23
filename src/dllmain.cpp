@@ -102,7 +102,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	case DLL_PROCESS_ATTACH:
 		DisplayConsole();
 		InjectHooks();
-
 		break;
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:

@@ -5,6 +5,6 @@
 
 class CWorld {
 public:
-	static int32_t &Player;
+	static CPlayerInfo &Player;
 	static void ClearExcitingStuffFromArea(CVector const &pos, float radius, bool flag);
 };
