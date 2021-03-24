@@ -34,5 +34,6 @@ public:
 };
 
 class CDirectory : public CDirectoryTemplate<class T> {
+public:
 
 };

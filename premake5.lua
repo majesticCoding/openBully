@@ -16,8 +16,9 @@ project "openBully"
 	includedirs { "src/classes" }
 	includedirs { "src/collision" }
     includedirs { "src/core" }
-	includedirs {"src/entities"}
+	includedirs { "src/entities"}
     includedirs { "src/math" }
+	includedirs { "src/memory"}
 	includedirs { "src/objects" }
     includedirs { "src/peds" }
     includedirs { "src/pickups" }

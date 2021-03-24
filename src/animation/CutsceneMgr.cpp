@@ -12,6 +12,10 @@
 #include "AudioManager.h"
 #include "sndStream.h"
 #include "Entity.h"
+#include "MemoryHeap.h"
+#include "Timer.h"
+#include "TextManager.h"
+#include "FileMgr.h"
 
 bool &CCutsceneMgr::ms_loaded = *(bool*)0x20C5BE1;
 bool &CCutsceneMgr::ms_loadStatus = *(bool*)0x20C5BE2;
@@ -33,12 +37,14 @@ char *CCutsceneMgr::ms_cutsceneName = (char*)0x20C5B20;
 AM_Hierarchy **CCutsceneMgr::ms_pHierarchies = (AM_Hierarchy **)0x20C4B38;
 CCutsceneObject **CCutsceneMgr::ms_pCutsceneObjects = (CCutsceneObject **)0x20C5B68;
 ActionController *CCutsceneMgr::ms_CutSceneActionController = (ActionController*)0x20C5C0C;
+char (*CCutsceneMgr::ms_CutsceneObjectNames)[64] = (char(*)[64])0x20C4C17;
 
 CDirectory *CCutsceneMgr::ms_pCutsceneDir = (CDirectory *)0x20C4B34;
 
-ActionNode *g_pCutSceneActionTree = *(ActionNode **)0x20C4B30;
+ActionNode *g_pCutSceneActionTree = *reinterpret_cast<ActionNode **>(0x20C4B30);
 
 bool &g_bIsEverythingRemovedForCutscene = *(bool*)0x20C5BE0; //custom name
+bool &byte_20C5C08 = *(bool*)0x20C5C08;
 int32_t &MI_FIRSTWEAPON = *(int32_t*)0xA136B0;
 int32_t &MI_LASTWEAPON = *(int32_t*)0xA136B4;
 
@@ -51,6 +57,8 @@ void CCutsceneMgr::InjectHooks(void) {
 	InjectHook(0x6C3AD0, &CCutsceneMgr::GetCutsceneTimeInMilleseconds, PATCH_JUMP);
 	InjectHook(0x6C38B0, &CCutsceneMgr::LoadCutsceneSound, PATCH_JUMP);
 	InjectHook(0x6C3B90, &CCutsceneMgr::StartMiniCutscene, PATCH_JUMP);
+	InjectHook(0x6C3D50, &CCutsceneMgr::GetCutsceneJimmy, PATCH_JUMP);
+	//InjectHook(0x6C45E0, &CCutsceneMgr::LoadCutsceneData, PATCH_JUMP);
 }
 
 void CCutsceneMgr::Reset(void) {
@@ -70,7 +78,7 @@ void CCutsceneMgr::Initialise(void) {
 	ms_numObjectNames = 0;
 	ms_numCutsceneObjs = 0;
 
-	//ms_pCutsceneDir = (CDirectory*)CDirectoryTemplate<CDirectoryInfo>(NUM_DIRENTRIES);
+	//ms_pCutsceneDir = (CDirectory*)new CDirectory::CDirectoryTemplate<CDirectoryInfo>(NUM_DIRENTRIES);
 	//ms_pCutsceneDir->ReadDirFile("CUTS\\CUTS.DIR");
 
 	memset(ms_pHierarchies, NULL, NUM_HIERARCHIES * sizeof(ms_pHierarchies));
@@ -138,11 +146,48 @@ void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
 	}
 }
 
-void CCutsceneMgr::LoadCutsceneSound(char const *name) {
+void CCutsceneMgr::LoadCutsceneData(char const *szCutsceneName, bool param) {
+	LoadingScreen("CCutsceneMgr::LoadCutsceneData()", "Start");
+	CMemoryHeap::PushMemId(CUTS_MEM_ID);
+	
+	ms_cutsceneProcessing = true;
+	ms_wasCutsceneSkipped = false;
+	ms_numObjectNames = 0;
+
+	CTimer::Stop();
+
+	LoadingScreen("CCutsceneMgr::LoadCutsceneData()", "Remove Zone Peds");
+	if (!byte_20C5C08) //android doesn't have it
+		CStreaming::RemoveCurrentZonesModels();
+
+	LoadingScreen("CCutsceneMgr::LoadCutsceneData()", "Remove Vehicles");
+	while (CStreaming::RemoveLoadedVehicle()) {}
+
+	LoadingScreen("CCutsceneMgr::LoadCutsceneData()", "CStreaming::RemoveUnusedModelsInLoadedList()");
+	CStreaming::RemoveUnusedModelsInLoadedList();
+
+	LoadingScreen("CCutsceneMgr::LoadCutsceneData()", "RwFreeListPurgeAllFreeLists()");
+	LoadingScreen("CCutsceneMgr::LoadCutsceneData()", "CGame::DrasticTidyUpMemory()");
+	CGame::DrasticTidyUpMemory(true);
+
+	char const *tmpNameCopy = szCutsceneName;
+	strcpy_s(ms_cutsceneName, CUTSCNAMESIZE, szCutsceneName);
+
+	char dest[32];
+	sprintf_s(dest, 32, "%s_SUB", ms_cutsceneName);
+	theTextManager->LoadConversationText(dest);
+
+	int32_t file = CFileMgr::OpenFile("CUTS\\CUTS.IMG", "r", true);
+
+	LoadingScreen("CCutsceneMgr::LoadCutsceneData()", "FindMainPed()");
+	CPlayerInfo Player = CWorld::Player;
+}
+
+void CCutsceneMgr::LoadCutsceneSound(char const *szCutsceneSoundName) {
 	char fullName[260];
-	char *tmpNameCopy = const_cast<char *>(name);
-	char *pLastBackSlash = strrchr(const_cast<char *>(name), 92);
-	char *pLastSlash = strrchr(const_cast<char *>(name), 47);
+	char *tmpNameCopy = const_cast<char *>(szCutsceneSoundName);
+	char *pLastBackSlash = strrchr(const_cast<char *>(szCutsceneSoundName), 92);
+	char *pLastSlash = strrchr(const_cast<char *>(szCutsceneSoundName), 47);
 
 	if (pLastSlash < pLastBackSlash)
 		pLastSlash = pLastBackSlash;
@@ -154,6 +199,21 @@ void CCutsceneMgr::LoadCutsceneSound(char const *name) {
 	strcat_s(fullName, ".rsm");
 	Screamer->PrepareForCutScene(fullName, 1.0f);
 	ms_soundLoaded = true;
+}
+
+CCutsceneObject *CCutsceneMgr::GetCutsceneJimmy(void) {
+	if (!ms_cutsceneProcessing || ms_numObjectNames <= 0)
+		return nullptr;
+
+	int32_t nObjIndex = -1;
+	for (int32_t i = 0; i < ms_numObjectNames; i++) {
+		if (!_strnicmp(*ms_CutsceneObjectNames, "CS_PLAY", 7))
+			nObjIndex = i;
+
+		ms_CutsceneObjectNames++;
+	}
+
+	return (nObjIndex >= 0) ? ms_pCutsceneObjects[nObjIndex] : nullptr;
 }
 
 int16_t CCutsceneMgr::GetCutsceneTimeInMilleseconds(void) {

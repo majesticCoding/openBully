@@ -28,9 +28,10 @@ public:
 	static CDirectory *ms_pCutsceneDir;
 
 	static char *ms_cutsceneName; //static char ms_cutsceneName[CUTSCNAMESIZE]
-	static AM_Hierarchy **ms_pHierarchies; //not sure about type.. static AM_Hierarchy *ms_pHierarchies[10]
+	static AM_Hierarchy **ms_pHierarchies; //static AM_Hierarchy *ms_pHierarchies[10]
 	static CCutsceneObject **ms_pCutsceneObjects; //static CCutsceneObject *ms_pCutsceneObjects[30]
 	static ActionController *ms_CutSceneActionController;
+	static char (*ms_CutsceneObjectNames)[64]; //static char *ms_CutsceneObjectNames[60][64]
 
 	static void Initialise(void);
 	static void CutSceneStartInitialization(void);
@@ -38,8 +39,10 @@ public:
 	static void StartMiniCutscene(void);
 	static void FinishMiniCutscene(void);
 	static void RemoveEverythingBecauseCutsceneDoesntFitInMemory(void);
-	static void LoadCutsceneSound(char const *name);
+	static void LoadCutsceneData(char const *szCutsceneName, bool param);
+	static void LoadCutsceneSound(char const *szCutsceneSoundName);
 	static int16_t GetCutsceneTimeInMilleseconds(void);
+	static CCutsceneObject *GetCutsceneJimmy(void);
 
 	static void InjectHooks(void);
 };

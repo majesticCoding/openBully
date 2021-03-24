@@ -11,3 +11,11 @@ void CStreaming::DeleteAllRwObjects(void) {
 void CStreaming::RemoveUnusedModelsInLoadedList(void) {
 	XCALL(0x530B50);
 }
+
+void CStreaming::RemoveCurrentZonesModels(void) {
+	XCALL(0x52D9A0);
+}
+
+bool CStreaming::RemoveLoadedVehicle(void) {
+	XCALL(0x530060);
+}
