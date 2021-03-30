@@ -1,10 +1,10 @@
 #include "Directory.h"
 
-CDirectoryTemplate<CDirectoryInfo>::CDirectoryTemplate(int32_t n) {
+template <>CDirectoryTemplate<CDirectoryInfo>::CDirectoryTemplate(int32_t n) {
 	XCALL(0x4291B0);
 }
 
-CDirectoryTemplate<CDirectoryInfo>::~CDirectoryTemplate() {
+template <>CDirectoryTemplate<CDirectoryInfo>::~CDirectoryTemplate() {
 	XCALL(0x429180);
 }
 
@@ -38,4 +38,8 @@ void CDirectoryTemplate<CDirectoryInfo>::Empty(void) {
 
 int32_t CDirectoryTemplate<CDirectoryInfo>::GetNumItems(void) {
 	return 1;
+}
+
+CDirectory::~CDirectory() {
+	XCALL(0x429020);
 }

@@ -6,6 +6,7 @@
 #include "ClassSchedule.h"
 #include "Matrix.h"
 #include "Clock.h"
+#include "Timer.h"
 
 #pragma warning(disable:4996)
 
@@ -78,6 +79,7 @@ __declspec(naked) void CommandSelectRendererHook2() {
 void InjectHooks(void) {
 	CVector::InjectHooks();
 	CMatrix::InjectHooks();
+	CTimer::InjectHooks();
 	Clock::InjectHooks();
 	CCutsceneMgr::InjectHooks();
 	CMissionMgr::InjectHooks();

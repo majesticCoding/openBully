@@ -56,7 +56,7 @@ void CClassSchedule::Init(void) {
 	m_count = GlobalButes::FindGetCount(*path);
 
 	for (int32_t i = 0; i < m_count; i++) 
-		m_pPeriods[i] = (TimePeriodButes*)GlobalButes::Find(*path, i, GlobalButes::TimePeriodButes);
+		m_pPeriods[i] = reinterpret_cast<TimePeriodButes*>(GlobalButes::Find(*path, i, GlobalButes::TimePeriodButes));
 
 	GlobalButes::RegisterCB(ClassScheduleCB, this);
 

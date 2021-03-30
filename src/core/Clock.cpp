@@ -28,7 +28,6 @@ uint32_t &Clock::ms_nMillisecondsPerGameMinuteOffMission = *(uint32_t*)0x9E51AC;
 float &gNormalizedTime = *(float*)0xC66B20;
 bool &gOverrideNormalizedTime = *(bool*)0xC66B24;
 float &gOverridNormalizedTime = *(float*)0xC66B28;
-uint8_t &g_SeasonManager = *(uint8_t*)0xA147E0;
 int *g_Shop = reinterpret_cast<int(*)>(0xC18748);
 
 bool &byte_B9DB1C = *(bool*)0xB9DB1C;

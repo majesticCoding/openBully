@@ -43,11 +43,12 @@ CDirectory *CCutsceneMgr::ms_pCutsceneDir = (CDirectory *)0x20C4B34;
 
 ActionNode *g_pCutSceneActionTree = *reinterpret_cast<ActionNode **>(0x20C4B30);
 
-bool &g_bIsEverythingRemovedForCutscene = *(bool*)0x20C5BE0; //custom name
+bool &bEverythingRemoved = *(bool*)0x20C5BE0;
 bool &byte_20C5C08 = *(bool*)0x20C5C08;
 int32_t &MI_FIRSTWEAPON = *(int32_t*)0xA136B0;
 int32_t &MI_LASTWEAPON = *(int32_t*)0xA136B4;
 
+char *g_string = (char *)0xC221A8;
 
 void CCutsceneMgr::InjectHooks(void) {
 	InjectHook(0x6C3BD0, &CCutsceneMgr::FinishMiniCutscene, PATCH_JUMP);
@@ -78,11 +79,14 @@ void CCutsceneMgr::Initialise(void) {
 	ms_numObjectNames = 0;
 	ms_numCutsceneObjs = 0;
 
-	//ms_pCutsceneDir = (CDirectory*)new CDirectory::CDirectoryTemplate<CDirectoryInfo>(NUM_DIRENTRIES);
-	//ms_pCutsceneDir->ReadDirFile("CUTS\\CUTS.DIR");
+	ms_pCutsceneDir = new CDirectory(NUM_DIRENTRIES);
+	ms_pCutsceneDir->ReadDirFile("CUTS\\CUTS.DIR");
 
-	memset(ms_pHierarchies, NULL, NUM_HIERARCHIES * sizeof(ms_pHierarchies));
-	memset(ms_pCutsceneObjects, NULL, NUM_CUTSCENEOBJS * sizeof(ms_pCutsceneObjects));
+	for (int i = 0; i < NUM_HIERARCHIES; i++)
+		ms_pHierarchies[i] = nullptr;
+
+	for (int i = 0; i < NUM_CUTSCENEOBJS; i++)
+		ms_pCutsceneObjects[i] = nullptr;
 
 	ms_CutSceneActionController = new ActionController();
 
@@ -114,7 +118,7 @@ void CCutsceneMgr::FinishMiniCutscene(void) {
 }
 
 void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
-	if (g_bIsEverythingRemovedForCutscene) {
+	if (bEverythingRemoved) {
 		LoadingScreen("CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory()", "bEverythingRemoved");
 		CGame::DrasticTidyUpMemory(true);
 	}
@@ -128,7 +132,7 @@ void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
 		if (CGame::m_pRadar != nullptr)
 			CGame::m_pRadar->RemoveRadarSections();
 
-		g_bIsEverythingRemovedForCutscene = true;
+		bEverythingRemoved = true;
 
 		if (&CWorld::Player != nullptr) { // CWorld::Player.pPed here, but currently this option
 			for (int32_t idx = MI_FIRSTWEAPON; idx <= MI_LASTWEAPON; idx++) {
@@ -173,14 +177,16 @@ void CCutsceneMgr::LoadCutsceneData(char const *szCutsceneName, bool param) {
 	char const *tmpNameCopy = szCutsceneName;
 	strcpy_s(ms_cutsceneName, CUTSCNAMESIZE, szCutsceneName);
 
-	char dest[32];
-	sprintf_s(dest, 32, "%s_SUB", ms_cutsceneName);
-	theTextManager->LoadConversationText(dest);
+	char subtitleTextName[32];
+	sprintf_s(subtitleTextName, 32, "%s_SUB", ms_cutsceneName);
+	theTextManager->LoadConversationText(subtitleTextName);
 
 	int32_t file = CFileMgr::OpenFile("CUTS\\CUTS.IMG", "r", true);
 
 	LoadingScreen("CCutsceneMgr::LoadCutsceneData()", "FindMainPed()");
 	CPlayerInfo Player = CWorld::Player;
+
+	sprintf_s(g_string, 13, "%s.CUT", ms_cutsceneName);
 }
 
 void CCutsceneMgr::LoadCutsceneSound(char const *szCutsceneSoundName) {

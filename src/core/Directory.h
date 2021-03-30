@@ -4,24 +4,22 @@
 #define NUM_DIRENTRIES 864
 
 class CDirectoryInfo {
-
+	
 };
 
-class CDirectoryWithNamesInfo {
+class CDirectoryWithNamesInfo : public CDirectoryInfo {
 
 };
 
 class CDirectoryBase {
-
+	int32_t __vmt; 
 };
 
 template <class T>
 class CDirectoryTemplate : public CDirectoryBase {
-private:
-	char _pad[16];
 public:
-	CDirectoryTemplate(int32_t n);
-	~CDirectoryTemplate();
+	virtual ~CDirectoryTemplate();
+	CDirectoryTemplate(int32_t nDirEntries);
 
 	void ReadDirFile(char const *fileName);
 	bool FindItem(char const *itemName, uint32_t &, uint32_t &);
@@ -33,7 +31,13 @@ public:
 	int32_t GetNumItems(void);
 };
 
-class CDirectory : public CDirectoryTemplate<class T> {
+class CDirectory : public CDirectoryTemplate<CDirectoryInfo> {
+private:
+	char _pad[8];
 public:
+	virtual ~CDirectory();
 
+	CDirectory(int32_t nDirEntries) : CDirectoryTemplate(nDirEntries) {
+
+	}
 };
