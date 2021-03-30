@@ -47,7 +47,7 @@ void CTimer::Shutdown(void) {
 }
 
 void CTimer::Stop(void) {
-	m_snPreviousTimeInMilliseconds = m_snPreviousTimeInMilliseconds;
+	m_snPreviousTimeInMilliseconds = m_snTimeInMilliseconds;
 }
 
 void CTimer::StartUserPause(void) {
