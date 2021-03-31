@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#pragma warning( disable : 4244 )
+
 class StaticPatcher
 {
 private:
