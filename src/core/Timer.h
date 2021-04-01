@@ -23,8 +23,8 @@ public:
 	static uint32_t &m_snTimeInMilliseconds;
 	static uint32_t &m_snPreviousTimeInMilliseconds;
 	static uint32_t &m_snTimeInMillisecondsNonClipped;
+	static uint32_t &m_FrameCounter;
 	static int32_t &m_CodePause_SingleStepCounter;
-	static int32_t &m_FrameCounter;
 	static int32_t &m_snTimeInMillisecondsPauseMode;
 	static int32_t &m_GameMilliseconds;
 	static int32_t &m_GameSeconds;

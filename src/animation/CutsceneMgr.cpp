@@ -79,6 +79,7 @@ void CCutsceneMgr::Initialise(void) {
 	ms_numObjectNames = 0;
 	ms_numCutsceneObjs = 0;
 
+	//TODO: find out what's wrong with this init
 	ms_pCutsceneDir = new CDirectory(NUM_DIRENTRIES);
 	ms_pCutsceneDir->ReadDirFile("CUTS\\CUTS.DIR");
 
@@ -187,6 +188,8 @@ void CCutsceneMgr::LoadCutsceneData(char const *szCutsceneName, bool param) {
 	CPlayerInfo Player = CWorld::Player;
 
 	sprintf_s(g_string, 13, "%s.CUT", ms_cutsceneName);
+
+	//TODO: the rest
 }
 
 void CCutsceneMgr::LoadCutsceneSound(char const *szCutsceneSoundName) {

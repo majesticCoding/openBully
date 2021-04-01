@@ -4,7 +4,7 @@ uint32_t &CTimer::m_snTimeInMilliseconds = *(uint32_t*)0xC1A9B4;
 uint32_t &CTimer::m_snPreviousTimeInMilliseconds = *(uint32_t*)0xC1A9AC;
 uint32_t &CTimer::m_snTimeInMillisecondsNonClipped = *(uint32_t*)0xC1A9B0;
 int32_t &CTimer::m_CodePause_SingleStepCounter = *(int32_t*)0xC1AA00;
-int32_t &CTimer::m_FrameCounter = *(int32_t*)0xC1A99C;
+uint32_t &CTimer::m_FrameCounter = *(uint32_t*)0xC1A99C;
 int32_t &CTimer::m_snTimeInMillisecondsPauseMode = *(int32_t*)0xA14A50;
 int32_t &CTimer::m_GameMilliseconds = *(int32_t*)0xC1A9FC;
 int32_t &CTimer::m_GameSeconds = *(int32_t*)0xC1A9F8;
@@ -25,7 +25,7 @@ float &CTimer::ms_fTimeStep = *(float*)0xC1A9A4;
 float &CTimer::ms_fTimeStepNonClipped = *(float*)0xC1A9A0;
 
 double &dFrequency = *(double*)0xC1A9E0; //dbl_C1A9E0
-int32_t &suspendDepth = *(int32_t*)0xC1A9B8; //dword_C1A9B8
+uint32_t &suspendDepth = *(uint32_t*)0xC1A9B8; //dword_C1A9B8
 
 void CTimer::InjectHooks(void) {
 	InjectHook(0x45B8A0, &CTimer::Initialise, PATCH_JUMP);
@@ -98,7 +98,7 @@ void CTimer::Update(bool bParam) {
 		int64_t timeDiff = sm_LastCycleCount - sm_nPrevUpdateTimeInCycles;
 		sm_nPrevUpdateTimeInCycles = sm_LastCycleCount;
 		m_snFrameTimeInCycles = timeDiff;
-		m_snTimeInMillisecondsPauseMode += (timeDiff / ((int64_t)GetPerformanceFrequency() / 1000));
+		m_snTimeInMillisecondsPauseMode += (timeDiff / (GetPerformanceFrequency() / 1000));
 
 		if (GetIsPauesed() && !bParam)
 		{
@@ -106,10 +106,11 @@ void CTimer::Update(bool bParam) {
 			Platform_PadStopAllVibration();
 		}
 
-		float freq = (float)((int64_t)GetPerformanceFrequency() / 1000);
+		//TODO: find out where is the mistake here
+		/*float freq = (float)(GetPerformanceFrequency() / 1000);
 		long double scaledFrameTime = m_snFrameTimeInCycles * ms_fTimeScale;
 
-		PerformanceCount.QuadPart = (int64_t)(scaledFrameTime / freq);
+		PerformanceCount.QuadPart = scaledFrameTime / freq;
 		m_snTimeInMilliseconds += PerformanceCount.LowPart;
 		m_snTimeInMillisecondsNonClipped += PerformanceCount.QuadPart;
 		ms_fTimeStep = scaledFrameTime / (freq * 20.0);
@@ -132,7 +133,7 @@ void CTimer::Update(bool bParam) {
 
 			if (GetFrameDurationInMilliseconds() > 60)
 				m_snTimeInMilliseconds = m_snPreviousTimeInMilliseconds + 60;
-		}
+		}*/
 
 		m_FrameCounter++;
 	}
