@@ -25,12 +25,12 @@ public:
 	static int32_t &ms_numCutsceneObjs;
 	static float &ms_cutsceneTimer;
 
-	static CDirectory *ms_pCutsceneDir;
+	static CDirectory **ms_pCutsceneDir;
 
 	static char *ms_cutsceneName; //static char ms_cutsceneName[CUTSCNAMESIZE]
 	static AM_Hierarchy **ms_pHierarchies; //static AM_Hierarchy *ms_pHierarchies[10]
 	static CCutsceneObject **ms_pCutsceneObjects; //static CCutsceneObject *ms_pCutsceneObjects[30]
-	static ActionController *ms_CutSceneActionController;
+	static ActionController **ms_CutSceneActionController;
 	static char (*ms_CutsceneObjectNames)[64]; //static char *ms_CutsceneObjectNames[60][64]
 
 	static void Initialise(void);

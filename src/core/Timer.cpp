@@ -106,22 +106,23 @@ void CTimer::Update(bool bParam) {
 			Platform_PadStopAllVibration();
 		}
 
-		//TODO: find out where is the mistake here
-		/*float freq = (float)(GetPerformanceFrequency() / 1000);
-		long double scaledFrameTime = m_snFrameTimeInCycles * ms_fTimeScale;
+		
+		float freq = (float)(GetPerformanceFrequency() / 1000);
+		long double scaledFrameTime = (long double)(*(int64_t*)&m_snFrameTimeInCycles * ms_fTimeScale);
 
+		//TODO: find out where is the mistake here
 		PerformanceCount.QuadPart = scaledFrameTime / freq;
 		m_snTimeInMilliseconds += PerformanceCount.LowPart;
 		m_snTimeInMillisecondsNonClipped += PerformanceCount.QuadPart;
 		ms_fTimeStep = scaledFrameTime / (freq * 20.0);
 		
-		int32_t nTotalMilliseconds = (int32_t)(scaledFrameTime / freq) + m_GameMilliseconds;
+		int64_t nTotalMilliseconds = (int64_t)((scaledFrameTime / freq) + m_GameMilliseconds);
 		m_GameMilliseconds = nTotalMilliseconds % 1000;
 
-		int32_t nTotalSeconds = (nTotalMilliseconds / 1000 + m_GameSeconds);
+		int64_t nTotalSeconds = ((nTotalMilliseconds / 1000) + m_GameSeconds);
 		m_GameSeconds = nTotalSeconds % 60;
-		m_GameHours += (nTotalSeconds / 60 + m_GameMinutes) / 60;
-		m_GameMinutes = (nTotalSeconds / 60 + m_GameMinutes) % 60;
+		m_GameHours += ((nTotalSeconds / 60) + m_GameMinutes) / 60;
+		m_GameMinutes = ((nTotalSeconds / 60) + m_GameMinutes) % 60;
 
 		if (ms_fTimeStep < 0.5f && !GetIsPauesed() && !GetIsSlowMotionActive()) 
 			ms_fTimeStep = 0.5f;
@@ -133,7 +134,7 @@ void CTimer::Update(bool bParam) {
 
 			if (GetFrameDurationInMilliseconds() > 60)
 				m_snTimeInMilliseconds = m_snPreviousTimeInMilliseconds + 60;
-		}*/
+		}
 
 		m_FrameCounter++;
 	}
@@ -159,7 +160,7 @@ inline uint32_t CTimer::GetFrameDurationInMilliseconds(void) {
 	return m_snTimeInMilliseconds - m_snPreviousTimeInMilliseconds;
 }
 
-inline double CTimer::GetPerformanceFrequency(void) {
+double CTimer::GetPerformanceFrequency(void) {
 	return dFrequency;
 }
 

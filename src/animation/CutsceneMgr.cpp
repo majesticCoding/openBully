@@ -36,10 +36,10 @@ float &CCutsceneMgr::ms_cutsceneTimer = *(float*)0x20C5B1C;
 char *CCutsceneMgr::ms_cutsceneName = (char*)0x20C5B20;
 AM_Hierarchy **CCutsceneMgr::ms_pHierarchies = (AM_Hierarchy **)0x20C4B38;
 CCutsceneObject **CCutsceneMgr::ms_pCutsceneObjects = (CCutsceneObject **)0x20C5B68;
-ActionController *CCutsceneMgr::ms_CutSceneActionController = (ActionController*)0x20C5C0C;
+ActionController **CCutsceneMgr::ms_CutSceneActionController = reinterpret_cast<ActionController **>(0x20C5C0C);
 char (*CCutsceneMgr::ms_CutsceneObjectNames)[64] = (char(*)[64])0x20C4C17;
 
-CDirectory *CCutsceneMgr::ms_pCutsceneDir = (CDirectory *)0x20C4B34;
+CDirectory **CCutsceneMgr::ms_pCutsceneDir = (CDirectory **)0x20C4B34;
 
 ActionNode *g_pCutSceneActionTree = *reinterpret_cast<ActionNode **>(0x20C4B30);
 
@@ -53,7 +53,7 @@ char *g_string = (char *)0xC221A8;
 void CCutsceneMgr::InjectHooks(void) {
 	InjectHook(0x6C3BD0, &CCutsceneMgr::FinishMiniCutscene, PATCH_JUMP);
 	InjectHook(0x6C38A0, &CCutsceneMgr::Reset, PATCH_JUMP);
-	//InjectHook(0x6C3720, &CCutsceneMgr::Initialise, PATCH_JUMP);
+	InjectHook(0x6C3720, &CCutsceneMgr::Initialise, PATCH_JUMP);
 	InjectHook(0x6C3DE0, &CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory, PATCH_JUMP);
 	InjectHook(0x6C3AD0, &CCutsceneMgr::GetCutsceneTimeInMilleseconds, PATCH_JUMP);
 	InjectHook(0x6C38B0, &CCutsceneMgr::LoadCutsceneSound, PATCH_JUMP);
@@ -79,9 +79,8 @@ void CCutsceneMgr::Initialise(void) {
 	ms_numObjectNames = 0;
 	ms_numCutsceneObjs = 0;
 
-	//TODO: find out what's wrong with this init
-	ms_pCutsceneDir = new CDirectory(NUM_DIRENTRIES);
-	ms_pCutsceneDir->ReadDirFile("CUTS\\CUTS.DIR");
+	*ms_pCutsceneDir = new CDirectory(NUM_DIRENTRIES);
+	(*ms_pCutsceneDir)->ReadDirFile("CUTS\\CUTS.DIR");
 
 	for (int i = 0; i < NUM_HIERARCHIES; i++)
 		ms_pHierarchies[i] = nullptr;
@@ -89,7 +88,7 @@ void CCutsceneMgr::Initialise(void) {
 	for (int i = 0; i < NUM_CUTSCENEOBJS; i++)
 		ms_pCutsceneObjects[i] = nullptr;
 
-	ms_CutSceneActionController = new ActionController();
+	*ms_CutSceneActionController = new ActionController();
 
 	printf("CCutsceneMgr was initialized!\n");
 }
