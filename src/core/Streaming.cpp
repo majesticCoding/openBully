@@ -1,5 +1,7 @@
 #include "Streaming.h"
 
+bool &CStreaming::ms_disableStreaming = *(bool*)0xCA3984;
+
 void CStreaming::SetModelIsDeletable(int32_t modelId) {
 	XCALL(0x52FE40);
 }
@@ -16,6 +18,14 @@ void CStreaming::RemoveCurrentZonesModels(void) {
 	XCALL(0x52D9A0);
 }
 
+void CStreaming::SetMissionDoesntRequireSpecialChar(int32_t modelId) {
+	XCALL(0x530040);
+}
+
 bool CStreaming::RemoveLoadedVehicle(void) {
 	XCALL(0x530060);
+}
+
+void CStreaming::RequestModel(int32_t modelId, int32_t flag) {
+	XCALL(0x532020);
 }

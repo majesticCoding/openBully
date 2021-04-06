@@ -5,6 +5,7 @@
 class CPlayerInfo {
 public:
 	CVector GetPos(void);
+	void MakePlayerSafe(bool bState);
 };
 
 bool FindPlayerIsMovingTooFast(void);

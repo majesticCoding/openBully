@@ -1,5 +1,6 @@
 #include "patcher.h"
+#include "Object.h"
 
-class CCutsceneObject {
+class CCutsceneObject : public CObject {
 
 };

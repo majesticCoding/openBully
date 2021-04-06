@@ -4,6 +4,7 @@
 #include "Hierarchy.h"
 #include "CutsceneObject.h"
 #include "ActionController.h"
+#include "CameraManager.h"
 
 #define CUTSCNAMESIZE 72
 #define NUM_HIERARCHIES 10
@@ -23,6 +24,8 @@ public:
 	static bool &ms_loadStatus;
 	static int32_t &ms_numObjectNames;
 	static int32_t &ms_numCutsceneObjs;
+	static int32_t &ms_iCurrentSubtitle;
+	static int32_t &ms_iNumSubtitles;
 	static float &ms_cutsceneTimer;
 
 	static CDirectory **ms_pCutsceneDir;
@@ -31,6 +34,7 @@ public:
 	static AM_Hierarchy **ms_pHierarchies; //static AM_Hierarchy *ms_pHierarchies[10]
 	static CCutsceneObject **ms_pCutsceneObjects; //static CCutsceneObject *ms_pCutsceneObjects[30]
 	static ActionController **ms_CutSceneActionController;
+	static int32_t **ms_SubtitleInfoArray; //find out the real type
 	static char (*ms_CutsceneObjectNames)[64]; //static char *ms_CutsceneObjectNames[60][64]
 
 	static void Initialise(void);
@@ -41,7 +45,9 @@ public:
 	static void RemoveEverythingBecauseCutsceneDoesntFitInMemory(void);
 	static void LoadCutsceneData(char const *szCutsceneName, bool param);
 	static void LoadCutsceneSound(char const *szCutsceneSoundName);
+	static void DeleteCutsceneData(void);
 	static int16_t GetCutsceneTimeInMilleseconds(void);
+	static int32_t GetNumberOfPropAnimsToUpdate(void);
 	static CCutsceneObject *GetCutsceneJimmy(void);
 
 	static void InjectHooks(void);

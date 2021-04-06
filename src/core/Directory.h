@@ -22,8 +22,8 @@ public:
 	CDirectoryTemplate(int32_t nDirEntries);
 
 	void ReadDirFile(char const *fileName);
-	bool FindItem(char const *itemName, uint32_t &, uint32_t &);
-	bool FindItem(uint32_t itemNum, uint32_t &, uint32_t &);
+	bool FindItem(char const *itemName, uint32_t &offset, uint32_t &size);
+	bool FindItem(uint32_t itemNum, uint32_t &offset, uint32_t &size);
 	void FindItem(uint32_t itemNum);
 	int32_t GetPositionSize(int32_t, uint32_t &, uint32_t &);
 	void SetPositionSize(int32_t, uint32_t, uint32_t);

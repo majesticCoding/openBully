@@ -30,6 +30,8 @@ bool &CCutsceneMgr::ms_wasCutsceneSkipped = *(bool*)0x20C5BEA;
 
 int32_t &CCutsceneMgr::ms_numObjectNames = *(int32_t*)0x20C5BF0;
 int32_t &CCutsceneMgr::ms_numCutsceneObjs = *(int32_t*)0x20C5B18;
+int32_t &CCutsceneMgr::ms_iCurrentSubtitle = *(int32_t*)0xBB64EC;
+int32_t &CCutsceneMgr::ms_iNumSubtitles = *(int32_t*)0x20C5C00;
 
 float &CCutsceneMgr::ms_cutsceneTimer = *(float*)0x20C5B1C;
 
@@ -38,6 +40,7 @@ AM_Hierarchy **CCutsceneMgr::ms_pHierarchies = (AM_Hierarchy **)0x20C4B38;
 CCutsceneObject **CCutsceneMgr::ms_pCutsceneObjects = (CCutsceneObject **)0x20C5B68;
 ActionController **CCutsceneMgr::ms_CutSceneActionController = reinterpret_cast<ActionController **>(0x20C5C0C);
 char (*CCutsceneMgr::ms_CutsceneObjectNames)[64] = (char(*)[64])0x20C4C17;
+int32_t **CCutsceneMgr::ms_SubtitleInfoArray = reinterpret_cast<int32_t **>(0x20C5C04);
 
 CDirectory **CCutsceneMgr::ms_pCutsceneDir = (CDirectory **)0x20C4B34;
 
@@ -45,8 +48,12 @@ ActionNode *g_pCutSceneActionTree = *reinterpret_cast<ActionNode **>(0x20C4B30);
 
 bool &bEverythingRemoved = *(bool*)0x20C5BE0;
 bool &byte_20C5C08 = *(bool*)0x20C5C08;
+bool &byte_BCC120 = *(bool*)0xBCC120;
+bool &byte_20C5C09 = *(bool*)0x20C5C09;
 int32_t &MI_FIRSTWEAPON = *(int32_t*)0xA136B0;
 int32_t &MI_LASTWEAPON = *(int32_t*)0xA136B4;
+
+int32_t &numPropAnimsToUpd = *(int32_t*)0x20C5C48; //dword_20C5C48
 
 char *g_string = (char *)0xC221A8;
 
@@ -188,6 +195,11 @@ void CCutsceneMgr::LoadCutsceneData(char const *szCutsceneName, bool param) {
 
 	sprintf_s(g_string, 13, "%s.CUT", ms_cutsceneName);
 
+	uint32_t offset, size;
+	if (!(*ms_pCutsceneDir)->FindItem(g_string, offset, size)) {
+		;
+	}
+
 	//TODO: the rest
 }
 
@@ -209,6 +221,91 @@ void CCutsceneMgr::LoadCutsceneSound(char const *szCutsceneSoundName) {
 	ms_soundLoaded = true;
 }
 
+void CCutsceneMgr::DeleteCutsceneData(void) {
+	byte_BCC120 = false; //sets in true if it's cutscene 5-03
+
+	LoadingScreen("CCutsceneMgr::DeleteCutsceneData()", "Start");
+	bEverythingRemoved = false;
+
+	(*ms_CutSceneActionController)->Stop();
+
+	if (!ms_loaded)
+		return;
+
+	ms_cutsceneProcessing = false;
+	ms_soundLoaded = false;
+	ms_useLodMultiplier = false;
+
+	CWorld::ClearExcitingStuffFromArea(CVector::Zero, 4000.0f, true);
+
+	numPropAnimsToUpd = 0;
+
+	for (int32_t i = 0; i < NUM_CUTSCENEOBJS; i++) {
+		CStreaming::SetMissionDoesntRequireSpecialChar(i);
+
+		if (ms_pCutsceneObjects[i]) {
+			CWorld::Remove(ms_pCutsceneObjects[i]);
+			ms_pCutsceneObjects[i]->DeleteRwObject();
+			delete ms_pCutsceneObjects[i];
+			ms_pCutsceneObjects[i] = nullptr;
+		}
+	}
+
+	/*
+		TODO: the rest
+	*/
+
+
+	ms_animLoaded = false;
+	
+	if (byte_20C5C09)
+	{
+		g_CameraManager->Reset();
+		//TODO: CutsceneCameraController::Unload(g_CutsceneCameraController); thiscall
+	}
+
+	ms_loaded = false;
+	ms_running = false;
+
+	if (&CWorld::Player != nullptr) {
+		*(bool*)(&CWorld::Player + 0x48) = true;
+		//TODO: UserInputManager::SetInputEnabledFromCutscene(&g_UserInputManager, 1); thiscall
+		CWorld::Player.MakePlayerSafe(false);
+	}
+
+	CStreaming::ms_disableStreaming = false;
+	CWorld::bProcessCutsceneOnly = false;
+
+	CTimer::Stop();
+
+	if (byte_20C5C09)
+	{
+		LoadingScreen("CCutsceneMgr::DeleteCutsceneData()", "CGame::DrasticTidyUpMemory()");
+		g_CameraManager->GetScreenFadeStatus() == 1 ? CGame::DrasticTidyUpMemory(true) : CGame::DrasticTidyUpMemory(false);
+	}
+
+	//not sure about it, needs to be checked
+	if (ms_SubtitleInfoArray != nullptr) {
+		delete []ms_SubtitleInfoArray;
+		ms_SubtitleInfoArray = nullptr;
+	}
+
+	ms_iNumSubtitles = 0;
+	ms_iCurrentSubtitle = -1;
+	theTextManager->UnloadConversation();
+
+	if (&CWorld::Player != nullptr) { 
+		for (int32_t idx = MI_FIRSTWEAPON; idx <= MI_LASTWEAPON; idx++) {
+			if ((*(CWeaponInventory**)(&CWorld::Player + 0x1C4))->Find(idx) != -1)
+				CStreaming::RequestModel(idx, 1);
+		}
+	}
+
+	CTimer::Update(false);
+	Screamer->CleanupAfterCutScene();
+	LoadingScreen("CCutsceneMgr::DeleteCutsceneData()", "End");
+}
+
 CCutsceneObject *CCutsceneMgr::GetCutsceneJimmy(void) {
 	if (!ms_cutsceneProcessing || ms_numObjectNames <= 0)
 		return nullptr;
@@ -226,4 +323,8 @@ CCutsceneObject *CCutsceneMgr::GetCutsceneJimmy(void) {
 
 int16_t CCutsceneMgr::GetCutsceneTimeInMilleseconds(void) {
 	return static_cast<int16_t>(ms_cutsceneTimer * 1000.0); 
+}
+
+int32_t CCutsceneMgr::GetNumberOfPropAnimsToUpdate(void) {
+	return numPropAnimsToUpd;
 }

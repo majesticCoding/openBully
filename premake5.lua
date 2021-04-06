@@ -13,15 +13,18 @@ project "openBully"
 	includedirs { "src" }
     includedirs { "src/animation" }
 	includedirs { "src/audio" }
+	includedirs { "src/camera" }
 	includedirs { "src/classes" }
 	includedirs { "src/collision" }
     includedirs { "src/core" }
 	includedirs { "src/entities"}
     includedirs { "src/math" }
 	includedirs { "src/memory"}
+	includedirs { "src/modelinfo"}
 	includedirs { "src/objects" }
     includedirs { "src/peds" }
     includedirs { "src/pickups" }
     includedirs { "src/render" }
     includedirs { "src/scripts" }
+    includedirs { "src/vehicles" }
 	includedirs { "src/weapons" }

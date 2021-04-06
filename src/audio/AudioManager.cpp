@@ -9,3 +9,7 @@ void cSCREAMAudioManager::PrepareForCutScene(char const *name, float volume) {
 void cSCREAMAudioManager::PlayCutSceneAudio(void) {
 	XCALL(0x595AD0);
 }
+
+void cSCREAMAudioManager::CleanupAfterCutScene(void) {
+	XCALL(0x595290);
+}

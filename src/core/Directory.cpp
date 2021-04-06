@@ -12,11 +12,11 @@ void CDirectoryTemplate<CDirectoryInfo>::ReadDirFile(char const *fileName) {
 	XCALL(0x4291F0);
 }
 
-bool CDirectoryTemplate<CDirectoryInfo>::FindItem(char const *itemName, uint32_t &, uint32_t &) {
+bool CDirectoryTemplate<CDirectoryInfo>::FindItem(char const *itemName, uint32_t &offset, uint32_t &size) {
 	return true;
 }
 
-bool CDirectoryTemplate<CDirectoryInfo>::FindItem(uint32_t itemNum, uint32_t &, uint32_t &) {
+bool CDirectoryTemplate<CDirectoryInfo>::FindItem(uint32_t itemNum, uint32_t &offset, uint32_t &size) {
 	return true;
 }
 

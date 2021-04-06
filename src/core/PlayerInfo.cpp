@@ -4,6 +4,10 @@ CVector CPlayerInfo::GetPos(void) {
 	XCALL(0x4468B0);
 }
 
+void CPlayerInfo::MakePlayerSafe(bool bState) {
+	XCALL(0x445DA0);
+}
+
 bool FindPlayerIsMovingTooFast(void) {
 	XCALL(0x4469A0);
 }
