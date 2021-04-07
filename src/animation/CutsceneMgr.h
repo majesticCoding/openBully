@@ -2,6 +2,8 @@
 #include "patcher.h"
 #include "Directory.h"
 #include "Hierarchy.h"
+#include "Model.h"
+#include "AnimationManager.h"
 #include "CutsceneObject.h"
 #include "ActionController.h"
 #include "CameraManager.h"
@@ -9,6 +11,7 @@
 #define CUTSCNAMESIZE 72
 #define NUM_HIERARCHIES 10
 #define NUM_CUTSCENEOBJS 30
+#define NUM_CUTSSPECIALS 30
 
 class CCutsceneMgr {
 public:
@@ -26,12 +29,14 @@ public:
 	static int32_t &ms_numCutsceneObjs;
 	static int32_t &ms_iCurrentSubtitle;
 	static int32_t &ms_iNumSubtitles;
+	static uint32_t &ms_uNumModels;
 	static float &ms_cutsceneTimer;
 
 	static CDirectory **ms_pCutsceneDir;
 
 	static char *ms_cutsceneName; //static char ms_cutsceneName[CUTSCNAMESIZE]
 	static AM_Hierarchy **ms_pHierarchies; //static AM_Hierarchy *ms_pHierarchies[10]
+	static AM_Model **ms_pModels;
 	static CCutsceneObject **ms_pCutsceneObjects; //static CCutsceneObject *ms_pCutsceneObjects[30]
 	static ActionController **ms_CutSceneActionController;
 	static int32_t **ms_SubtitleInfoArray; //find out the real type

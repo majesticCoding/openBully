@@ -16,6 +16,7 @@ project "openBully"
 	includedirs { "src/camera" }
 	includedirs { "src/classes" }
 	includedirs { "src/collision" }
+	includedirs { "src/control" }
     includedirs { "src/core" }
 	includedirs { "src/entities"}
     includedirs { "src/math" }

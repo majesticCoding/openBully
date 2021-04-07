@@ -16,6 +16,8 @@
 #include "Timer.h"
 #include "TextManager.h"
 #include "FileMgr.h"
+#include "PedModelInfo.h"
+#include "ModelInfo.h"
 
 bool &CCutsceneMgr::ms_loaded = *(bool*)0x20C5BE1;
 bool &CCutsceneMgr::ms_loadStatus = *(bool*)0x20C5BE2;
@@ -32,11 +34,13 @@ int32_t &CCutsceneMgr::ms_numObjectNames = *(int32_t*)0x20C5BF0;
 int32_t &CCutsceneMgr::ms_numCutsceneObjs = *(int32_t*)0x20C5B18;
 int32_t &CCutsceneMgr::ms_iCurrentSubtitle = *(int32_t*)0xBB64EC;
 int32_t &CCutsceneMgr::ms_iNumSubtitles = *(int32_t*)0x20C5C00;
+uint32_t &CCutsceneMgr::ms_uNumModels = *(uint32_t*)0x20C5BF8;
 
 float &CCutsceneMgr::ms_cutsceneTimer = *(float*)0x20C5B1C;
 
 char *CCutsceneMgr::ms_cutsceneName = (char*)0x20C5B20;
 AM_Hierarchy **CCutsceneMgr::ms_pHierarchies = (AM_Hierarchy **)0x20C4B38;
+AM_Model **CCutsceneMgr::ms_pModels = (AM_Model **)0x20C5BF4;
 CCutsceneObject **CCutsceneMgr::ms_pCutsceneObjects = (CCutsceneObject **)0x20C5B68;
 ActionController **CCutsceneMgr::ms_CutSceneActionController = reinterpret_cast<ActionController **>(0x20C5C0C);
 char (*CCutsceneMgr::ms_CutsceneObjectNames)[64] = (char(*)[64])0x20C4C17;
@@ -52,6 +56,8 @@ bool &byte_BCC120 = *(bool*)0xBCC120;
 bool &byte_20C5C09 = *(bool*)0x20C5C09;
 int32_t &MI_FIRSTWEAPON = *(int32_t*)0xA136B0;
 int32_t &MI_LASTWEAPON = *(int32_t*)0xA136B4;
+int32_t &MI_FIRSTSPECIALCHAR = *(int32_t*)0xA136D0;
+int32_t &MI_LASTSPECIALCHAR = *(int32_t*)0xA136D4;
 
 int32_t &numPropAnimsToUpd = *(int32_t*)0x20C5C48; //dword_20C5C48
 
@@ -251,10 +257,41 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 		}
 	}
 
-	/*
-		TODO: the rest
-	*/
+	for (int32_t i = 0; i < NUM_CUTSSPECIALS; i++) {
+		CStreaming::RemoveModel(i + MI_FIRSTSPECIALCHAR);
+		((CPedModelInfo *)CModelInfo::GetModelInfo(i + MI_FIRSTSPECIALCHAR))->SetModelName('\0', 1);
+	}
 
+	//why do we clean it again?
+	if (ms_numCutsceneObjs < NUM_CUTSCENEOBJS)
+		memset(&ms_pCutsceneObjects[ms_numCutsceneObjs], NULL, sizeof(NUM_CUTSCENEOBJS - ms_numCutsceneObjs));
+
+	ms_numCutsceneObjs = 0;
+
+	for (int32_t i = 0; i < NUM_HIERARCHIES; i++) {
+		if (ms_pHierarchies[i] == nullptr)
+			break;
+
+		(*(int32_t*)(ms_pHierarchies[i] + 0x10)) &= 0xFFFFFFFB;
+		ms_pHierarchies[i] = nullptr;
+	}
+
+	for (uint32_t i = 0; i < ms_uNumModels; i++) {
+		if (*(int32_t*)(ms_pModels + 0x8))
+			*(int32_t*)(ms_pModels + 0x4) &= 0xFFFFFFFB;
+		else
+			*(int32_t*)(ms_pModels + 0x4) &= 0xFFFFFFF3;
+
+		RV_AnimationManager::gAnimationManager.CheckModel(ms_pModels[i]);
+	}
+
+	if (ms_pModels != nullptr)
+		delete []ms_pModels;
+	ms_pModels = nullptr;
+
+	ms_uNumModels = 0;
+
+	//TODO: removing collisions
 
 	ms_animLoaded = false;
 	

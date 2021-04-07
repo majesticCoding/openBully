@@ -26,6 +26,10 @@ bool CStreaming::RemoveLoadedVehicle(void) {
 	XCALL(0x530060);
 }
 
+void CStreaming::RemoveModel(int32_t modelId) {
+	XCALL(0x52F640);
+}
+
 void CStreaming::RequestModel(int32_t modelId, int32_t flag) {
 	XCALL(0x532020);
 }
