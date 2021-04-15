@@ -1,5 +1,6 @@
 #pragma once
 #include "patcher.h"
+#include "ColModel.h"
 
 enum ModelInfoType {
 
@@ -21,4 +22,5 @@ public:
 	virtual int16_t GetActionTreeStreamIndex(void) { return -1; }
 
 	CBaseModelInfo(ModelInfoType type);
+	void SetColModel(CColModel *pCol, bool owns = false);
 };

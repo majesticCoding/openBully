@@ -72,6 +72,7 @@ void CCutsceneMgr::InjectHooks(void) {
 	InjectHook(0x6C38B0, &CCutsceneMgr::LoadCutsceneSound, PATCH_JUMP);
 	InjectHook(0x6C3B90, &CCutsceneMgr::StartMiniCutscene, PATCH_JUMP);
 	InjectHook(0x6C3D50, &CCutsceneMgr::GetCutsceneJimmy, PATCH_JUMP);
+	//InjectHook(0x6C4030, &CCutsceneMgr::DeleteCutsceneData, PATCH_JUMP);
 	//InjectHook(0x6C45E0, &CCutsceneMgr::LoadCutsceneData, PATCH_JUMP);
 }
 
@@ -252,7 +253,7 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 		if (ms_pCutsceneObjects[i]) {
 			CWorld::Remove(ms_pCutsceneObjects[i]);
 			ms_pCutsceneObjects[i]->DeleteRwObject();
-			delete ms_pCutsceneObjects[i];
+			delete ms_pCutsceneObjects[i]; //requires special overloaded delete operator from CObject
 			ms_pCutsceneObjects[i] = nullptr;
 		}
 	}
@@ -276,14 +277,16 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 		ms_pHierarchies[i] = nullptr;
 	}
 
-	for (uint32_t i = 0; i < ms_uNumModels; i++) {
-		if (*(int32_t*)(ms_pModels + 0x8))
-			*(int32_t*)(ms_pModels + 0x4) &= 0xFFFFFFFB;
+	//TODO: fix this
+	/*for (uint32_t i = 0; i < ms_uNumModels; i++) {
+		int32_t tmpModel = *(int32_t*)(ms_pModels + 0x4 * i);
+		if (*(int32_t*)(tmpModel + 0x8))
+			*(int32_t*)(tmpModel + 0x4) &= 0xFFFFFFFB;
 		else
-			*(int32_t*)(ms_pModels + 0x4) &= 0xFFFFFFF3;
+			*(int32_t*)(tmpModel + 0x4) &= 0xFFFFFFF3;
 
-		RV_AnimationManager::gAnimationManager.CheckModel(ms_pModels[i]);
-	}
+		RV_AnimationManager::gAnimationManager.CheckModel((AM_Model*)tmpModel);
+	}*/
 
 	if (ms_pModels != nullptr)
 		delete []ms_pModels;
@@ -291,14 +294,22 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 
 	ms_uNumModels = 0;
 
-	//TODO: removing collisions
+	for (int32_t i = MI_FIRSTSPECIALCHAR; i <= MI_LASTSPECIALCHAR; i++) {
+		CBaseModelInfo *minfo = CModelInfo::GetModelInfo(i);
+		CColModel *pColModel = *(CColModel**)(minfo + 0xC);
+
+		if (pColModel != &CTempColModel::ms_colModelPed1) {
+			delete pColModel;
+			minfo->SetColModel(&CTempColModel::ms_colModelPed1);
+		}
+	}
 
 	ms_animLoaded = false;
 	
 	if (byte_20C5C09)
 	{
 		g_CameraManager->Reset();
-		//TODO: CutsceneCameraController::Unload(g_CutsceneCameraController); thiscall
+		g_CutsceneCameraController->Unload();
 	}
 
 	ms_loaded = false;
@@ -306,7 +317,7 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 
 	if (&CWorld::Player != nullptr) {
 		*(bool*)(&CWorld::Player + 0x48) = true;
-		//TODO: UserInputManager::SetInputEnabledFromCutscene(&g_UserInputManager, 1); thiscall
+		g_UserInputManager->SetInputEnabledFromCutscene(true);
 		CWorld::Player.MakePlayerSafe(false);
 	}
 
@@ -321,7 +332,6 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 		g_CameraManager->GetScreenFadeStatus() == 1 ? CGame::DrasticTidyUpMemory(true) : CGame::DrasticTidyUpMemory(false);
 	}
 
-	//not sure about it, needs to be checked
 	if (ms_SubtitleInfoArray != nullptr) {
 		delete []ms_SubtitleInfoArray;
 		ms_SubtitleInfoArray = nullptr;

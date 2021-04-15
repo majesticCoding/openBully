@@ -7,6 +7,10 @@
 #include "CutsceneObject.h"
 #include "ActionController.h"
 #include "CameraManager.h"
+#include "CutsceneCameraController.h"
+#include "UserInputManager.h"
+#include "ColModel.h"
+#include "TempColModels.h"
 
 #define CUTSCNAMESIZE 72
 #define NUM_HIERARCHIES 10

@@ -1,8 +1,9 @@
 #pragma once
 #include "patcher.h"
-#include "Physical.h"
 
-class CObject : public CPhysical{
+class CColModel {
 public:
+	~CColModel();
+
 	void operator delete(void* p);
 };
