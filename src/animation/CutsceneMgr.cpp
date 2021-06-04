@@ -228,6 +228,7 @@ void CCutsceneMgr::LoadCutsceneSound(char const *szCutsceneSoundName) {
 	ms_soundLoaded = true;
 }
 
+//TODO: feels like all vmts have to be written for collisions, objects, models, etc and then it's gonna be fixed
 void CCutsceneMgr::DeleteCutsceneData(void) {
 	byte_BCC120 = false; //sets in true if it's cutscene 5-03
 
@@ -277,16 +278,15 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 		ms_pHierarchies[i] = nullptr;
 	}
 
-	//TODO: fix this
-	/*for (uint32_t i = 0; i < ms_uNumModels; i++) {
-		int32_t tmpModel = *(int32_t*)(ms_pModels + 0x4 * i);
+	for (uint32_t i = 0; i < ms_uNumModels; i++) {
+		int32_t *tmpModel = *(int32_t**)(ms_pModels + 0x4 * i);
 		if (*(int32_t*)(tmpModel + 0x8))
 			*(int32_t*)(tmpModel + 0x4) &= 0xFFFFFFFB;
 		else
 			*(int32_t*)(tmpModel + 0x4) &= 0xFFFFFFF3;
 
 		RV_AnimationManager::gAnimationManager.CheckModel((AM_Model*)tmpModel);
-	}*/
+	}
 
 	if (ms_pModels != nullptr)
 		delete []ms_pModels;
@@ -333,7 +333,7 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 	}
 
 	if (ms_SubtitleInfoArray != nullptr) {
-		delete []ms_SubtitleInfoArray;
+		delete ms_SubtitleInfoArray;
 		ms_SubtitleInfoArray = nullptr;
 	}
 
