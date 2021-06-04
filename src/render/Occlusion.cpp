@@ -13,6 +13,8 @@ int16_t &word_C8E8BE = *(int16_t*)0xC8E8BE; //only initialized, never used
 void COcclusion::InjectHooks(void) {
 	InjectHook(0x51CE00, &COcclusion::Init, PATCH_JUMP);
 	InjectHook(0x51CE50, &COcclusion::AddOne, PATCH_JUMP);
+	InjectHook(0x51CFC0, &COcclusion::OccluderHidesBehind, PATCH_JUMP);
+	InjectHook(0x51CF90, &IsPointInsideLine, PATCH_JUMP);
 }
 
 void COcclusion::Init() {
@@ -49,8 +51,31 @@ void COcclusion::AddOne(float x, float y, float z, float width, float length, fl
 		while (angle < 0.0f) angle += 360.0f;
 		while (angle > 360.0f) angle -= 360.0f;
 		aOccluders[prevFreeList].angle = angle / 360.0f * UINT16_MAX;
+		aOccluders[prevFreeList].ch = ch;
 		aOccluders[prevFreeList].listIndex = FarAwayList;
 		NumOccludersOnMap++;
 		FarAwayList = prevFreeList;
 	}
+}
+
+bool COcclusion::OccluderHidesBehind(CActiveOccluder *occl1, CActiveOccluder *occl2) {
+	for (int i = 0; i < occl1->linesCount; i++) {
+		for (int j = 0; j < occl2->linesCount; j++) {
+			if (!IsPointInsideLine(occl2->lines[j].origin.x, occl2->lines[j].origin.y, occl2->lines[j].direction.x,
+				occl2->lines[j].direction.y, occl1->lines[i].origin.x, occl1->lines[i].origin.y, 0.0f))
+				return false;
+
+
+			if (!IsPointInsideLine(occl2->lines[j].origin.x, occl2->lines[j].origin.y, occl2->lines[j].direction.x,
+				occl2->lines[j].direction.y, (occl1->lines[i].origin.x + occl1->lines[i].direction.x * occl1->lines[i].length),
+				(occl1->lines[i].origin.y + occl1->lines[i].direction.y * occl1->lines[i].length), 0.0f))
+				return false;
+		}
+	}
+
+	return true;
+}
+
+bool IsPointInsideLine(float lineX, float lineY, float lineDX, float lineDY, float pX, float pY, float area = 0.0f) {
+	return (pX - lineX) * lineDY - (pY - lineY) * lineDX >= area;
 }

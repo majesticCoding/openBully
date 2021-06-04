@@ -229,6 +229,9 @@ void CCutsceneMgr::LoadCutsceneSound(char const *szCutsceneSoundName) {
 }
 
 //TODO: feels like all vmts have to be written for collisions, objects, models, etc and then it's gonna be fixed
+/*
+Currently unsolved: The crash can happen after the 1st cutscene, or during the 2nd
+*/
 void CCutsceneMgr::DeleteCutsceneData(void) {
 	byte_BCC120 = false; //sets in true if it's cutscene 5-03
 

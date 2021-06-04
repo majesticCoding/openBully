@@ -1,10 +1,24 @@
 #pragma once
 #include "patcher.h"
+#include "Vector2D.h"
 
 #define NUMOCCLUSIONVOLUMES 350
 
 enum VisibleAreaEnum : uint32_t {
 
+};
+
+struct ActiveOccluderLine {
+	CVector2D origin;
+	CVector2D direction;
+	float length;
+};
+
+class CActiveOccluder {
+public:
+	ActiveOccluderLine lines[6];
+	int32_t linesCount;
+	float radius;
 };
 
 class COccluder {
@@ -31,6 +45,9 @@ public:
 
 	static void Init(void);
 	static void AddOne(float x, float y, float z, float width, float length, float height, float angle, VisibleAreaEnum area, uint8_t ch);
+	static bool OccluderHidesBehind(CActiveOccluder *occl1, CActiveOccluder *occl2);
 
 	static void InjectHooks(void);
 };
+
+bool IsPointInsideLine(float lineX, float lineY, float lineDX, float lineDY, float pX, float pY, float area);
