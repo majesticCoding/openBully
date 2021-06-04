@@ -13,10 +13,11 @@ public:
 	static void StartUserPause(void);
 	static void EndUserPause(void);
 	static uint32_t GetFrameDurationInMilliseconds(void);
+	static uint32_t GetCurrentTimeInMilleseconds(void);
 	static bool GetIsSlowMotionActive(void);
-	static bool GetIsPauesed(void);
+	static bool GetIsPaused(void);
 	static float GetFrameDurationInSeconds(void);
-	static double GetPerformanceFrequency(void);
+	static int64_t GetPerformanceFrequency(void);
 
 	static void InjectHooks(void);
 

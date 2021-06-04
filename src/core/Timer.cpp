@@ -24,12 +24,12 @@ float &CTimer::ms_fTimeScale = *(float*)0xC1A9A8;
 float &CTimer::ms_fTimeStep = *(float*)0xC1A9A4;
 float &CTimer::ms_fTimeStepNonClipped = *(float*)0xC1A9A0;
 
-double &dFrequency = *(double*)0xC1A9E0; //dbl_C1A9E0
+int64_t &dFrequency = *(int64_t*)0xC1A9E0; //dbl_C1A9E0
 uint32_t &suspendDepth = *(uint32_t*)0xC1A9B8; //dword_C1A9B8
 
 void CTimer::InjectHooks(void) {
 	InjectHook(0x45B8A0, &CTimer::Initialise, PATCH_JUMP);
-	//InjectHook(0x45B960, &CTimer::Update, PATCH_JUMP);
+	InjectHook(0x45B960, &CTimer::Update, PATCH_JUMP);
 	InjectHook(0x45B800, &CTimer::Stop, PATCH_JUMP);
 	InjectHook(0x45B7B0, &CTimer::Suspend, PATCH_JUMP);
 	InjectHook(0x45B7D0, &CTimer::Resume, PATCH_JUMP);
@@ -37,6 +37,7 @@ void CTimer::InjectHooks(void) {
 	InjectHook(0x45B820, &CTimer::EndUserPause, PATCH_JUMP);
 	InjectHook(0x45B830, &CTimer::GetFrameDurationInMilliseconds, PATCH_JUMP);
 	InjectHook(0x45B840, &CTimer::GetFrameDurationInSeconds, PATCH_JUMP);
+	InjectHook(0x45BCA0, &CTimer::GetCurrentTimeInMilleseconds, PATCH_JUMP);
 }
 
 void CTimer::Initialise(void) {
@@ -60,7 +61,7 @@ void CTimer::Initialise(void) {
 
 	LARGE_INTEGER Frequency;
 	if (QueryPerformanceFrequency(&Frequency))
-		dFrequency = *reinterpret_cast<double *>(&Frequency.QuadPart);
+		dFrequency = Frequency.QuadPart;
 
 	m_snFrameTimeInCycles = 0;
 	sm_LastCycleCount = 0;
@@ -98,23 +99,21 @@ void CTimer::Update(bool bParam) {
 		int64_t timeDiff = sm_LastCycleCount - sm_nPrevUpdateTimeInCycles;
 		sm_nPrevUpdateTimeInCycles = sm_LastCycleCount;
 		m_snFrameTimeInCycles = timeDiff;
-		m_snTimeInMillisecondsPauseMode += (timeDiff / (GetPerformanceFrequency() / 1000));
+		m_snTimeInMillisecondsPauseMode += timeDiff / (GetPerformanceFrequency() / 1000);
 
-		if (GetIsPauesed() && !bParam)
+		if (GetIsPaused() && !bParam)
 		{
 			m_snFrameTimeInCycles = 0;
 			Platform_PadStopAllVibration();
 		}
-
 		
-		float freq = (float)(GetPerformanceFrequency() / 1000);
-		long double scaledFrameTime = (long double)(*(int64_t*)&m_snFrameTimeInCycles * ms_fTimeScale);
+		double freq = GetPerformanceFrequency() / 1000;
+		long double scaledFrameTime = m_snFrameTimeInCycles * ms_fTimeScale;
 
-		//TODO: find out where is the mistake here
 		PerformanceCount.QuadPart = scaledFrameTime / freq;
 		m_snTimeInMilliseconds += PerformanceCount.LowPart;
 		m_snTimeInMillisecondsNonClipped += PerformanceCount.QuadPart;
-		ms_fTimeStep = scaledFrameTime / (freq * 20.0);
+		ms_fTimeStep = scaledFrameTime / (freq * 20.0f);
 		
 		int64_t nTotalMilliseconds = (int64_t)((scaledFrameTime / freq) + m_GameMilliseconds);
 		m_GameMilliseconds = nTotalMilliseconds % 1000;
@@ -124,7 +123,7 @@ void CTimer::Update(bool bParam) {
 		m_GameHours += ((nTotalSeconds / 60) + m_GameMinutes) / 60;
 		m_GameMinutes = ((nTotalSeconds / 60) + m_GameMinutes) % 60;
 
-		if (ms_fTimeStep < 0.5f && !GetIsPauesed() && !GetIsSlowMotionActive()) 
+		if (ms_fTimeStep < 0.5f && !GetIsPaused() && !GetIsSlowMotionActive()) 
 			ms_fTimeStep = 0.5f;
 
 		ms_fTimeStepNonClipped = ms_fTimeStep;
@@ -160,7 +159,7 @@ inline uint32_t CTimer::GetFrameDurationInMilliseconds(void) {
 	return m_snTimeInMilliseconds - m_snPreviousTimeInMilliseconds;
 }
 
-double CTimer::GetPerformanceFrequency(void) {
+int64_t CTimer::GetPerformanceFrequency(void) {
 	return dFrequency;
 }
 
@@ -184,6 +183,13 @@ void CTimer::Resume(void) {
 		m_bTimerStopped = false;
 }
 
-bool CTimer::GetIsPauesed(void) {
+bool CTimer::GetIsPaused(void) {
 	return m_UserPause || m_CodePause || m_WinPause;
+}
+
+uint32_t CTimer::GetCurrentTimeInMilleseconds(void) {
+	LARGE_INTEGER PerformanceCount;
+
+	return QueryPerformanceCounter(&PerformanceCount) ?
+		(PerformanceCount.QuadPart - sm_GameStartTime) / (GetPerformanceFrequency() / 1000.0) : 1;
 }
