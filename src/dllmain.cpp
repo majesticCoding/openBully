@@ -7,6 +7,7 @@
 #include "Matrix.h"
 #include "Clock.h"
 #include "Timer.h"
+#include "Occlusion.h"
 
 #pragma warning(disable:4996)
 
@@ -84,6 +85,7 @@ void InjectHooks(void) {
 	CCutsceneMgr::InjectHooks();
 	CMissionMgr::InjectHooks();
 	CClassSchedule::InjectHooks();
+	COcclusion::InjectHooks();
 
 	//custom windowed mode hack
 	/*HookInstall(0x43B722, windowedModePatch, 5);
