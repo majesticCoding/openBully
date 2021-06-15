@@ -47,7 +47,7 @@ void Clock::InjectHooks(void) {
 	InjectHook(0x425D80, &Clock::IncrementClock, PATCH_JUMP);
 	InjectHook(0x425E40, &Clock::GetIsTimeInRange, PATCH_JUMP);
 	InjectHook(0x4261A0, &Clock::AdvanceToNightTime, PATCH_JUMP);
-	InjectHook(0x425EB0, &Clock::DeterminePauseState, PATCH_JUMP);
+	//InjectHook(0x425EB0, &Clock::DeterminePauseState, PATCH_JUMP);
 	InjectHook(0x4260D0, &Clock::Update, PATCH_JUMP);
 }
 
@@ -146,8 +146,11 @@ void Clock::SetGameClock(uint8_t h, uint8_t m) {
 
 //static bool (*TimeShouldStop)(void) = (bool(__cdecl *)(void))0x513FE0; //TODO: replace it with the CHud::TimeShouldStop()
 
+//[!] Temporary turned off till the MissionMgr is completely reversed
 void Clock::DeterminePauseState(void) {
-	if (!byte_B9DB1C && !dword_C3CD0C && !CCutsceneMgr::ms_running) {
+	XCALL(0x425EB0);
+
+	/*if (!byte_B9DB1C && !dword_C3CD0C && !CCutsceneMgr::ms_running) {
 		if (ms_nEnableMissionIndex == -1 || g_MissionMgr.State(ms_nEnableMissionIndex)) {
 			if (!m_bForcePauseThroughLua && !CHud::TimeShouldStop() && !sub_425D60(g_Shop)) {
 				if (!g_MissionMgr.IsOnMission() || g_MissionMgr.TopInst() < 0) {
@@ -171,7 +174,7 @@ void Clock::DeterminePauseState(void) {
 		}
 	}
 
-	m_bPaused = true;
+	m_bPaused = true;*/
 }
 
 void Clock::Update(void) {

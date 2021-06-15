@@ -3,17 +3,17 @@
 CMissionMgr &g_MissionMgr = *reinterpret_cast<CMissionMgr *>(0x20C3CA0);
 
 void CMissionMgr::InjectHooks(void) {
-	/*InjectHook(0x6AA680, &CMissionMgr::PrimInst, PATCH_JUMP);
-	InjectHook(0x6AA690, &CMissionMgr::SecInst, PATCH_JUMP);
-	InjectHook(0x6AA840, &CMissionMgr::IsOnClassMission, PATCH_JUMP);
-	InjectHook(0x6AA890, &CMissionMgr::IsOnMinigameMission, PATCH_JUMP);
-	InjectHook(0x6AA7C0, &CMissionMgr::State, PATCH_JUMP);
-	InjectHook(0x6AA660, &CMissionMgr::Data, PATCH_JUMP);*/
+	//InjectHook(0x6AA680, &CMissionMgr::PrimInst, PATCH_JUMP);
+	//InjectHook(0x6AA690, &CMissionMgr::SecInst, PATCH_JUMP);
+	//InjectHook(0x6AA840, &CMissionMgr::IsOnClassMission, PATCH_JUMP);
+	//InjectHook(0x6AA890, &CMissionMgr::IsOnMinigameMission, PATCH_JUMP);
+	//InjectHook(0x6AA7C0, &CMissionMgr::State, PATCH_JUMP);
+	//InjectHook(0x6AA660, &CMissionMgr::Data, PATCH_JUMP);
 }
 
 int32_t &CMissionMgr::PrimInst(void) {
 	XCALL(0x6AA680);
-	//return *(int32_t*)(&g_MissionMgr + 0x4BC);
+	return *(int32_t*)(&g_MissionMgr + 0x4BC);
 }
 
 int32_t &CMissionMgr::SecInst(void) {
@@ -27,28 +27,28 @@ bool CMissionMgr::IsOnMission(void) {
 
 bool CMissionMgr::IsOnClassMission(void) {
 	/*int32_t pInst = (&g_MissionMgr)->PrimInst();
-	if (pInst >= 0 && *(int32_t*)((&g_MissionMgr)->Data(pInst) + 0x28) == 1)
+	if (pInst >= 0 && *(int32_t*)(g_MissionMgr.Data(pInst) + 0x28) == 1)
 		return true;
 
 	int32_t sInst = (&g_MissionMgr)->SecInst();
 	if (sInst < 0)
 		return false;
 	else 
-		return *(int32_t*)((&g_MissionMgr)->Data(sInst) + 0x28) == 1;*/
+		return *(int32_t*)(g_MissionMgr.Data(sInst) + 0x28) == 1;*/
 
 	XCALL(0x6AA840);
 }
 
 bool CMissionMgr::IsOnMinigameMission(void) {
-	/*int32_t pInst = (&g_MissionMgr)->PrimInst();
-	if (pInst >= 0 && *(int32_t*)((&g_MissionMgr)->Data(pInst) + 0x28) == 5)
+	/*int32_t pInst = g_MissionMgr.PrimInst();
+	if (pInst >= 0 && *(int32_t*)(g_MissionMgr.Data(pInst) + 0x28) == 5)
 		return true;
 
 	int32_t sInst = (&g_MissionMgr)->SecInst();
 	if (sInst < 0)
 		return false;
 	else
-		return *(int32_t*)((&g_MissionMgr)->Data(sInst) + 0x28) == 5;*/
+		return *(int32_t*)(g_MissionMgr.Data(sInst) + 0x28) == 5;*/
 
 	XCALL(0x6AA890);
 }
