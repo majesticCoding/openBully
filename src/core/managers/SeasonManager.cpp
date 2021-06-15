@@ -3,7 +3,7 @@
 //from android: 0x3260DC
 int32_t SeasonManager::m_chapterSeasonTable[NUM_CHAPTERS] = {1, 1, 2, 3, 3, 3, 0};
 
-SeasonManager *g_SeasonManager = (SeasonManager*)0xA147E0;
+SeasonManager *g_SeasonManager = reinterpret_cast<SeasonManager*>(0xA147E0);
 
 SeasonManager::SeasonManager(void) { 
 	m_nChapter = 0;

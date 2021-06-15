@@ -9,3 +9,7 @@ int32_t CameraManager::GetScreenFadeStatus(void) {
 void CameraManager::Reset(void) {
 	XCALL(0x4F3720);
 }
+
+void CameraManager::SetRwCamera(RwCamera *pRwCamera) {
+	XCALL(0x4F1800);
+}

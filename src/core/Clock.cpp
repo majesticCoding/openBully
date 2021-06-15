@@ -148,14 +148,14 @@ void Clock::SetGameClock(uint8_t h, uint8_t m) {
 
 void Clock::DeterminePauseState(void) {
 	if (!byte_B9DB1C && !dword_C3CD0C && !CCutsceneMgr::ms_running) {
-		if (ms_nEnableMissionIndex == -1 || g_MissionMgr->State(ms_nEnableMissionIndex)) {
+		if (ms_nEnableMissionIndex == -1 || g_MissionMgr.State(ms_nEnableMissionIndex)) {
 			if (!m_bForcePauseThroughLua && !CHud::TimeShouldStop() && !sub_425D60(g_Shop)) {
-				if (!g_MissionMgr->IsOnMission() || g_MissionMgr->TopInst() < 0) {
+				if (!g_MissionMgr.IsOnMission() || g_MissionMgr.TopInst() < 0) {
 					m_bPaused = false;
 					return;
 				}
 
-				CMissionMgr *pMission = g_MissionMgr->Data(g_MissionMgr->TopInst());
+				CMissionMgr *pMission = g_MissionMgr.Data(g_MissionMgr.TopInst());
 				if (!*(int32_t*)(pMission + 0x2E)) {
 					if (*(int32_t*)(pMission + 0x28) == 5) {
 						int32_t perIdx = g_ClassSchedule->FindPeriod("PER_TIRED");
@@ -180,7 +180,7 @@ void Clock::Update(void) {
 		ms_nLastClockTick = CTimer::m_snTimeInMilliseconds;
 	}
 	else {
-		ms_nMillisecondsPerGameMinute = g_MissionMgr->IsOnMission() ?
+		ms_nMillisecondsPerGameMinute = g_MissionMgr.IsOnMission() ?
 			ms_nMillisecondsPerGameMinuteOnMission : ms_nMillisecondsPerGameMinuteOffMission;
 
 		uint32_t tMsec = ms_nLastClockTick;

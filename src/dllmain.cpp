@@ -1,6 +1,7 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include <windows.h>
 #include <stdio.h>
+#include "Game.h"
 #include "CutsceneMgr.h"
 #include "MissionMgr.h"
 #include "ClassSchedule.h"
@@ -78,6 +79,7 @@ __declspec(naked) void CommandSelectRendererHook2() {
 }
 
 void InjectHooks(void) {
+	CGame::InjectHooks();
 	CVector::InjectHooks();
 	CMatrix::InjectHooks();
 	CTimer::InjectHooks();
