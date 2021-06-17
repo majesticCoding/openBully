@@ -1,3 +1,4 @@
+#pragma once
 #include "patcher.h"
 
 class ActionController {

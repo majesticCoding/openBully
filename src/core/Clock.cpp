@@ -179,6 +179,7 @@ void Clock::DeterminePauseState(void) {
 
 void Clock::Update(void) {
 	DeterminePauseState();
+
 	if (m_bPaused) {
 		ms_nLastClockTick = CTimer::m_snTimeInMilliseconds;
 	}

@@ -1,4 +1,5 @@
 #include "MissionMgr.h"
+#include "CameraManager.h"
 
 CMissionMgr &g_MissionMgr = *reinterpret_cast<CMissionMgr *>(0x20C3CA0);
 
@@ -11,18 +12,54 @@ void CMissionMgr::InjectHooks(void) {
 	//InjectHook(0x6AA660, &CMissionMgr::Data, PATCH_JUMP);
 }
 
-int32_t &CMissionMgr::PrimInst(void) {
-	XCALL(0x6AA680);
-	return *(int32_t*)(&g_MissionMgr + 0x4BC);
+CMissionRunInst CMissionMgr::PrimInst(void) {
+	//XCALL(0x6AA680);
+
+	return primInst;
 }
 
-int32_t &CMissionMgr::SecInst(void) {
-	XCALL(0x6AA690);
-	//return *(int32_t*)(&g_MissionMgr + 0x5A0);
+CMissionRunInst CMissionMgr::SecInst(void) {
+	//XCALL(0x6AA690);
+
+	return secInst;
+}
+
+bool CMissionMgr::IsMissionRunning(void) {
+	return PrimInst().IsAnyMissionRunning() || SecInst().IsAnyMissionRunning();
+}
+
+bool CMissionMgr::IsMissionRunning(int missionId) {
+	return PrimInst().IsMissionRunning(missionId) || SecInst().IsMissionRunning(missionId);
 }
 
 bool CMissionMgr::IsOnMission(void) {
 	XCALL(0x6AA7E0);
+}
+
+bool CMissionMgr::IsOnGirlMission(void) {
+	char *name;
+	char str[132];
+	int missionId = PrimInst().GetMissionId();
+	
+	if (missionId >= 0) {
+		name = GetMissionName(missionId, str, 0x80);
+		if (strstr(name, "_G"))
+			return true;
+	}
+
+	missionId = SecInst().GetMissionId();
+
+	if (missionId >= 0) {
+		name = GetMissionName(missionId, str, 0x80);
+		if (strstr(name, "_G"))
+			return true;
+	}
+
+	return false;
+}
+
+char *CMissionMgr::GetMissionName(int missionId, char *str, uint32_t size) {
+	return '\0';
 }
 
 bool CMissionMgr::IsOnClassMission(void) {
@@ -58,8 +95,10 @@ int32_t &CMissionMgr::State(int32_t id) {
 	XCALL(0x6AA7C0);
 }
 
-int32_t &CMissionMgr::TopInst(void) { //mission's id
-	XCALL(0x6AA790);
+CMissionRunInst CMissionMgr::TopInst(void) { //mission's id
+	//XCALL(0x6AA790);
+
+	return PrimInst().IsOnMission() ? PrimInst() : SecInst();
 }
 
 CMissionMgr *CMissionMgr::Data(int32_t id) {
@@ -69,6 +108,13 @@ CMissionMgr *CMissionMgr::Data(int32_t id) {
 	XCALL(0x6AA660);
 }
 
+int32_t CMissionMgr::GetMissionsNum(void) {
+	return m_nMissionsNum;
+}
+
+bool CMissionMgr::FadeFinished(void) {
+	return g_CameraManager->GetScreenFadeStatus() != 2; //TODO: replace with the enum
+}
 /*=================================== VIRTUAL METHODS =======================================*/
 
 CMissionMgr::~CMissionMgr() {
