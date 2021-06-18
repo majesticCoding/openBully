@@ -122,32 +122,6 @@ void CMissionMgr::MissionStart(int missionId, bool bIsPrimary) {
 	;
 }
 
-/*=================================== VIRTUAL METHODS =======================================*/
-
-CMissionMgr::~CMissionMgr() {
-	XCALL(0x6AC710);
-}
-
-void CMissionMgr::Init(const char *s1, const char *s2) {
-	XCALL(0x6AC730);
-}
-
-void CMissionMgr::Term(void) {
-	XCALL(0x6AC990);
-}
-
-void CMissionMgr::Update(void) {
-	XCALL(0x6ADDD0);
-}
-
-int CMissionMgr::Render(void) {
-	XCALL(0x6ABAC0);
-}
-
-void CMissionMgr::Reset(void) {
-	XCALL(0x6AB7B0);
-}
-
 void AdvanceToNextGoodMissionExitTime(void) {
 	switch (Clock::ms_nGameClockHours) {
 	case 0:
@@ -168,7 +142,7 @@ void AdvanceToNextGoodMissionExitTime(void) {
 	case 9:
 	case 10:
 	case 11:
-		if (Clock::ms_nGameClockHours >= 11 && Clock::ms_nGameClockMinutes >= 30) 
+		if (Clock::ms_nGameClockHours >= 11 && Clock::ms_nGameClockMinutes >= 30)
 			Clock::SetGameClock(13, 0);
 		else
 			Clock::SetGameClock(11, 30);
@@ -201,4 +175,30 @@ void AdvanceToNextGoodMissionExitTime(void) {
 		Clock::SetGameClock(23, 0);
 		break;
 	}
+}
+
+/*=================================== VIRTUAL METHODS =======================================*/
+
+CMissionMgr::~CMissionMgr() {
+	XCALL(0x6AC710);
+}
+
+void CMissionMgr::Init(const char *s1, const char *s2) {
+	XCALL(0x6AC730);
+}
+
+void CMissionMgr::Term(void) {
+	XCALL(0x6AC990);
+}
+
+void CMissionMgr::Update(void) {
+	XCALL(0x6ADDD0);
+}
+
+int CMissionMgr::Render(void) {
+	XCALL(0x6ABAC0);
+}
+
+void CMissionMgr::Reset(void) {
+	XCALL(0x6AB7B0);
 }
