@@ -1,13 +1,27 @@
 #pragma once
 #include "patcher.h"
 #include "MissionRunInst.h"
+#include "Clock.h"
+
+//sizeof(sMissionData) = 0x4C
+struct sMissionData {
+	char _pad[0x4C];
+};
+
+//first field is a state: CMissiongMgr::State();
+struct sUnkStruct {
+	char _pad[0x6];
+};
 
 class CMissionMgr {
 private:
-	char _pad1[1212]; //0
+	char _pad1[1208]; //0
+	sMissionData *pMissionData;
 	CMissionRunInst primInst; //1212 //sizeof(CMissionRunInst) = 228
 	CMissionRunInst secInst; //1440
-	char _pad2[192]; //1668
+	char _pad2[4]; //1668
+	sUnkStruct *pUnkStr; //1672
+	char _pad3[184];
 	int32_t m_nMissionsNum; //1860
 	int32_t m_nSuccesCount; //1864
 public:
@@ -28,7 +42,8 @@ public:
 	CMissionRunInst	SecInst(void);
 	CMissionRunInst TopInst(void);
 	char *GetMissionName(int, char *name, uint32_t);
-	CMissionMgr *Data(int32_t id);
+	sMissionData *Data(int32_t id);
+	void MissionStart(int missionId, bool bIsPrimary); //not sure about the 2nd param's name
 
 	virtual ~CMissionMgr();
 	virtual void Init(const char *, const char *);
@@ -39,5 +54,7 @@ public:
 
 	static void InjectHooks(void);
 };
+
+void AdvanceToNextGoodMissionExitTime(void);
 
 extern CMissionMgr &g_MissionMgr;

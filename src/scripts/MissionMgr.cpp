@@ -43,7 +43,7 @@ bool CMissionMgr::IsOnGirlMission(void) {
 	
 	if (missionId >= 0) {
 		name = GetMissionName(missionId, str, 0x80);
-		if (strstr(name, "_G"))
+		if (strstr(name, "_G") != nullptr)
 			return true;
 	}
 
@@ -51,7 +51,7 @@ bool CMissionMgr::IsOnGirlMission(void) {
 
 	if (missionId >= 0) {
 		name = GetMissionName(missionId, str, 0x80);
-		if (strstr(name, "_G"))
+		if (strstr(name, "_G") != nullptr)
 			return true;
 	}
 
@@ -59,7 +59,7 @@ bool CMissionMgr::IsOnGirlMission(void) {
 }
 
 char *CMissionMgr::GetMissionName(int missionId, char *str, uint32_t size) {
-	return '\0';
+	return nullptr;
 }
 
 bool CMissionMgr::IsOnClassMission(void) {
@@ -101,11 +101,13 @@ CMissionRunInst CMissionMgr::TopInst(void) { //mission's id
 	return PrimInst().IsOnMission() ? PrimInst() : SecInst();
 }
 
-CMissionMgr *CMissionMgr::Data(int32_t id) {
-	/*return (id >= 0 && id < *(int32_t*)(&g_MissionMgr + 0x684)) ?
-		(CMissionMgr *)(*(int32_t*)(&g_MissionMgr + 0x4B8) + 0x4C * id) : (CMissionMgr *)(&g_MissionMgr + 0x4B8);*/
-
-	XCALL(0x6AA660);
+sMissionData *CMissionMgr::Data(int32_t missionId) {
+	//XCALL(0x6AA660);
+	
+	if (missionId >= 0 && missionId < GetMissionsNum())
+		return (sMissionData *)(pMissionData + missionId);
+	else
+		return pMissionData;
 }
 
 int32_t CMissionMgr::GetMissionsNum(void) {
@@ -115,6 +117,11 @@ int32_t CMissionMgr::GetMissionsNum(void) {
 bool CMissionMgr::FadeFinished(void) {
 	return g_CameraManager->GetScreenFadeStatus() != 2; //TODO: replace with the enum
 }
+
+void CMissionMgr::MissionStart(int missionId, bool bIsPrimary) {
+	;
+}
+
 /*=================================== VIRTUAL METHODS =======================================*/
 
 CMissionMgr::~CMissionMgr() {
@@ -139,4 +146,59 @@ int CMissionMgr::Render(void) {
 
 void CMissionMgr::Reset(void) {
 	XCALL(0x6AB7B0);
+}
+
+void AdvanceToNextGoodMissionExitTime(void) {
+	switch (Clock::ms_nGameClockHours) {
+	case 0:
+	case 23:
+	case 24:
+		Clock::SetGameClock(1, 0);
+		break;
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+		Clock::SetGameClock(9, 0);
+		break;
+	case 9:
+	case 10:
+	case 11:
+		if (Clock::ms_nGameClockHours >= 11 && Clock::ms_nGameClockMinutes >= 30) 
+			Clock::SetGameClock(13, 0);
+		else
+			Clock::SetGameClock(11, 30);
+		break;
+	case 12:
+		Clock::SetGameClock(13, 0);
+		break;
+	case 13:
+	case 14:
+	case 15:
+		if (Clock::ms_nGameClockHours >= 15 && Clock::ms_nGameClockMinutes >= 30)
+			Clock::SetGameClock(18, 0);
+		else
+			Clock::SetGameClock(15, 30);
+		break;
+	case 16:
+	case 17:
+		Clock::SetGameClock(18, 0);
+		break;
+	case 18:
+	case 19:
+	case 20:
+		Clock::SetGameClock(21, 0);
+		break;
+	case 21:
+	case 22:
+		Clock::SetGameClock(23, 0);
+		break;
+	default:
+		Clock::SetGameClock(23, 0);
+		break;
+	}
 }
