@@ -81,7 +81,7 @@ bool CPlaceable::IsWithinArea(float x1, float y1, float x2, float y2) {
 	}
 
 	return vec->x >= left && vec->x <= right
-			&& vec->y >= top  && vec->y <= bottom;
+		&& vec->y >= top  && vec->y <= bottom;
 }
 
 bool CPlaceable::IsWithinArea(float x1, float y1, float z1, float x2, float y2, float z2) {
