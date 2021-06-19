@@ -17,6 +17,11 @@ void CMatrix::InjectHooks(void) {
 	InjectHook(0x413220, &CMatrix::RotateZ, PATCH_JUMP);
 	InjectHook(0x413320, &CMatrix::Rotate, PATCH_JUMP);
 
+	InjectHook(0x413A70, &CMatrix::UpdateRw, PATCH_JUMP);
+	InjectHook(0x412770, &CMatrix::SetUnity, PATCH_JUMP);
+	InjectHook(0x4127A0, &CMatrix::ResetOrientation, PATCH_JUMP);
+	InjectHook(0x412AC0, &CMatrix::UpdateRwMatrix, PATCH_JUMP);
+
 	InjectHook(0x413A80, &CMatrix::Reorthogonalize, PATCH_JUMP);
 
 	InjectHook(0x4120E0, &MyMatrix44::operator*=, PATCH_JUMP);
@@ -242,6 +247,38 @@ void CMatrix::Rotate(Vector3 const& rot) {
 	this->px = x1 * px + y1 * py + z1 * pz;
 	this->py = x2 * px + y2 * py + z2 * pz;
 	this->pz = x3 * px + y3 * py + z3 * pz;
+}
+
+void CMatrix::UpdateRw() {
+	if (m_pAttachMatrix)
+		UpdateRwMatrix(m_pAttachMatrix);
+}
+
+void CMatrix::SetUnity() {
+	ResetOrientation();
+	GetPosition() = CVector(0.f, 0.f, 0.f);
+}
+
+void CMatrix::ResetOrientation() {
+	GetRight()   = CVector(1.f, 0.f, 0.f);
+	GetForward() = CVector(0.f, 1.f, 0.f);
+	GetUp()      = CVector(0.f, 0.f, 1.f);
+}
+
+void CMatrix::UpdateRwMatrix(RwMatrix *mat) {
+	mat->rightx = rx;
+	mat->righty = ry;
+	mat->rightz = rz;
+	
+	mat->forwardx = fx;
+	mat->forwardy = fy;
+	mat->forwardz = fz;
+	
+	mat->upx = ux;
+	mat->upy = uy;
+	mat->upz = uz;
+
+	mat->pos = GetPosition();
 }
 
 void MyMatrix44::operator=(MyMatrix44 const &m) {
