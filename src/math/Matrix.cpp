@@ -31,7 +31,7 @@ void CMatrix::InjectHooks(void) {
 
 CMatrix *CMatrix::Constructor(CMatrix const &m) {
 	this->CMatrix::CMatrix(m);
-  return this;
+	return this;
 }
 
 CMatrix::CMatrix(CMatrix const &m) {

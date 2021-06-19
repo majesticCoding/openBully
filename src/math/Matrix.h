@@ -11,50 +11,50 @@ struct RwMatrix {
 
 class CMatrix {
 private:
-  CVector right;
-  float rw;
-  CVector forward;
-  float fw;
-  CVector up;
-  float uw;
-  CVector pos;
-  float pw;
+	CVector right;
+	float rw;
+	CVector forward;
+	float fw;
+	CVector up;
+	float uw;
+	CVector pos;
+	float pw;
 	
 	RwMatrix *m_pAttachMatrix;
 
 	CMatrix *Constructor(CMatrix const &m);
 
 public:
-  CMatrix() = default;
-  CMatrix(CMatrix const &m);
+	CMatrix() = default;
+	CMatrix(CMatrix const &m);
 
-  void SetRotateXOnly(float angle);
-  void SetRotateYOnly(float angle);
-  void SetRotateZOnly(float angle);
+	void SetRotateXOnly(float angle);
+	void SetRotateYOnly(float angle);
+	void SetRotateZOnly(float angle);
 
-  void SetRotateX(float angle);
-  void SetRotateY(float angle);
-  void SetRotateZ(float angle);
-  void SetRotate(Vector3 const &rot);
+	void SetRotateX(float angle);
+	void SetRotateY(float angle);
+	void SetRotateZ(float angle);
+	void SetRotate(Vector3 const &rot);
 
-  void RotateX(float angle);
-  void RotateY(float angle);
-  void RotateZ(float angle);
-  void Rotate(Vector3 const &rot);
+	void RotateX(float angle);
+	void RotateY(float angle);
+	void RotateZ(float angle);
+	void Rotate(Vector3 const &rot);
 
-  void UpdateRw(void);
-  void SetUnity(void);
-  void ResetOrientation(void);
-  void UpdateRwMatrix(RwMatrix *mat);
+	void UpdateRw(void);
+	void SetUnity(void);
+	void ResetOrientation(void);
+	void UpdateRwMatrix(RwMatrix *mat);
 
-  void Reorthogonalize(void);
+	void Reorthogonalize(void);
 
-  CVector &GetPosition(void) { return pos; }
-  CVector &GetRight(void) { return right; }
-  CVector &GetForward(void) { return forward; }
-  CVector &GetUp(void) { return up; }
+	CVector &GetPosition(void) { return pos; }
+	CVector &GetRight(void) { return right; }
+	CVector &GetForward(void) { return forward; }
+	CVector &GetUp(void) { return up; }
 
-  static void InjectHooks(void);
+	static void InjectHooks(void);
 };
 
 class MyMatrix44 {
