@@ -10,7 +10,11 @@ struct RwMatrix {
 };
 
 class CMatrix {
-private:
+	CMatrix *Constructor(const CMatrix &m);
+public:
+	CMatrix() = default;
+	CMatrix(const CMatrix &m);
+
 	CVector right;
 	float rw;
 	CVector forward;
@@ -21,12 +25,6 @@ private:
 	float pw;
 	
 	RwMatrix *m_pAttachMatrix;
-
-	CMatrix *Constructor(CMatrix const &m);
-
-public:
-	CMatrix() = default;
-	CMatrix(CMatrix const &m);
 
 	void SetRotateXOnly(float angle);
 	void SetRotateYOnly(float angle);
@@ -53,6 +51,8 @@ public:
 	CVector &GetRight(void) { return right; }
 	CVector &GetForward(void) { return forward; }
 	CVector &GetUp(void) { return up; }
+
+	CMatrix& operator=(const CMatrix& b);
 
 	static void InjectHooks(void);
 };

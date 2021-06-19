@@ -276,6 +276,15 @@ void CMatrix::UpdateRwMatrix(RwMatrix *mat) {
 	mat->pos = GetPosition();
 }
 
+CMatrix& CMatrix::operator=(const CMatrix& b) {
+	right = b.right;
+	forward = b.forward;
+	up = b.up;
+	pos = b.pos;
+
+	return *this;
+}
+
 void MyMatrix44::operator=(MyMatrix44 const &m) {
 	memcpy(this, &m, sizeof(MyMatrix44));
 }
