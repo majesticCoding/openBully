@@ -2,6 +2,6 @@
 #include <windows.h>
 #include <process.h>
 
-#define WINDOW_MODE
+//#define WINDOWED_MODE
 
 void WindowedModePatch(void*);

@@ -44,7 +44,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 		DisplayConsole();
-#ifdef WINDOW_MODE
+#ifdef WINDOWED_MODE
 		_beginthread(WindowedModePatch, 0, NULL);
 #endif
 		InjectHooks();
