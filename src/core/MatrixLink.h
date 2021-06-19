@@ -4,13 +4,13 @@
 class CPlaceable;
 
 class CMatrixLink : public CMatrix {
-  CMatrixLink *Constructor();
+	CMatrixLink *Constructor();
 public:
-  CPlaceable *m_bOwner;
-  CMatrixLink *m_pPrev;
-  CMatrixLink *m_pNext;
+	CPlaceable *m_bOwner;
+	CMatrixLink *m_pPrev;
+	CMatrixLink *m_pNext;
 
-  CMatrixLink();
-  
-  static void InjectHooks();
+	CMatrixLink();
+	
+	static void InjectHooks();
 };

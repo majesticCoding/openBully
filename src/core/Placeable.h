@@ -6,7 +6,7 @@ class CPlaceable {
 	CPlaceable *Constructor();
 protected:
 	CSimpleTransform m_placement;
-  CMatrixLink *m_matrix;
+	CMatrixLink *m_matrix;
 
 public:
 	CPlaceable();

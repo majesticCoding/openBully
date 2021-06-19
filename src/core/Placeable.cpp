@@ -109,12 +109,12 @@ void CPlaceable::RemoveMatrix() {
 
 void CPlaceable::SetMatrix(const CMatrix &mat, bool bAllocMatrix) {
 	if (!m_matrix) {
-    if (mat.up.z == 1.f && !bAllocMatrix) {
+		if (mat.up.z == 1.f && !bAllocMatrix) {
 			m_placement = CSimpleTransform(mat);
-      return;
-    }
+			return;
+		}
 		AllocateMatrix();
-  }
+	}
 
 	m_matrix->CMatrix::operator=(mat); // ???
 	if (mat.m_pAttachMatrix) {
