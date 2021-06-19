@@ -3,6 +3,8 @@
 
 CMissionMgr &g_MissionMgr = *reinterpret_cast<CMissionMgr *>(0x20C3CA0);
 
+int &missionsMaxNum = *(int*)0x20C43E4;
+
 void CMissionMgr::InjectHooks(void) {
 	//InjectHook(0x6AA680, &CMissionMgr::PrimInst, PATCH_JUMP);
 	//InjectHook(0x6AA690, &CMissionMgr::SecInst, PATCH_JUMP);
@@ -37,12 +39,11 @@ bool CMissionMgr::IsOnMission(void) {
 }
 
 bool CMissionMgr::IsOnGirlMission(void) {
-	char *name;
-	char str[132];
+	char name[132];
 	int missionId = PrimInst().GetMissionId();
 	
 	if (missionId >= 0) {
-		name = GetMissionName(missionId, str, 0x80);
+		GetMissionName(missionId, name, 0x80);
 		if (strstr(name, "_G") != nullptr)
 			return true;
 	}
@@ -50,7 +51,7 @@ bool CMissionMgr::IsOnGirlMission(void) {
 	missionId = SecInst().GetMissionId();
 
 	if (missionId >= 0) {
-		name = GetMissionName(missionId, str, 0x80);
+		GetMissionName(missionId, name, 0x80);
 		if (strstr(name, "_G") != nullptr)
 			return true;
 	}
@@ -58,8 +59,8 @@ bool CMissionMgr::IsOnGirlMission(void) {
 	return false;
 }
 
-char *CMissionMgr::GetMissionName(int missionId, char *str, uint32_t size) {
-	return nullptr;
+void CMissionMgr::GetMissionName(int missionId, char *name, uint32_t size) {
+	;
 }
 
 bool CMissionMgr::IsOnClassMission(void) {
@@ -101,17 +102,21 @@ CMissionRunInst CMissionMgr::TopInst(void) { //mission's id
 	return PrimInst().IsOnMission() ? PrimInst() : SecInst();
 }
 
-sMissionData *CMissionMgr::Data(int32_t missionId) {
+CMissionData *CMissionMgr::Data(int32_t missionId) {
 	//XCALL(0x6AA660);
 	
 	if (missionId >= 0 && missionId < GetMissionsNum())
-		return (sMissionData *)(pMissionData + missionId);
+		return (CMissionData *)(pMissionData + missionId);
 	else
 		return pMissionData;
 }
 
 int32_t CMissionMgr::GetMissionsNum(void) {
 	return m_nMissionsNum;
+}
+
+int32_t CMissionMgr::FindMissionInstSlot(void) {
+	return 0;
 }
 
 bool CMissionMgr::FadeFinished(void) {

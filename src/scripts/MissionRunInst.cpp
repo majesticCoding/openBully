@@ -28,13 +28,13 @@ CMissionRunInst::~CMissionRunInst() {
 
 void CMissionRunInst::Init(void) {
 	m_missionId = -1;
-	m_nUnk1 = 0;
-	m_state = 0;
+	m_pActiveInstNode = nullptr;
+	m_state = STATE_INACTIVE;
 
-	m_bFlag1 = false;
-	m_bFlag2 = false;
+	m_bSucceed = false;
+	m_bRestart = false;
 	m_bFlag3 = false;
-	m_bFlag4 = false;
+	m_bFailedBusted = false;
 	m_bFlag5 = false;
 	m_bFlag6 = false;
 	m_bFlag7 = false;
@@ -45,9 +45,9 @@ void CMissionRunInst::Init(void) {
 
 	m_secondaryMissionId = -1;
 
-	m_bFlag12 = false;
-	m_bFlag13 = false;
-	m_bFlag14 = false;
+	m_bCancelled = false;
+	m_bCancellationRequested = false;
+	m_bIsActive = false;
 
 	m_nTexturesCount = 0;
 }
@@ -64,27 +64,34 @@ bool CMissionRunInst::IsOnMission(void) {
 	if (m_missionId == -1)
 		return false;
 
-	return GetState() != 0 && GetState() != 1 && GetState() != 11;
+	return GetState() != STATE_INACTIVE && GetState() != 1 && GetState() != 11;
 }
 
 bool CMissionRunInst::IsMissionRunning(int missionId) {
 	if (m_missionId != missionId)
 		return false;
 
-	return GetState() != 0 && GetState() != 11;
+	return GetState() != STATE_INACTIVE && GetState() != 11;
 }
 
 bool CMissionRunInst::IsAnyMissionRunning(void) {
 	if (m_missionId == -1)
 		return false;
 
-	return GetState() != 0 && GetState() != 11;
+	return GetState() != STATE_INACTIVE && GetState() != 11;
+}
+
+bool CMissionRunInst::IsFadingMission(void) {
+	if (m_missionId == -1)
+		return false;
+
+	return GetState() != 1 || GetState() == STATE_FADING;
 }
 
 void CMissionRunInst::RequestCancelForSecondaryMission(int secondaryMissionId) {
 	if (IsAnyMissionRunning()) {
 		m_secondaryMissionId = secondaryMissionId;
-		m_bFlag13 = true;
+		m_bCancellationRequested = true;
 		m_bFlag11 = true;
 
 		g_UserInputManager->SetInputEnabledFromAreaTransitions(false);
@@ -93,4 +100,40 @@ void CMissionRunInst::RequestCancelForSecondaryMission(int secondaryMissionId) {
 	else {
 		g_MissionMgr.MissionStart(secondaryMissionId, false);
 	}
+}
+
+void CMissionRunInst::CancelForSecondaryMission(int secondaryMissionId) {
+	m_secondaryMissionId = secondaryMissionId;
+	m_bCancellationRequested = false;
+	m_bCancelled = true;
+
+	MissionFail(false, false, false, true, false, nullptr, false);
+}
+
+void CMissionRunInst::MissionFail(bool bParam1, bool bParam2, bool bParam3, bool bIsSeconday, bool bParam5, 
+	char const *str, bool bParam6) {
+	
+	;
+}
+
+void CMissionRunInst::MissionStart(int missionId) {
+	if (missionId < 0 || missionId >= missionsMaxNum || m_pActiveInstNode != nullptr)
+		return;
+
+	int missionInstSlot = g_MissionMgr.FindMissionInstSlot();
+	if (missionInstSlot == -1)
+		return;
+
+	char missionName[64];
+	g_MissionMgr.GetMissionName(missionId, missionName, 64);
+	m_missionId = missionId;
+
+	//TODO: the rest
+}
+
+void CMissionRunInst::MissionCleanup() {
+	if (m_pActiveInstNode == nullptr)
+		return;
+
+	//TODO: the rest
 }

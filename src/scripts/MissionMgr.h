@@ -4,7 +4,7 @@
 #include "Clock.h"
 
 //sizeof(sMissionData) = 0x4C
-struct sMissionData {
+class CMissionData {
 	char _pad[0x4C];
 };
 
@@ -16,7 +16,7 @@ struct sUnkStruct {
 class CMissionMgr {
 private:
 	char _pad1[1208]; //0
-	sMissionData *pMissionData;
+	CMissionData *pMissionData;
 	CMissionRunInst primInst; //1212 //sizeof(CMissionRunInst) = 228
 	CMissionRunInst secInst; //1440
 	char _pad2[4]; //1668
@@ -37,12 +37,13 @@ public:
 	bool IsOnMinigameMission(void);
 	bool FadeFinished(void);
 	int32_t GetMissionsNum(void);
+	int32_t FindMissionInstSlot(void);
 	int32_t &State(int32_t id);
 	CMissionRunInst	PrimInst(void);
 	CMissionRunInst	SecInst(void);
 	CMissionRunInst TopInst(void);
-	char *GetMissionName(int, char *name, uint32_t);
-	sMissionData *Data(int32_t id);
+	void GetMissionName(int, char *name, uint32_t);
+	CMissionData *Data(int32_t id);
 	void MissionStart(int missionId, bool bIsPrimary); //not sure about the 2nd param's name
 
 	virtual ~CMissionMgr();
@@ -58,3 +59,4 @@ public:
 void AdvanceToNextGoodMissionExitTime(void);
 
 extern CMissionMgr &g_MissionMgr;
+extern int &missionsMaxNum;
