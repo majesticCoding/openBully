@@ -116,7 +116,7 @@ void CPlaceable::SetMatrix(const CMatrix &mat, bool bAllocMatrix) {
 		AllocateMatrix();
 	}
 
-	m_matrix->CMatrix::operator=(mat); // ???
+	*static_cast<CMatrix *>(m_matrix) = mat;
 	if (mat.m_pAttachMatrix) {
 		m_matrix->m_pAttachMatrix = mat.m_pAttachMatrix;
 		m_matrix->UpdateRw();
