@@ -22,6 +22,7 @@ target_include_directories(openBully PRIVATE
     src/control
     src/core
       src/core/managers
+    src/custom
     src/entities
     src/math
     src/memory

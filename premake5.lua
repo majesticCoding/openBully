@@ -20,6 +20,7 @@ project "openBully"
 		includedirs { "src/control" }
 		includedirs { "src/core" }
 			includedirs { "src/core/managers" }
+		includedirs { "src/custom" }
 		includedirs { "src/entities"}
 		includedirs { "src/math" }
 		includedirs { "src/memory"}
