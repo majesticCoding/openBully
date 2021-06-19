@@ -3,6 +3,8 @@
 #include "Vector.h"
 
 void CMatrix::InjectHooks(void) {
+	InjectHook(0x412A10, &CMatrix::Constructor, PATCH_JUMP);
+
 	InjectHook(0x412B60, &CMatrix::SetRotateXOnly, PATCH_JUMP);
 	InjectHook(0x412BC0, &CMatrix::SetRotateYOnly, PATCH_JUMP);
 	InjectHook(0x412C20, &CMatrix::SetRotateZOnly, PATCH_JUMP);
@@ -17,92 +19,80 @@ void CMatrix::InjectHooks(void) {
 	InjectHook(0x413220, &CMatrix::RotateZ, PATCH_JUMP);
 	InjectHook(0x413320, &CMatrix::Rotate, PATCH_JUMP);
 
+	InjectHook(0x413A70, &CMatrix::UpdateRw, PATCH_JUMP);
+	InjectHook(0x412770, &CMatrix::SetUnity, PATCH_JUMP);
+	InjectHook(0x4127A0, &CMatrix::ResetOrientation, PATCH_JUMP);
+	InjectHook(0x412AC0, &CMatrix::UpdateRwMatrix, PATCH_JUMP);
+
 	InjectHook(0x413A80, &CMatrix::Reorthogonalize, PATCH_JUMP);
 
 	InjectHook(0x4120E0, &MyMatrix44::operator*=, PATCH_JUMP);
 }
 
+CMatrix *CMatrix::Constructor(CMatrix const &m) {
+	this->CMatrix::CMatrix(m);
+	return this;
+}
+
+CMatrix::CMatrix(CMatrix const &m) {
+	m_pAttachMatrix = nullptr;
+
+	right = m.right;
+	forward = m.forward;
+	up = m.up;
+	pos = m.pos;
+}
+
 void CMatrix::Reorthogonalize(void) {
-	CVector &r = GetRight();
-	CVector &f = GetForward();
-	CVector &u = GetUp();
-	u = CrossProduct(r, f);
-	u.Normalize();
-	r = CrossProduct(f, u);
-	r.Normalize();
-	f = CrossProduct(u, r);
+	up = CrossProduct(right, forward);
+	up.Normalize();
+
+	right = CrossProduct(forward, up);
+	right.Normalize();
+
+	forward = CrossProduct(up, right);
 }
 
 void CMatrix::SetRotateXOnly(float angle) {
 	float c = cosf(angle);
 	float s = sinf(angle);
 
-	rx = 1.0f;
-	ry = 0.0f;
-	rz = 0.0f;
-
-	fx = 0.0f;
-	fy = c;
-	fz = s;
-
-	ux = 0.0f;
-	uy = -s;
-	uz = c;
+	right   = CVector(1.f,  0.f, 0.f);
+	forward = CVector(0.f,  c,   s);
+	up      = CVector(0.f, -s,   c);
 }
 
 void CMatrix::SetRotateYOnly(float angle) {
 	float c = cosf(angle);
 	float s = sinf(angle);
 
-	rx = c;
-	ry = 0.0f;
-	rz = -s;
-
-	fx = 0.0f;
-	fy = 1.0f;
-	fz = 0.0f;
-
-	ux = s;
-	uy = 0.0f;
-	uz = c;
+	right   = CVector(c,   0.f, -s);
+	forward = CVector(0.f, 1.f,  0.f);
+	up      = CVector(s,   0.f,  c);
 }
 
 void CMatrix::SetRotateZOnly(float angle) {
 	float c = cosf(angle);
 	float s = sinf(angle);
 
-	rx = c;
-	ry = s;
-	rz = 0.0f;
-
-	fx = -s;
-	fy = c;
-	fz = 0.0f;
-
-	ux = 0.0f;
-	uy = 0.0f;
-	uz = 1.0f;
+	right   = CVector( c,   s,   0.f);
+	forward = CVector(-s,   c,   0.f);
+	up      = CVector( 0.f, 0.f, 1.f);
 }
 
 void CMatrix::SetRotateX(float angle) {
 	SetRotateXOnly(angle);
-	px = 0.0f;
-	py = 0.0f;
-	pz = 0.0f;
+	pos = CVector(0.f, 0.f, 0.f);
 }
 
 void CMatrix::SetRotateY(float angle) {
 	SetRotateYOnly(angle);
-	px = 0.0f;
-	py = 0.0f;
-	pz = 0.0f;
+	pos = CVector(0.f, 0.f, 0.f);
 }
 
 void CMatrix::SetRotateZ(float angle) {
 	SetRotateZOnly(angle);
-	px = 0.0f;
-	py = 0.0f;
-	pz = 0.0f;
+	pos = CVector(0.f, 0.f, 0.f);
 }
 
 void CMatrix::SetRotate(Vector3 const& rot) {
@@ -113,90 +103,97 @@ void CMatrix::SetRotate(Vector3 const& rot) {
 	float cZ = cosf(rot.z);
 	float sZ = sinf(rot.z);
 
-	rx = cZ * cY - (sZ * sX) * sY;
-	ry = (cZ * sX) * sY + sZ * cY;
-	rz = -cX * sY;
+	right.x = cZ * cY - (sZ * sX) * sY;
+	right.y = (cZ * sX) * sY + sZ * cY;
+	right.z = -cX * sY;
 
-	fx = -sZ * cX;
-	fy = cZ * cX;
-	fz = sX;
+	forward.x = -sZ * cX;
+	forward.y = cZ * cX;
+	forward.z = sX;
 
-	ux = (sZ * sX) * cY + cZ * sY;
-	uy = sZ * sY - (cZ * sX) * cY;
-	uz = cX * cY;
+	up.x = (sZ * sX) * cY + cZ * sY;
+	up.y = sZ * sY - (cZ * sX) * cY;
+	up.z = cX * cY;
 
-	px = 0.0f;
-	py = 0.0f;
-	pz = 0.0f;
+	pos = CVector(0.f, 0.f, 0.f);
 }
 
 void CMatrix::RotateX(float angle) {
 	float c = cosf(angle);
 	float s = sinf(angle);
 
-	float ry = this->ry;
-	float rz = this->rz;
-	float uy = this->fy;
-	float uz = this->fz;
-	float ay = this->uy;
-	float az = this->uz;
-	float py = this->py;
-	float pz = this->pz;
+	float ry = right.y;
+	float rz = right.z;
+	float uy = forward.y;
+	float uz = forward.z;
+	float ay = up.y;
+	float az = up.z;
+	float py = pos.y;
+	float pz = pos.z;
 
-	this->ry = c * ry - s * rz;
-	this->rz = c * rz + s * ry;
-	this->fy = c * uy - s * uz;
-	this->fz = c * uz + s * uy;
-	this->uy = c * ay - s * az;
-	this->uz = c * az + s * ay;
-	this->py = c * py - s * pz;
-	this->pz = c * pz + s * py;
+	right.y = c * ry - s * rz;
+	right.z = c * rz + s * ry;
+
+	forward.y = c * uy - s * uz;
+	forward.z = c * uz + s * uy;
+
+	up.y = c * ay - s * az;
+	up.z = c * az + s * ay;
+
+	pos.y = c * py - s * pz;
+	pos.z = c * pz + s * py;
 }
 
 void CMatrix::RotateY(float angle) {
 	float c = cosf(angle);
 	float s = sinf(angle);
 
-	float rx = this->rx;
-	float rz = this->rz;
-	float ux = this->fx;
-	float uz = this->fz;
-	float ax = this->ux;
-	float az = this->uz;
-	float px = this->px;
-	float pz = this->pz;
+	float rx = right.x;
+	float rz = right.z;
+	float ux = forward.x;
+	float uz = forward.z;
+	float ax = up.x;
+	float az = up.z;
+	float px = pos.x;
+	float pz = pos.z;
 
-	this->rx = c * rx + s * rz;
-	this->rz = c * rz - s * rx;
-	this->fx = c * ux + s * uz;
-	this->fz = c * uz - s * ux;
-	this->ux = c * ax + s * az;
-	this->uz = c * az - s * ax;
-	this->px = c * px + s * pz;
-	this->pz = c * pz - s * px;
+	right.x = c * rx + s * rz;
+	right.z = c * rz - s * rx;
+
+	forward.x = c * ux + s * uz;
+	forward.z = c * uz - s * ux;
+
+	up.x = c * ax + s * az;
+	up.z = c * az - s * ax;
+
+	pos.x = c * px + s * pz;
+	pos.z = c * pz - s * px;
 }
 
 void CMatrix::RotateZ(float angle) {
 	float c = cosf(angle);
 	float s = sinf(angle);
 
-	float ry = this->ry;
-	float rx = this->rx;
-	float uy = this->fy;
-	float ux = this->fx;
-	float ay = this->uy;
-	float ax = this->ux;
-	float py = this->py;
-	float px = this->px;
+	float ry = right.y;
+	float rx = right.x;
+	float uy = forward.y;
+	float ux = forward.x;
+	float ay = up.y;
+	float ax = up.x;
+	float py = pos.y;
+	float px = pos.x;
 
-	this->rx = c * rx - s * ry;
-	this->ry = c * ry + s * rx;
-	this->fx = c * ux - s * uy;
-	this->fy = c * uy + s * ux;
-	this->ux = c * ax - s * ay;
-	this->uy = c * ay + s * ax;
-	this->px = c * px - s * py;
-	this->py = c * py + s * px;
+	right.x = c * rx - s * ry;
+	right.y = c * ry + s * rx;
+
+	forward.x = c * ux - s * uy;
+	forward.y = c * uy + s * ux;
+
+	up.x = c * ax - s * ay;
+	up.y = c * ay + s * ax;
+
+	pos.x = c * px - s * py;
+	pos.y = c * py + s * px;
 }
 
 void CMatrix::Rotate(Vector3 const& rot) {
@@ -207,18 +204,18 @@ void CMatrix::Rotate(Vector3 const& rot) {
 	float cZ = cosf(rot.z);
 	float sZ = sinf(rot.z);
 
-	float rx = this->rx;
-	float ry = this->ry;
-	float rz = this->rz;
-	float ux = this->fx;
-	float uy = this->fy;
-	float uz = this->fz;
-	float ax = this->ux;
-	float ay = this->uy;
-	float az = this->uz;
-	float px = this->px;
-	float py = this->py;
-	float pz = this->pz;
+	float rx = right.x;
+	float ry = right.y;
+	float rz = right.z;
+	float ux = forward.x;
+	float uy = forward.y;
+	float uz = forward.z;
+	float ax = up.x;
+	float ay = up.y;
+	float az = up.z;
+	float px = pos.x;
+	float py = pos.y;
+	float pz = pos.z;
 
 	float x1 = cZ * cY - (sZ * sX) * sY;
 	float x2 = (cZ * sX) * sY + sZ * cY;
@@ -230,18 +227,53 @@ void CMatrix::Rotate(Vector3 const& rot) {
 	float z2 = sZ * sY - (cZ * sX) * cY;
 	float z3 = cX * cY;
 
-	this->rx = x1 * rx + y1 * ry + z1 * rz;
-	this->ry = x2 * rx + y2 * ry + z2 * rz;
-	this->rz = x3 * rx + y3 * ry + z3 * rz;
-	this->fx = x1 * ux + y1 * uy + z1 * uz;
-	this->fy = x2 * ux + y2 * uy + z2 * uz;
-	this->fz = x3 * ux + y3 * uy + z3 * uz;
-	this->ux = x1 * ax + y1 * ay + z1 * az;
-	this->uy = x2 * ax + y2 * ay + z2 * az;
-	this->uz = x3 * ax + y3 * ay + z3 * az;
-	this->px = x1 * px + y1 * py + z1 * pz;
-	this->py = x2 * px + y2 * py + z2 * pz;
-	this->pz = x3 * px + y3 * py + z3 * pz;
+	right.x = x1 * rx + y1 * ry + z1 * rz;
+	right.y = x2 * rx + y2 * ry + z2 * rz;
+	right.z = x3 * rx + y3 * ry + z3 * rz;
+
+	forward.x = x1 * ux + y1 * uy + z1 * uz;
+	forward.y = x2 * ux + y2 * uy + z2 * uz;
+	forward.z = x3 * ux + y3 * uy + z3 * uz;
+
+	up.x = x1 * ax + y1 * ay + z1 * az;
+	up.y = x2 * ax + y2 * ay + z2 * az;
+	up.z = x3 * ax + y3 * ay + z3 * az;
+
+	pos.x = x1 * px + y1 * py + z1 * pz;
+	pos.y = x2 * px + y2 * py + z2 * pz;
+	pos.z = x3 * px + y3 * py + z3 * pz;
+}
+
+void CMatrix::UpdateRw() {
+	if (m_pAttachMatrix)
+		UpdateRwMatrix(m_pAttachMatrix);
+}
+
+void CMatrix::SetUnity() {
+	ResetOrientation();
+	pos = CVector(0.f, 0.f, 0.f);
+}
+
+void CMatrix::ResetOrientation() {
+	right   = CVector(1.f, 0.f, 0.f);
+	forward = CVector(0.f, 1.f, 0.f);
+	up      = CVector(0.f, 0.f, 1.f);
+}
+
+void CMatrix::UpdateRwMatrix(RwMatrix *mat) {
+	mat->rightx = right.x;
+	mat->righty = right.y;
+	mat->rightz = right.z;
+	
+	mat->forwardx = forward.x;
+	mat->forwardy = forward.y;
+	mat->forwardz = forward.z;
+	
+	mat->upx = up.x;
+	mat->upy = up.y;
+	mat->upz = up.z;
+
+	mat->pos = GetPosition();
 }
 
 void MyMatrix44::operator=(MyMatrix44 const &m) {
