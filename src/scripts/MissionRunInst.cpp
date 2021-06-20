@@ -30,7 +30,6 @@ void CMissionRunInst::Init(void) {
 	m_missionId = -1;
 	m_pActiveInstNode = nullptr;
 	m_state = STATE_INACTIVE;
-
 	m_bSucceed = false;
 	m_bRestart = false;
 	m_bFlag3 = false;
@@ -42,13 +41,15 @@ void CMissionRunInst::Init(void) {
 	m_bFlag9 = false;
 	m_bFlag10 = false;
 	m_bFlag11 = false;
-
 	m_secondaryMissionId = -1;
-
 	m_bCancelled = false;
 	m_bCancellationRequested = false;
 	m_bIsActive = false;
-
+	//_pad1[81] = 0;
+	m_nUnk2 = 0;
+	m_nUnk3 = -1;
+	m_nUnk4 = 0;
+	m_txdSlot = -1;
 	m_nTexturesCount = 0;
 }
 
@@ -64,7 +65,7 @@ bool CMissionRunInst::IsOnMission(void) {
 	if (m_missionId == -1)
 		return false;
 
-	return GetState() != STATE_INACTIVE && GetState() != 1 && GetState() != 11;
+	return GetState() != STATE_INACTIVE && GetState() != STATE_INIT && GetState() != 11;
 }
 
 bool CMissionRunInst::IsMissionRunning(int missionId) {
@@ -85,7 +86,7 @@ bool CMissionRunInst::IsFadingMission(void) {
 	if (m_missionId == -1)
 		return false;
 
-	return GetState() != 1 || GetState() == STATE_FADING;
+	return GetState() != STATE_INIT || GetState() == STATE_FADING;
 }
 
 void CMissionRunInst::RequestCancelForSecondaryMission(int secondaryMissionId) {
@@ -136,4 +137,9 @@ void CMissionRunInst::MissionCleanup() {
 		return;
 
 	//TODO: the rest
+}
+
+void CMissionRunInst::RemoveTextures() {
+	for (int i = 0; i < m_nTexturesCount; i++)
+		RwTextureDestroy(&m_aTextures[i]);
 }

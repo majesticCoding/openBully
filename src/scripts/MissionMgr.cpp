@@ -64,31 +64,31 @@ void CMissionMgr::GetMissionName(int missionId, char *name, uint32_t size) {
 }
 
 bool CMissionMgr::IsOnClassMission(void) {
-	/*int32_t pInst = (&g_MissionMgr)->PrimInst();
-	if (pInst >= 0 && *(int32_t*)(g_MissionMgr.Data(pInst) + 0x28) == 1)
+	int missionId = PrimInst().GetMissionId();
+	if (missionId >= 0 && pMissionDatas->aMissionData[missionId].GetType() == TYPE_CLASSMISSION)
 		return true;
 
-	int32_t sInst = (&g_MissionMgr)->SecInst();
-	if (sInst < 0)
-		return false;
-	else 
-		return *(int32_t*)(g_MissionMgr.Data(sInst) + 0x28) == 1;*/
+	missionId = SecInst().GetMissionId();
+	if (missionId >= 0 && pMissionDatas->aMissionData[missionId].GetType() == TYPE_CLASSMISSION)
+		return true;
 
-	XCALL(0x6AA840);
+	return false;
+
+	//XCALL(0x6AA840);
 }
 
 bool CMissionMgr::IsOnMinigameMission(void) {
-	/*int32_t pInst = g_MissionMgr.PrimInst();
-	if (pInst >= 0 && *(int32_t*)(g_MissionMgr.Data(pInst) + 0x28) == 5)
+	int missionId = PrimInst().GetMissionId();
+	if (missionId >= 0 && pMissionDatas->aMissionData[missionId].GetType() == TYPE_MINIGAME)
 		return true;
 
-	int32_t sInst = (&g_MissionMgr)->SecInst();
-	if (sInst < 0)
-		return false;
-	else
-		return *(int32_t*)(g_MissionMgr.Data(sInst) + 0x28) == 5;*/
+	missionId = SecInst().GetMissionId();
+	if (missionId >= 0 && pMissionDatas->aMissionData[missionId].GetType() == TYPE_MINIGAME)
+		return true;
 
-	XCALL(0x6AA890);
+	return false;
+
+	//XCALL(0x6AA890);
 }
 
 int32_t &CMissionMgr::State(int32_t id) {
@@ -102,13 +102,13 @@ CMissionRunInst CMissionMgr::TopInst(void) { //mission's id
 	return PrimInst().IsOnMission() ? PrimInst() : SecInst();
 }
 
-CMissionData *CMissionMgr::Data(int32_t missionId) {
+CMissionData CMissionMgr::Data(int32_t missionId) {
 	//XCALL(0x6AA660);
 	
 	if (missionId >= 0 && missionId < GetMissionsNum())
-		return (CMissionData *)(pMissionData + missionId);
+		return pMissionDatas->aMissionData[missionId];
 	else
-		return pMissionData;
+		return pMissionDatas->aMissionData[0];
 }
 
 int32_t CMissionMgr::GetMissionsNum(void) {

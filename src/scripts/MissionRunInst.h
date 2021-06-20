@@ -2,9 +2,13 @@
 #include "patcher.h"
 #include "ActionController.h"
 #include "ActionTree.h"
+#include "Texture2D.h"
+
+#define NUMTEXTURES 9
 
 enum eMissionRunInstStates {
 	STATE_INACTIVE = 0,
+	STATE_INIT,
 	STATE_RUNNING = 4,
 	STATE_FADE_FINISHED = 6,
 	STATE_RESTART = 7,
@@ -60,12 +64,15 @@ public:
 	bool m_bCancellationRequested; //sets true while requesting cancellation
 	bool m_bIsActive;
 	char _pad1[90];
+	int m_nUnk1;
+	bool m_nUnk2;
+	int m_nUnk3;
+	int m_nUnk4; //140
+	int m_txdSlot;
+	char _pad2[4];
+	Texture2D m_aTextures[NUMTEXTURES];
+	char _pad3[4];
 	int m_nTexturesCount;
-	int m_nUnk4;
-	int m_nUnk5;
-	int m_nUnk6; //140
-	char _pad2[84];
-	int m_nUnk7;
 
 	CMissionRunInst();
 	~CMissionRunInst();
@@ -85,4 +92,5 @@ public:
 	void MissionFail(bool, bool, bool, bool, bool, char const* , bool);
 	void MissionCleanup();
 	void AssociateModelIndiciesWithTextures();
+	void RemoveTextures();
 };

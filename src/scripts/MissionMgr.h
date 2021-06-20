@@ -3,9 +3,26 @@
 #include "MissionRunInst.h"
 #include "Clock.h"
 
+#define MISSIONS_NUM 498
+
+enum eMissionTypes {
+	TYPE_CLASSMISSION = 1,
+	TYPE_MINIGAME = 5
+};
+
 //sizeof(sMissionData) = 0x4C
 class CMissionData {
-	char _pad[0x4C];
+	char _pad1[0x28];
+	eMissionTypes m_missionType;
+	char _pad2[0x20];
+public:
+	eMissionTypes GetType(void) {
+		return m_missionType;
+	}
+};
+
+struct sMissionDatas{
+	CMissionData aMissionData[MISSIONS_NUM];
 };
 
 //first field is a state: CMissiongMgr::State();
@@ -16,7 +33,7 @@ struct sUnkStruct {
 class CMissionMgr {
 private:
 	char _pad1[1208]; //0
-	CMissionData *pMissionData;
+	sMissionDatas *pMissionDatas;
 	CMissionRunInst primInst; //1212 //sizeof(CMissionRunInst) = 228
 	CMissionRunInst secInst; //1440
 	char _pad2[4]; //1668
@@ -43,7 +60,7 @@ public:
 	CMissionRunInst	SecInst(void);
 	CMissionRunInst TopInst(void);
 	void GetMissionName(int, char *name, uint32_t);
-	CMissionData *Data(int32_t id);
+	CMissionData Data(int32_t id);
 	void MissionStart(int missionId, bool bIsPrimary); //not sure about the 2nd param's name
 
 	virtual ~CMissionMgr();
