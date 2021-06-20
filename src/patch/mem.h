@@ -5,9 +5,9 @@
 
 namespace memory {
 class unprotect {
-	void         *addr;
-	std::size_t   size;
-	unsigned long prot;
+	void         *addr = nullptr;
+	std::size_t   size = 0;
+	unsigned long prot = 0;
 
 public:
 	unprotect(void *_addr, std::size_t _size);
@@ -16,21 +16,22 @@ public:
 
 template <typename T>
 T &read(std::uintptr_t addr, bool vp = true) {
-	if (vp)
-		unprotect prot(reinterpret_cast<void*>(addr), sizeof(T));
-	
+	unprotect prot(vp ? reinterpret_cast<void*>(addr) : nullptr, sizeof(T));
+
 	return *reinterpret_cast<T *>(addr);
 }
 
 template <typename T>
 void write(std::uintptr_t addr, T val, bool vp = true) {
-	read<T>(addr, vp) = val;
+	unprotect prot(vp ? reinterpret_cast<void*>(addr) : nullptr, sizeof(T));
+
+	*reinterpret_cast<T *>(addr) = val;
 }
 
 template <typename T>
 void fill(std::uintptr_t addr, std::size_t count, T val, bool vp = true) {
-	if (vp)
-		unprotect prot(reinterpret_cast<void*>(addr), sizeof(T) * count);
+	unprotect prot(vp ? reinterpret_cast<void*>(addr) : nullptr,
+		sizeof(T) * count);
 
 	std::fill_n(reinterpret_cast<T*>(addr), count, val);
 }
