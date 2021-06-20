@@ -65,9 +65,9 @@ public:
 	bool m_bIsActive;
 	char _pad1[90];
 	int m_nUnk1;
-	bool m_nUnk2;
-	int m_nUnk3;
-	int m_nUnk4; //140
+	bool m_bFlag12;
+	int m_nUnk2;
+	int m_nUnk3; //140
 	int m_txdSlot;
 	char _pad2[4];
 	Texture2D m_aTextures[NUMTEXTURES];
