@@ -1,32 +1,36 @@
 #include <math.h>
+
+#include "hook.h"
 #include "Matrix.h"
 #include "Vector.h"
 
 void CMatrix::InjectHooks(void) {
-	InjectHook(0x412A10, &CMatrix::Constructor, PATCH_JUMP);
+	using namespace memory::hook;
 
-	InjectHook(0x412B60, &CMatrix::SetRotateXOnly, PATCH_JUMP);
-	InjectHook(0x412BC0, &CMatrix::SetRotateYOnly, PATCH_JUMP);
-	InjectHook(0x412C20, &CMatrix::SetRotateZOnly, PATCH_JUMP);
+	inject_hook(0x412A10, &CMatrix::Constructor);
 
-	InjectHook(0x412CA0, &CMatrix::SetRotateX, PATCH_JUMP);
-	InjectHook(0x412CC0, &CMatrix::SetRotateY, PATCH_JUMP);
-	InjectHook(0x412CE0, &CMatrix::SetRotateZ, PATCH_JUMP);
-	InjectHook(0x412D00, &CMatrix::SetRotate, PATCH_JUMP);
+	inject_hook(0x412B60, &CMatrix::SetRotateXOnly);
+	inject_hook(0x412BC0, &CMatrix::SetRotateYOnly);
+	inject_hook(0x412C20, &CMatrix::SetRotateZOnly);
 
-	InjectHook(0x413020, &CMatrix::RotateX, PATCH_JUMP);
-	InjectHook(0x413120, &CMatrix::RotateY, PATCH_JUMP);
-	InjectHook(0x413220, &CMatrix::RotateZ, PATCH_JUMP);
-	InjectHook(0x413320, &CMatrix::Rotate, PATCH_JUMP);
+	inject_hook(0x412CA0, &CMatrix::SetRotateX);
+	inject_hook(0x412CC0, &CMatrix::SetRotateY);
+	inject_hook(0x412CE0, &CMatrix::SetRotateZ);
+	inject_hook(0x412D00, &CMatrix::SetRotate);
 
-	InjectHook(0x413A70, &CMatrix::UpdateRw, PATCH_JUMP);
-	InjectHook(0x412770, &CMatrix::SetUnity, PATCH_JUMP);
-	InjectHook(0x4127A0, &CMatrix::ResetOrientation, PATCH_JUMP);
-	InjectHook(0x412AC0, &CMatrix::UpdateRwMatrix, PATCH_JUMP);
+	inject_hook(0x413020, &CMatrix::RotateX);
+	inject_hook(0x413120, &CMatrix::RotateY);
+	inject_hook(0x413220, &CMatrix::RotateZ);
+	inject_hook(0x413320, &CMatrix::Rotate);
 
-	InjectHook(0x413A80, &CMatrix::Reorthogonalize, PATCH_JUMP);
+	inject_hook(0x413A70, &CMatrix::UpdateRw);
+	inject_hook(0x412770, &CMatrix::SetUnity);
+	inject_hook(0x4127A0, &CMatrix::ResetOrientation);
+	inject_hook(0x412AC0, &CMatrix::UpdateRwMatrix);
 
-	InjectHook(0x4120E0, &MyMatrix44::operator*=, PATCH_JUMP);
+	inject_hook(0x413A80, &CMatrix::Reorthogonalize);
+
+	inject_hook(0x4120E0, &MyMatrix44::operator*=);
 }
 
 CMatrix *CMatrix::Constructor(CMatrix const &m) {

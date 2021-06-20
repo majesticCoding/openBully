@@ -1,5 +1,4 @@
 #pragma once
-#include "patcher.h"
 #include "Model.h"
 
 class RV_AnimationManager {

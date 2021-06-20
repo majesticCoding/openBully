@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "AudioManager.h"
 
 cSCREAMAudioManager *Screamer = reinterpret_cast<cSCREAMAudioManager *>(0xCF3DA0);

@@ -1,5 +1,6 @@
 #pragma once
-#include "patcher.h"
+#include <cstdint>
+
 #include "RwCamera.h"
 
 class CameraManager {

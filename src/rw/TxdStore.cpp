@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "TxdStore.h"
 
 void CTxdStore::Create(int slot) {

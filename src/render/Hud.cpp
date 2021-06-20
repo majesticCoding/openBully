@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Hud.h"
 
 bool CHud::TimeShouldStop(void) {

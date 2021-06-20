@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "CutsceneCameraController.h"
 
 CutsceneCameraController *g_CutsceneCameraController = reinterpret_cast<CutsceneCameraController *>(0xC3CFC4);

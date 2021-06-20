@@ -1,5 +1,4 @@
 #pragma once
-#include "patcher.h"
 
 class Texture2D {
 	char pad[8];

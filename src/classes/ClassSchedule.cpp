@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "ClassSchedule.h"
 #include "GlobalButes.h"
 #include "ActionTree.h"
@@ -10,24 +11,26 @@
 CClassSchedule *g_ClassSchedule = reinterpret_cast<CClassSchedule *>(0x20C35E8);
 
 void CClassSchedule::InjectHooks(void) {
-	InjectHook(0x6A8AA0, &CClassSchedule::Init, PATCH_JUMP);
-	InjectHook(0x72B8B0, &CClassSchedule::Term, PATCH_JUMP);
-	InjectHook(0x6A8B40, &CClassSchedule::Reset, PATCH_JUMP);
-	InjectHook(0x6A8F70, &CClassSchedule::Update, PATCH_JUMP);
-	InjectHook(0x6A8B50, &CClassSchedule::IsTimeInRange, PATCH_JUMP);
-	InjectHook(0x6A8C90, &CClassSchedule::IsDay, PATCH_JUMP);
-	InjectHook(0x6A8BB0, &CClassSchedule::IsPeriodActive, PATCH_JUMP);
-	InjectHook(0x6A8D20, &CClassSchedule::AfterCurfew, PATCH_JUMP);
-	InjectHook(0x6A8DC0, &CClassSchedule::GetPeriodStartTime, PATCH_JUMP);
-	InjectHook(0x6A8DF0, &CClassSchedule::GetPeriodEndTime, PATCH_JUMP);
-	InjectHook(0x6A8C30, &CClassSchedule::FindPeriod, PATCH_JUMP);
-	InjectHook(0x6A8CC0, &CClassSchedule::GetTimePeriodType, PATCH_JUMP);
-	InjectHook(0x6A8CF0, &CClassSchedule::GetNextWarningPeriod, PATCH_JUMP);
-	InjectHook(0x6A8D30, &CClassSchedule::GetTotalPeriodMinutes, PATCH_JUMP);
-	InjectHook(0x6A8D70, &CClassSchedule::GetMinutesLeftInPeriod, PATCH_JUMP);
-	InjectHook(0x6A8E50, &CClassSchedule::ChangePeriod, PATCH_JUMP);
+	using namespace memory::hook;
 
-	InjectHook(0x6A8E20, &ClassScheduleCB, PATCH_JUMP);
+	inject_hook(0x6A8AA0, &CClassSchedule::Init);
+	inject_hook(0x72B8B0, &CClassSchedule::Term);
+	inject_hook(0x6A8B40, &CClassSchedule::Reset);
+	inject_hook(0x6A8F70, &CClassSchedule::Update);
+	inject_hook(0x6A8B50, &CClassSchedule::IsTimeInRange);
+	inject_hook(0x6A8C90, &CClassSchedule::IsDay);
+	inject_hook(0x6A8BB0, &CClassSchedule::IsPeriodActive);
+	inject_hook(0x6A8D20, &CClassSchedule::AfterCurfew);
+	inject_hook(0x6A8DC0, &CClassSchedule::GetPeriodStartTime);
+	inject_hook(0x6A8DF0, &CClassSchedule::GetPeriodEndTime);
+	inject_hook(0x6A8C30, &CClassSchedule::FindPeriod);
+	inject_hook(0x6A8CC0, &CClassSchedule::GetTimePeriodType);
+	inject_hook(0x6A8CF0, &CClassSchedule::GetNextWarningPeriod);
+	inject_hook(0x6A8D30, &CClassSchedule::GetTotalPeriodMinutes);
+	inject_hook(0x6A8D70, &CClassSchedule::GetMinutesLeftInPeriod);
+	inject_hook(0x6A8E50, &CClassSchedule::ChangePeriod);
+
+	inject_hook(0x6A8E20, &ClassScheduleCB);
 }
 
 CClassSchedule::CClassSchedule(void) {

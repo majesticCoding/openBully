@@ -1,5 +1,4 @@
 #pragma once
-#include "patcher.h"
 #include "Vector.h"
 #include "PlayerInfo.h"
 #include "Entity.h"

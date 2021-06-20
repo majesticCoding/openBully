@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "MemoryHeap.h"
 
 void CMemoryHeap::PushMemId(MemIDsTableEnum id) {

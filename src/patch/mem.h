@@ -3,6 +3,14 @@
 #include <cstdint>
 #include <algorithm>
 
+#pragma warning(disable : 4731)
+
+#define XCALL(uAddr)			\
+	__asm { mov esp, ebp	}	\
+	__asm { pop ebp			}	\
+	__asm { mov eax, uAddr	}	\
+	__asm { jmp eax			}
+
 namespace memory {
 class unprotect {
 	void         *addr = nullptr;

@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "ClumpModelInfo.h"
 
 CClumpModelInfo::~CClumpModelInfo() {

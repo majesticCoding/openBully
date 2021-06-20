@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Screen.h"
 
 void LoadingScreen(char const *str1, char const *str2) {

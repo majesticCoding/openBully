@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "MissionMgr.h"
 #include "CameraManager.h"
 
@@ -12,6 +13,10 @@ void CMissionMgr::InjectHooks(void) {
 	//InjectHook(0x6AA890, &CMissionMgr::IsOnMinigameMission, PATCH_JUMP);
 	//InjectHook(0x6AA7C0, &CMissionMgr::State, PATCH_JUMP);
 	//InjectHook(0x6AA660, &CMissionMgr::Data, PATCH_JUMP);
+}
+
+CMissionMgr::CMissionMgr() {
+	XCALL(0x6AC520);
 }
 
 CMissionRunInst CMissionMgr::PrimInst(void) {

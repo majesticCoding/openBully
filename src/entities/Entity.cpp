@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Entity.h"
 
 void CEntity::DeleteRwObject(void) {

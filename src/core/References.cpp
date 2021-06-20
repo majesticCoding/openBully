@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Referencess.h"
 
 void CReferences::Init() {

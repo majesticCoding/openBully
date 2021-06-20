@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "ScriptMgr.h"
 
 ScriptManager *gScriptManager = reinterpret_cast<ScriptManager *>(0xD02850);

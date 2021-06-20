@@ -1,5 +1,4 @@
 #pragma once
-#include "patcher.h"
 #include "Vector.h"
 
 struct RwMatrix {

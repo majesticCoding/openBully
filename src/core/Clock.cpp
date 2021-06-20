@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Clock.h"
 #include "Timer.h"
 #include "CutsceneMgr.h"
@@ -37,18 +38,20 @@ auto SetGlobalNormTime = (void(__cdecl*)(void))(0x513030);
 auto sub_425D60	= (bool(__thiscall*)(int32_t aShop[]))(0x425D60);
 
 void Clock::InjectHooks(void) {
-	InjectHook(0x426020, &Clock::Initialise, PATCH_JUMP);
-	InjectHook(0x425FE0, &Clock::IsDayTime, PATCH_JUMP);
-	InjectHook(0x426000, &Clock::IsNightTime, PATCH_JUMP);
-	InjectHook(0x425F80, &Clock::StoreClock, PATCH_JUMP);
-	InjectHook(0x425FB0, &Clock::RestoreClock, PATCH_JUMP);
-	InjectHook(0x425EA0, &Clock::ForcePauseThroughLua, PATCH_JUMP);
-	InjectHook(0x426070, &Clock::SetGameClock, PATCH_JUMP);
-	InjectHook(0x425D80, &Clock::IncrementClock, PATCH_JUMP);
-	InjectHook(0x425E40, &Clock::GetIsTimeInRange, PATCH_JUMP);
-	InjectHook(0x4261A0, &Clock::AdvanceToNightTime, PATCH_JUMP);
-	//InjectHook(0x425EB0, &Clock::DeterminePauseState, PATCH_JUMP);
-	InjectHook(0x4260D0, &Clock::Update, PATCH_JUMP);
+	using namespace memory::hook;
+
+	inject_hook(0x426020, &Clock::Initialise);
+	inject_hook(0x425FE0, &Clock::IsDayTime);
+	inject_hook(0x426000, &Clock::IsNightTime);
+	inject_hook(0x425F80, &Clock::StoreClock);
+	inject_hook(0x425FB0, &Clock::RestoreClock);
+	inject_hook(0x425EA0, &Clock::ForcePauseThroughLua);
+	inject_hook(0x426070, &Clock::SetGameClock);
+	inject_hook(0x425D80, &Clock::IncrementClock);
+	inject_hook(0x425E40, &Clock::GetIsTimeInRange);
+	inject_hook(0x4261A0, &Clock::AdvanceToNightTime);
+	//inject_hook(0x425EB0, &Clock::DeterminePauseState);
+	inject_hook(0x4260D0, &Clock::Update);
 }
 
 /*void SetGlobalNormTime(void) { 

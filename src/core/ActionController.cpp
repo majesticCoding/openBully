@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "ActionController.h"
 
 ActionController::ActionController() {

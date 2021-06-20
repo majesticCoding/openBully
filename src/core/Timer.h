@@ -1,6 +1,5 @@
 #pragma once
-#include <windows.h>
-#include "patcher.h"
+#include <cstdint>
 
 class CTimer {
 public:

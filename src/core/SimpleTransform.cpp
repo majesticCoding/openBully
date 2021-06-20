@@ -1,11 +1,14 @@
 #include <math.h>
 
+#include "hook.h"
 #include "SimpleTransform.h"
 
 void CSimpleTransform::InjectHooks() {
-	InjectHook(0x435C20, &CSimpleTransform::Constructor, PATCH_JUMP);
+	using namespace memory::hook;
 
-	InjectHook(0x46DCA0, &CSimpleTransform::UpdateMatrix, PATCH_JUMP);
+	inject_hook(0x435C20, &CSimpleTransform::Constructor);
+
+	inject_hook(0x46DCA0, &CSimpleTransform::UpdateMatrix);
 }
 
 CSimpleTransform *CSimpleTransform::Constructor(const CMatrix &mat) {

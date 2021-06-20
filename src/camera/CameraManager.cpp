@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "CameraManager.h"
 
 CameraManager *g_CameraManager = reinterpret_cast<CameraManager *>(0xC3CC68);

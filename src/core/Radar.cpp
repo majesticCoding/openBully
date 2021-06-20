@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Radar.h"
 
 void HUDRadar::RemoveRadarSections(void) {

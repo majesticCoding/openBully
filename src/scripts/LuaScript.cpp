@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "LuaScript.h"
 
 int32_t LuaScript::ExecuteFunctionCall(char const *name, uint32_t param2, bool flag) {
