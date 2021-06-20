@@ -1,6 +1,7 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include <windows.h>
 #include <stdio.h>
+
 #include "Game.h"
 #include "CutsceneMgr.h"
 #include "MissionMgr.h"
@@ -9,6 +10,10 @@
 #include "Clock.h"
 #include "Timer.h"
 #include "Occlusion.h"
+#include "SimpleTransform.h"
+#include "MatrixLink.h"
+#include "Placeable.h"
+
 #include "windowedMode.h"
 
 #pragma warning(disable:4996)
@@ -24,14 +29,28 @@ void DisplayConsole(void)
 }
 
 void InjectHooks(void) {
-	CGame::InjectHooks();
-	CVector::InjectHooks();
-	CMatrix::InjectHooks();
-	CTimer::InjectHooks();
+	// core
 	Clock::InjectHooks();
+	CGame::InjectHooks();
+	CMatrixLink::InjectHooks();
+	CPlaceable::InjectHooks();
+	CSimpleTransform::InjectHooks();
+	CTimer::InjectHooks();
+
+	// math
+	CMatrix::InjectHooks();
+	CVector::InjectHooks();
+	
+	// animation
 	CCutsceneMgr::InjectHooks();
+
+	// scripts
 	CMissionMgr::InjectHooks();
+
+	// classes
 	CClassSchedule::InjectHooks();
+
+	// render
 	COcclusion::InjectHooks();
 }
 
