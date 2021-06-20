@@ -47,8 +47,8 @@ void CMissionRunInst::Init(void) {
 	m_bIsActive = false;
 	//_pad1[81] = 0;
 	m_bFlag12 = false;
-	m_nUnk3 = -1;
-	m_nUnk4 = 0;
+	m_nUnk2 = -1;
+	m_nUnk3 = 0;
 	m_txdSlot = -1;
 	m_nTexturesCount = 0;
 }
