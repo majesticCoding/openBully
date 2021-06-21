@@ -36,8 +36,8 @@ bool HUDInventory::DoesItemTextureExist(int itemId) {
 }
 
 bool HUDInventory::DoesWeaponTextureExist(int itemId) {
-	if (itemId < MI_FIRSTOBJECT || itemId > MI_LASTOBJECT)
+	if (itemId < MI_FIRSTWEAPON || itemId > MI_LASTWEAPON)
 		return false;
 
-	return HUDInventory::ms_HUDItemTextures[itemId - MI_FIRSTOBJECT] != 0;
+	return HUDInventory::ms_HUDWeaponTextures[itemId - MI_FIRSTWEAPON] != 0;
 }
