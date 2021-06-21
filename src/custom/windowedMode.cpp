@@ -1,46 +1,28 @@
+// https://github.com/4el0ve4ik/BullyWindowedMode
+#include <windows.h>
+#include <process.h>
+
+#include "hook.h"
 #include "windowedMode.h"
 
 RECT Size = { 300, 200, 1100, 800 };
-using tProcWMMessage = bool(__stdcall*)(unsigned int);
-tProcWMMessage procWMMessage = nullptr;
 
 unsigned long hookedProcWM(bool stat) {
-	return false;
-}
-
-void InjectCall(DWORD _offset, DWORD target)
-{
-	unsigned long Protection;
-	VirtualProtect((void*)_offset, 5, PAGE_EXECUTE_READWRITE, &Protection);
-	target -= (_offset + 5);
-	*((unsigned char*)_offset) = 0xE8;
-	memcpy((LPVOID)(_offset + 1), &target, sizeof(DWORD));
-	VirtualProtect((void*)_offset, 5, Protection, 0);
+	return 0;
 }
 
 void WindowedModePatch(void*) {
-	while (true)
-	{
+	HWND hWND = nullptr;
+	while ((hWND = memory::read<HWND>(0xBD77FC)) == nullptr)
 		Sleep(350);
-		HWND hWND = nullptr;
-		if ((hWND = *reinterpret_cast<HWND*>(0xBD77FC)) != nullptr) {
-			unsigned long oldProt = NULL;
 
-			void *addr = reinterpret_cast<void*>(0x405F47);
-			VirtualProtect(addr, 1, PAGE_EXECUTE_READWRITE, &oldProt);
-			*reinterpret_cast<unsigned char*>(addr) = 0x09;
-			VirtualProtect(addr, 1, oldProt, NULL);
-			procWMMessage = reinterpret_cast<tProcWMMessage>(0x405DB0);
+	memory::write<unsigned char>(0x405F46 + 1, SW_RESTORE);
+	memory::hook::inject_hook(0x401106, &hookedProcWM, memory::hook::HookType::Call);
 
-			InjectCall(0x401106, (DWORD)&hookedProcWM);
+	SetWindowLong(hWND, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+	SetWindowLong(hWND, GWL_EXSTYLE, 0L);
+	ShowWindow(hWND, SW_SHOWDEFAULT);
+	MoveWindow(hWND, Size.left, Size.top, Size.right - Size.left, Size.bottom - Size.top, true);
 
-			SetWindowLong(hWND, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
-			SetWindowLong(hWND, GWL_EXSTYLE, 0L);
-			ShowWindow(hWND, SW_SHOWDEFAULT);
-			MoveWindow(hWND, Size.left, Size.top, Size.right - Size.left, Size.bottom - Size.top, true);
-
-			break;
-		}
-	}
 	_endthread();
 }

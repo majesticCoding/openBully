@@ -2,31 +2,28 @@
 
 #include "Placeable.h"
 
-CMatrix &g_mLastUpdated = *reinterpret_cast<CMatrix *>(0xC2AB18);
+CMatrix &g_mLastUpdated = memory::read<CMatrix>(0xC2AB18);
 
 void CPlaceable::InjectHooks() {
-	InjectHook(0x46D9B0, &CPlaceable::Constructor, PATCH_JUMP);
+	using namespace memory::hook;
 
-	// InjectHook(0x46DDF0, &CPlaceable::AllocateMatrix, PATCH_JUMP);
-	// InjectHook(0x46DD40, &CPlaceable::AllocateStaticMatrix, PATCH_JUMP);
-	
-	InjectHook(0x8B6120, &CPlaceable::GetMatrix, PATCH_JUMP);
-	InjectHook(0x46DD20, &CPlaceable::GetTransform, PATCH_JUMP);
-	
-	InjectHook(0x46D9D0, static_cast<bool(CPlaceable:: *)(float, float, float,
-		float)>(&CPlaceable::IsWithinArea), PATCH_JUMP);
-	InjectHook(0x46DAB0, static_cast<bool(CPlaceable:: *)(float, float, float,
-		float, float, float)>(&CPlaceable::IsWithinArea), PATCH_JUMP);
-		
-	// InjectHook(0x46DC00, &CPlaceable::RemoveMatrix, PATCH_JUMP);
-	InjectHook(0x46DE90, &CPlaceable::SetMatrix, PATCH_JUMP);
-	
-	// InjectHook(0x46DBF0, &CPlaceable::InitMatrixArray, PATCH_JUMP);
-}
+	inject_hook(0x46D9B0, &CPlaceable::Constructor<>);
 
-CPlaceable *CPlaceable::Constructor() {
-	this->CPlaceable::CPlaceable();
-	return this;
+	// inject_hook(0x46DDF0, &CPlaceable::AllocateMatrix);
+	// inject_hook(0x46DD40, &CPlaceable::AllocateStaticMatrix);
+
+	inject_hook(0x8B6120, &CPlaceable::GetMatrix);
+	inject_hook(0x46DD20, &CPlaceable::GetTransform);
+
+	inject_hook(0x46D9D0, static_cast<bool(CPlaceable:: *)(float, float, float,
+		float)>(&CPlaceable::IsWithinArea));
+	inject_hook(0x46DAB0, static_cast<bool(CPlaceable:: *)(float, float, float,
+		float, float, float)>(&CPlaceable::IsWithinArea));
+
+	// inject_hook(0x46DC00, &CPlaceable::RemoveMatrix);
+	inject_hook(0x46DE90, &CPlaceable::SetMatrix);
+	
+	// inject_hook(0x46DBF0, &CPlaceable::InitMatrixArray);
 }
 
 CPlaceable::CPlaceable() {
@@ -41,11 +38,11 @@ CPlaceable::~CPlaceable() {
 }
 
 void CPlaceable::AllocateMatrix() {
-	XCALL(0x46DDF0);
+	memory::call_method<CPlaceable *>(0x46DDF0, this);
 }
 
 void CPlaceable::AllocateStaticMatrix() {
-	XCALL(0x46DD40);
+	memory::call_method<CPlaceable *>(0x46DD40, this);
 }
 
 CMatrixLink *CPlaceable::GetMatrix() {
@@ -104,7 +101,7 @@ bool CPlaceable::IsWithinArea(float x1, float y1, float z1, float x2, float y2, 
 }
 
 void CPlaceable::RemoveMatrix() {
-	XCALL(0x46DC00);
+	memory::call_method<CPlaceable *>(0x46DC00, this);
 }
 
 void CPlaceable::SetMatrix(const CMatrix &mat, bool bAllocMatrix) {
@@ -124,5 +121,5 @@ void CPlaceable::SetMatrix(const CMatrix &mat, bool bAllocMatrix) {
 }
 
 void CPlaceable::InitMatrixArray() {
-	XCALL(0x46DBF0);
+	memory::call(0x46DBF0);
 }

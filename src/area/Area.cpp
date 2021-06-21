@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Area.h"
 
 void CAreaPopulationInfo::Init(void) {

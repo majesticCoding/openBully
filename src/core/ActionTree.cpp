@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "ActionTree.h"
 
 ActionTreeName::ActionTreeName(void) {

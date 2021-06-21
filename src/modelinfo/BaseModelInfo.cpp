@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "BaseModelInfo.h"
 
 CBaseModelInfo::CBaseModelInfo(ModelInfoType type) {

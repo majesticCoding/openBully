@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "GlobalButes.h"
 #include "ClassSchedule.h"
 

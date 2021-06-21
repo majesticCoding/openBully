@@ -1,5 +1,4 @@
 #pragma once
-#include "patcher.h"
 #include "BaseModelInfo.h"
 
 #define MODELINFOSIZE 10082

@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Texture2D.h"
 
 void RwTextureDestroy(Texture2D *pTex) {

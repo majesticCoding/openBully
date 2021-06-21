@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "StreamManager.h"
 
 StreamManager *g_StreamManager = reinterpret_cast<StreamManager *>(0xCF4284);

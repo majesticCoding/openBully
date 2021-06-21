@@ -26,6 +26,7 @@ project "openBully"
 		includedirs { "src/memory"}
 		includedirs { "src/modelinfo"}
 		includedirs { "src/objects" }
+		includedirs { "src/patch" }
 		includedirs { "src/peds" }
 		includedirs { "src/pickups" }
 		includedirs { "src/render" }

@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "CutsceneMgr.h"
 #include "StreamManager.h"
 #include "ActionTree.h"
@@ -64,16 +65,18 @@ int32_t &numPropAnimsToUpd = *(int32_t*)0x20C5C48; //dword_20C5C48
 char *g_string = (char *)0xC221A8;
 
 void CCutsceneMgr::InjectHooks(void) {
-	InjectHook(0x6C3BD0, &CCutsceneMgr::FinishMiniCutscene, PATCH_JUMP);
-	InjectHook(0x6C38A0, &CCutsceneMgr::Reset, PATCH_JUMP);
-	InjectHook(0x6C3720, &CCutsceneMgr::Initialise, PATCH_JUMP);
-	InjectHook(0x6C3DE0, &CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory, PATCH_JUMP);
-	InjectHook(0x6C3AD0, &CCutsceneMgr::GetCutsceneTimeInMilleseconds, PATCH_JUMP);
-	InjectHook(0x6C38B0, &CCutsceneMgr::LoadCutsceneSound, PATCH_JUMP);
-	InjectHook(0x6C3B90, &CCutsceneMgr::StartMiniCutscene, PATCH_JUMP);
-	InjectHook(0x6C3D50, &CCutsceneMgr::GetCutsceneJimmy, PATCH_JUMP);
-	//InjectHook(0x6C4030, &CCutsceneMgr::DeleteCutsceneData, PATCH_JUMP);
-	//InjectHook(0x6C45E0, &CCutsceneMgr::LoadCutsceneData, PATCH_JUMP);
+	using namespace memory::hook;
+
+	inject_hook(0x6C3BD0, &CCutsceneMgr::FinishMiniCutscene);
+	inject_hook(0x6C38A0, &CCutsceneMgr::Reset);
+	inject_hook(0x6C3720, &CCutsceneMgr::Initialise);
+	inject_hook(0x6C3DE0, &CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory);
+	inject_hook(0x6C3AD0, &CCutsceneMgr::GetCutsceneTimeInMilleseconds);
+	inject_hook(0x6C38B0, &CCutsceneMgr::LoadCutsceneSound);
+	inject_hook(0x6C3B90, &CCutsceneMgr::StartMiniCutscene);
+	inject_hook(0x6C3D50, &CCutsceneMgr::GetCutsceneJimmy);
+	//inject_hook(0x6C4030, &CCutsceneMgr::DeleteCutsceneData);
+	//inject_hook(0x6C45E0, &CCutsceneMgr::LoadCutsceneData);
 }
 
 void CCutsceneMgr::Reset(void) {

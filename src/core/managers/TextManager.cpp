@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "TextManager.h"
 
 TextManager *theTextManager = reinterpret_cast<TextManager *>(0x20C2FA4);

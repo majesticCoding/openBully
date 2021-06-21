@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "ColModel.h"
 
 CColModel::~CColModel() {

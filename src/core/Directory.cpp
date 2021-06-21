@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Directory.h"
 
 template <>CDirectoryTemplate<CDirectoryInfo>::CDirectoryTemplate(int32_t n) {

@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "PlayerInfo.h"
 
 CVector CPlayerInfo::GetPos(void) {

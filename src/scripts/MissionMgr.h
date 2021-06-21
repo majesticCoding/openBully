@@ -1,5 +1,4 @@
 #pragma once
-#include "patcher.h"
 #include "MissionRunInst.h"
 #include "Clock.h"
 
@@ -42,9 +41,7 @@ private:
 	int32_t m_nMissionsNum; //1860
 	int32_t m_nSuccesCount; //1864
 public:
-	CMissionMgr() {
-		XCALL(0x6AC520);
-	}
+	CMissionMgr();
 
 	bool IsMissionRunning(void);
 	bool IsMissionRunning(int missionId);

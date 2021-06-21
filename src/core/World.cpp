@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "World.h"
 
 bool &CWorld::bProcessCutsceneOnly = *(bool*)0xC1AE6E;

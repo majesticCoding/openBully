@@ -1,5 +1,5 @@
 #pragma once
-#include "patcher.h"
+#include <cstdint>
 
 class CStreaming {
 public:

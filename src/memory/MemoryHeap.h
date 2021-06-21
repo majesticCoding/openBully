@@ -1,5 +1,5 @@
 #pragma once
-#include "patcher.h"
+#include <cstdint>
 
 enum MemIDsTableEnum : int32_t {
 	TEXTURES_MEM_ID = 23,

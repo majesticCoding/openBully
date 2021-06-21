@@ -1,15 +1,19 @@
 #include <math.h>
 #include <limits>
+
+#include "hook.h"
 #include "Vector.h"
 
 CVector const &CVector::Zero = CVector(0.0f, 0.0f, 0.0f);
 
 void CVector::InjectHooks(void) {
-	InjectHook(0x414E10, &CVector::Normalize, PATCH_JUMP);
-	InjectHook(0x414E70, &CVector::LimitDirection, PATCH_JUMP);
-	InjectHook(0x414B70, (CVector(*)(CVector const &, CVector const &))&operator-, PATCH_JUMP);
-	InjectHook(0x414BA0, (CVector(*)(Vector3 const &, CVector const &))&operator-, PATCH_JUMP);
-	InjectHook(0x414C20, &calcNormalizingCoefficient, PATCH_JUMP);
+	using namespace memory::hook;
+
+	inject_hook(0x414E10, &CVector::Normalize);
+	inject_hook(0x414E70, &CVector::LimitDirection);
+	inject_hook(0x414B70, (CVector(*)(CVector const &, CVector const &))&operator-);
+	inject_hook(0x414BA0, (CVector(*)(Vector3 const &, CVector const &))&operator-);
+	inject_hook(0x414C20, &calcNormalizingCoefficient);
 }
 
 CVector CrossProduct(const CVector &v1, const CVector &v2) {

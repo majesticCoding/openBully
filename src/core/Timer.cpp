@@ -1,3 +1,6 @@
+#include <Windows.h>
+
+#include "hook.h"
 #include "Timer.h"
 
 uint32_t &CTimer::m_snTimeInMilliseconds = *(uint32_t*)0xC1A9B4;
@@ -28,16 +31,18 @@ int64_t &dFrequency = *(int64_t*)0xC1A9E0; //dbl_C1A9E0
 uint32_t &suspendDepth = *(uint32_t*)0xC1A9B8; //dword_C1A9B8
 
 void CTimer::InjectHooks(void) {
-	InjectHook(0x45B8A0, &CTimer::Initialise, PATCH_JUMP);
-	InjectHook(0x45B960, &CTimer::Update, PATCH_JUMP);
-	InjectHook(0x45B800, &CTimer::Stop, PATCH_JUMP);
-	InjectHook(0x45B7B0, &CTimer::Suspend, PATCH_JUMP);
-	InjectHook(0x45B7D0, &CTimer::Resume, PATCH_JUMP);
-	InjectHook(0x45B810, &CTimer::StartUserPause, PATCH_JUMP);
-	InjectHook(0x45B820, &CTimer::EndUserPause, PATCH_JUMP);
-	InjectHook(0x45B830, &CTimer::GetFrameDurationInMilliseconds, PATCH_JUMP);
-	InjectHook(0x45B840, &CTimer::GetFrameDurationInSeconds, PATCH_JUMP);
-	InjectHook(0x45BCA0, &CTimer::GetCurrentTimeInMilleseconds, PATCH_JUMP);
+	using namespace memory::hook;
+
+	inject_hook(0x45B8A0, &CTimer::Initialise);
+	inject_hook(0x45B960, &CTimer::Update);
+	inject_hook(0x45B800, &CTimer::Stop);
+	inject_hook(0x45B7B0, &CTimer::Suspend);
+	inject_hook(0x45B7D0, &CTimer::Resume);
+	inject_hook(0x45B810, &CTimer::StartUserPause);
+	inject_hook(0x45B820, &CTimer::EndUserPause);
+	inject_hook(0x45B830, &CTimer::GetFrameDurationInMilliseconds);
+	inject_hook(0x45B840, &CTimer::GetFrameDurationInSeconds);
+	inject_hook(0x45BCA0, &CTimer::GetCurrentTimeInMilleseconds);
 }
 
 void CTimer::Initialise(void) {

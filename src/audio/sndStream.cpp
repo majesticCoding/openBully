@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "sndStream.h"
 
 sndStream *g_sndStream = reinterpret_cast<sndStream *>(0xCF4290); //dword_CF4290

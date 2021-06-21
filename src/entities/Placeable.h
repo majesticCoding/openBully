@@ -1,9 +1,11 @@
 #pragma once
+#include "hook.h"
+
 #include "MatrixLink.h"
 #include "SimpleTransform.h"
 
 class CPlaceable {
-	CPlaceable *Constructor();
+	HOOKED_CONSTRUCTOR_CLASS(CPlaceable)
 protected:
 	CSimpleTransform m_placement;
 	CMatrixLink *m_matrix;

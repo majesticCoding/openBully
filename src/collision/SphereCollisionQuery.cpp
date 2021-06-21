@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "SphereCollisionQuery.h"
 
 void SphereCollisionQuery::Init(void) {

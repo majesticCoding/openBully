@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Population.h"
 
 CPopulation *CPopulation::m_spInstance = (CPopulation*)(0xC2C108);

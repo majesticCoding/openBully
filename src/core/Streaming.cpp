@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Streaming.h"
 
 bool &CStreaming::ms_disableStreaming = *(bool*)0xCA3984;

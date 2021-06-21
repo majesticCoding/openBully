@@ -1,5 +1,6 @@
 #pragma once
-#include "patcher.h"
+#include <cstdint>
+
 #include "Vector2D.h"
 
 #define NUMOCCLUSIONVOLUMES 350

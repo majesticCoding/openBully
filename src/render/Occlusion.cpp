@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Occlusion.h"
 
 int32_t &COcclusion::NumOccludersOnMap = *(int32_t*)0xC89F8C;
@@ -11,10 +12,12 @@ COccluder *COcclusion::aOccluders = reinterpret_cast<COccluder *>(0xC8B790);
 int16_t &word_C8E8BE = *(int16_t*)0xC8E8BE; //only initialized, never used
 
 void COcclusion::InjectHooks(void) {
-	InjectHook(0x51CE00, &COcclusion::Init, PATCH_JUMP);
-	InjectHook(0x51CE50, &COcclusion::AddOne, PATCH_JUMP);
-	InjectHook(0x51CFC0, &COcclusion::OccluderHidesBehind, PATCH_JUMP);
-	InjectHook(0x51CF90, &IsPointInsideLine, PATCH_JUMP);
+	using namespace memory::hook;
+
+	inject_hook(0x51CE00, &COcclusion::Init);
+	inject_hook(0x51CE50, &COcclusion::AddOne);
+	inject_hook(0x51CFC0, &COcclusion::OccluderHidesBehind);
+	inject_hook(0x51CF90, &IsPointInsideLine);
 }
 
 void COcclusion::Init() {

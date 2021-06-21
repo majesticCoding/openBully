@@ -1,5 +1,4 @@
 #pragma once
-#include "patcher.h"
 #include "math.h"
 
 struct RwV3d {

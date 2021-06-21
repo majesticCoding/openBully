@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "PedModelInfo.h"
 
 void CPedModelInfo::SetModelName(char const *name, int32_t n) {

@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "Object.h"
 
 void CObject::operator delete(void *p) { 

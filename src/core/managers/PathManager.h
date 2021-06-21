@@ -1,5 +1,4 @@
 #pragma once
-#include "patcher.h"
 
 class PathManager {
 	char _pad[0x10];

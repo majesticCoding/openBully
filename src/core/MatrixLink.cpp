@@ -1,7 +1,10 @@
+#include "hook.h"
 #include "MatrixLink.h"
 
 void CMatrixLink::InjectHooks() {
-	InjectHook(0x46D770, &CMatrixLink::Constructor, PATCH_JUMP);
+	using namespace memory::hook;
+
+	inject_hook(0x46D770, &CMatrixLink::Constructor);
 }
 
 CMatrixLink *CMatrixLink::Constructor() {

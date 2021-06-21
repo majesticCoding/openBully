@@ -28,6 +28,7 @@ target_include_directories(openBully PRIVATE
     src/memory
     src/modelinfo
     src/objects
+    src/patch
     src/peds
     src/pickups
     src/render

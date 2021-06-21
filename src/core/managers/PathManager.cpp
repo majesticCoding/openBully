@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "PathManager.h"
 
 PathManager *g_PathManager = reinterpret_cast<PathManager*>(0xD13CB4);

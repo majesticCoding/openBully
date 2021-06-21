@@ -1,3 +1,4 @@
+#include "hook.h"
 #include "ColStore.h"
 
 void CColStore::RemoveAllCollision(void) {

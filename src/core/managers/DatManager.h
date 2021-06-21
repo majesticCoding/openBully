@@ -1,4 +1,4 @@
-#include "patcher.h"
+#pragma once
 
 class DATManager {
 public:
