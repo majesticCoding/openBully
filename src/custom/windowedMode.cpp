@@ -16,7 +16,7 @@ void WindowedModePatch(void*) {
 	while ((hWND = memory::read<HWND>(0xBD77FC)) == nullptr)
 		Sleep(350);
 
-	memory::write<unsigned char>(0x405F46 + 1, 0x09); // SW_RESTORE
+	memory::write<unsigned char>(0x405F46 + 1, SW_RESTORE);
 	memory::hook::inject_hook(0x401106, &hookedProcWM, memory::hook::HookType::Call);
 
 	SetWindowLong(hWND, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
