@@ -19,6 +19,7 @@
 #include "FileMgr.h"
 #include "PedModelInfo.h"
 #include "ModelInfo.h"
+#include "ModelIndices.h"
 
 bool &CCutsceneMgr::ms_loaded = *(bool*)0x20C5BE1;
 bool &CCutsceneMgr::ms_loadStatus = *(bool*)0x20C5BE2;
@@ -55,10 +56,6 @@ bool &bEverythingRemoved = *(bool*)0x20C5BE0;
 bool &byte_20C5C08 = *(bool*)0x20C5C08;
 bool &byte_BCC120 = *(bool*)0xBCC120;
 bool &byte_20C5C09 = *(bool*)0x20C5C09;
-int32_t &MI_FIRSTWEAPON = *(int32_t*)0xA136B0;
-int32_t &MI_LASTWEAPON = *(int32_t*)0xA136B4;
-int32_t &MI_FIRSTSPECIALCHAR = *(int32_t*)0xA136D0;
-int32_t &MI_LASTSPECIALCHAR = *(int32_t*)0xA136D4;
 
 int32_t &numPropAnimsToUpd = *(int32_t*)0x20C5C48; //dword_20C5C48
 

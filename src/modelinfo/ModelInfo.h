@@ -12,4 +12,6 @@ public:
 	static CBaseModelInfo *GetModelInfo(int32_t modelId) {
 		return ms_modelInfoPtrs[modelId];
 	}
+
+	static int Butes(int idx);
 };

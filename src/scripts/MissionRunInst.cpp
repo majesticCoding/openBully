@@ -1,6 +1,9 @@
+#include "hook.h"
 #include "MissionRunInst.h"
 #include "UserInputManager.h"
 #include "MissionMgr.h"
+#include "TxdStore.h"
+#include "ModelIndices.h"
 
 void CMissionActiveInst::Init(int n_Unk) {
 
@@ -51,6 +54,12 @@ void CMissionRunInst::Init(void) {
 	m_nUnk3 = 0;
 	m_txdSlot = -1;
 	m_nTexturesCount = 0;
+
+	printf("MissionRunInst was initialized!\n");
+}
+
+void CMissionRunInst::Update(void) {
+	;
 }
 
 int CMissionRunInst::FindTextureForModel(int modelId) {
@@ -137,6 +146,25 @@ void CMissionRunInst::MissionCleanup() {
 		return;
 
 	//TODO: the rest
+}
+
+void CMissionRunInst::AssociateModelIndiciesWithTextures() {
+	if (m_txdSlot < 0)
+		return;
+
+	CTxdStore::PushCurrentTxd();
+	CTxdStore::SetCurrentTxd(m_txdSlot);
+
+	for (int i = MI_FIRSTOBJECT; i <= MI_LASTOBJECT; i++) {
+		//TODO: the rest
+		//[!] HUDInventory and CModelInfo has vmts
+	}
+
+	for (int i = MI_FIRSTWEAPON; i <= MI_LASTWEAPON; i++) {
+		//TODO: the rest
+	}
+
+	CTxdStore::PopCurrentTxd();
 }
 
 void CMissionRunInst::RemoveTextures() {
