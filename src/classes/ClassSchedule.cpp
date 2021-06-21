@@ -14,7 +14,7 @@ void CClassSchedule::InjectHooks(void) {
 	using namespace memory::hook;
 
 	inject_hook(0x6A8AA0, &CClassSchedule::Init);
-	inject_hook(0x72B8B0, &CClassSchedule::Term);
+	inject_hook(0x6A8E40, &CClassSchedule::Term);
 	inject_hook(0x6A8B40, &CClassSchedule::Reset);
 	inject_hook(0x6A8F70, &CClassSchedule::Update);
 	inject_hook(0x6A8B50, &CClassSchedule::IsTimeInRange);
