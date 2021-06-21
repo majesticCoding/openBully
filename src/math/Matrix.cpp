@@ -1,13 +1,12 @@
 #include <math.h>
 
-#include "hook.h"
 #include "Matrix.h"
 #include "Vector.h"
 
 void CMatrix::InjectHooks(void) {
 	using namespace memory::hook;
 
-	inject_hook(0x412A10, &CMatrix::Constructor);
+	inject_hook(0x412A10, &CMatrix::Constructor<const CMatrix &>);
 
 	inject_hook(0x412B60, &CMatrix::SetRotateXOnly);
 	inject_hook(0x412BC0, &CMatrix::SetRotateYOnly);
@@ -33,12 +32,7 @@ void CMatrix::InjectHooks(void) {
 	inject_hook(0x4120E0, &MyMatrix44::operator*=);
 }
 
-CMatrix *CMatrix::Constructor(CMatrix const &m) {
-	this->CMatrix::CMatrix(m);
-	return this;
-}
-
-CMatrix::CMatrix(CMatrix const &m) {
+CMatrix::CMatrix(const CMatrix &m) {
 	m_pAttachMatrix = nullptr;
 
 	right = m.right;

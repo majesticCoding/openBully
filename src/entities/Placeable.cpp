@@ -7,7 +7,7 @@ CMatrix &g_mLastUpdated = memory::read<CMatrix>(0xC2AB18);
 void CPlaceable::InjectHooks() {
 	using namespace memory::hook;
 
-	inject_hook(0x46D9B0, &CPlaceable::Constructor);
+	inject_hook(0x46D9B0, &CPlaceable::Constructor<>);
 
 	// inject_hook(0x46DDF0, &CPlaceable::AllocateMatrix);
 	// inject_hook(0x46DD40, &CPlaceable::AllocateStaticMatrix);
@@ -24,11 +24,6 @@ void CPlaceable::InjectHooks() {
 	inject_hook(0x46DE90, &CPlaceable::SetMatrix);
 	
 	// inject_hook(0x46DBF0, &CPlaceable::InitMatrixArray);
-}
-
-HOOKED_CONSTRUCTOR_CLASS(CPlaceable) {
-	CALL_CONSTRUCTOR(CPlaceable);
-	return this;
 }
 
 CPlaceable::CPlaceable() {

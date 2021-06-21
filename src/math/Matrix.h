@@ -1,4 +1,5 @@
 #pragma once
+#include "hook.h"
 #include "Vector.h"
 
 struct RwMatrix {
@@ -9,7 +10,7 @@ struct RwMatrix {
 };
 
 class CMatrix {
-	CMatrix *Constructor(const CMatrix &m);
+	HOOKED_CONSTRUCTOR_CLASS(CMatrix)
 public:
 	CMatrix() = default;
 	CMatrix(const CMatrix &m);

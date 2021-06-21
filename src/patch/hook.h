@@ -4,10 +4,19 @@
 
 // macros
 #define CALL_CONSTRUCTOR(c, ...) this->c::c(__VA_ARGS__)
-#define HOOKED_CONSTRUCTOR_CLASS(c, ...) c *c::Constructor(__VA_ARGS__)
+#define HOOKED_CONSTRUCTOR_CLASS(c) \
+template <typename... Args> \
+c *Constructor(Args... args) { \
+	CALL_CONSTRUCTOR(c, args...); \
+	return this; \
+}
 
-#define CALL_DESTRUCTOR(c, ...) this->c::~c(__VA_ARGS__)
-#define HOOKED_DESTRUCTOR_CLASS(c, ...) c *Destructor(__VA_ARGS__)
+#define CALL_DESTRUCTOR(c) this->c::~c()
+#define HOOKED_DESTRUCTOR_CLASS(c) \
+c *Destructor() { \
+	CALL_DESTRUCTOR(c); \
+	return this; \
+}
 
 namespace memory {
 namespace hook {

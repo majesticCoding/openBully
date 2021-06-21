@@ -5,7 +5,7 @@
 #include "SimpleTransform.h"
 
 class CPlaceable {
-	HOOKED_CONSTRUCTOR_CLASS(CPlaceable);
+	HOOKED_CONSTRUCTOR_CLASS(CPlaceable)
 protected:
 	CSimpleTransform m_placement;
 	CMatrixLink *m_matrix;
