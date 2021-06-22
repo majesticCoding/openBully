@@ -9,11 +9,14 @@ public:
 		char *m_animFileName;
 	};
 
+	CClumpModelInfo(void) : CBaseModelInfo(MITYPE_CLUMP) {}
+	CClumpModelInfo(ModelInfoType Type) : CBaseModelInfo(Type) {}
+
 	~CClumpModelInfo();
 	void DeleteRwObject(void);
 	int *CreateInstance(void) { return nullptr; }; //TODO: replace with RwObject *
 	int *GetRwObject(void) { return nullptr; }; //TODO: replace with RwObject *
+	void SetAnimFile(char const *file) {};
 
-	virtual void SetAnimFile(char const *file) {};
 	virtual int GetAnimFileIndex(void) { return m_animFileIndex; }
 };
