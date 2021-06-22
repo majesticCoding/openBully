@@ -25,7 +25,7 @@ protected:
 	CColModel *m_pCol;
 	int16_t m_2dEffectId;
 	int16_t m_objectId;
-	uint16_t m_w3;
+	uint16_t m_wRefCount;
 	int16_t m_txdSlot;
 	char _pad[8];
 
@@ -48,6 +48,10 @@ public:
 	void SetColModel(CColModel *pCol, bool bOwns = false);
 	void FindBute(void);
 	void SetTexDictionary(char const *texDictName, bool bParam);
+	void AddRefToAllAnimFiles(void);
+	void RemoveRefToAllAnimFiles(void);
+	void AddRef(void);
+	void RemoveRef(void);
 	void DeleteCollisionModel(void);
 	void Delete2dEffects(void);
 	bool IsModelName(char const *name);

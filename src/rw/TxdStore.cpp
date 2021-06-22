@@ -9,6 +9,10 @@ void CTxdStore::AddRef(int slot) {
 	XCALL(0x5F1130);
 }
 
+void CTxdStore::RemoveRef(int slot) {
+	XCALL(0x50EBC0);
+}
+
 void CTxdStore::LoadTxd(int slot, char const *str) {
 	XCALL(0x5F2A80);
 }

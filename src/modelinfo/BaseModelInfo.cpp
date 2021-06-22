@@ -2,6 +2,8 @@
 #include "BaseModelInfo.h"
 #include "BullyHash.h"
 #include "TxdStore.h"
+#include "Streaming.h"
+#include "AnimationManager.h"
 
 CBaseModelInfo::CBaseModelInfo(ModelInfoType Type) {
 	//XCALL(0x50E8C0);
@@ -13,7 +15,7 @@ CBaseModelInfo::CBaseModelInfo(ModelInfoType Type) {
 	m_pCol = nullptr;
 	m_2dEffectId = -1;
 	m_objectId = -1;
-	m_w3 = 0;
+	m_wRefCount = 0;
 	//_pad[4] = 0;
 }
 
@@ -37,6 +39,76 @@ void CBaseModelInfo::SetTexDictionary(char const *texDictName, bool bParam) {
 		slot = CTxdStore::AddTxdSlot(texDictName);
 
 	m_txdSlot = slot;
+}
+
+void CBaseModelInfo::AddRefToAllAnimFiles(void) {
+	uint32_t u;
+	AM_Hierarchy *pHier;
+
+	int32_t animIdx = GetAnimFileIndex();
+	if (animIdx != -1) {
+		pHier = CStreaming::GetHierarchyFromIndex(animIdx, &u);
+		RV_AnimationManager::gAnimationManager.AddRefToAnimGroup(pHier, u);
+	}
+
+	animIdx = GetAnimFile2Index();
+	if (animIdx != -1) {
+		pHier = CStreaming::GetHierarchyFromIndex(animIdx, &u);
+		RV_AnimationManager::gAnimationManager.AddRefToAnimGroup(pHier, u);
+	}
+
+	animIdx = GetAnimFile3Index();
+	if (animIdx != -1) {
+		pHier = CStreaming::GetHierarchyFromIndex(animIdx, &u);
+		RV_AnimationManager::gAnimationManager.AddRefToAnimGroup(pHier, u);
+	}
+
+	animIdx = GetAnimFile4Index();
+	if (animIdx != -1) {
+		pHier = CStreaming::GetHierarchyFromIndex(animIdx, &u);
+		RV_AnimationManager::gAnimationManager.AddRefToAnimGroup(pHier, u);
+	}
+}
+
+void CBaseModelInfo::RemoveRefToAllAnimFiles(void) {
+	uint32_t u;
+	AM_Hierarchy *pHier;
+
+	int32_t animIdx = GetAnimFileIndex();
+	if (animIdx != -1) {
+		pHier = CStreaming::GetHierarchyFromIndex(animIdx, &u);
+		RV_AnimationManager::gAnimationManager.RemoveRefFromAnimGroup(pHier, u, NULL);
+	}
+
+	animIdx = GetAnimFile2Index();
+	if (animIdx != -1) {
+		pHier = CStreaming::GetHierarchyFromIndex(animIdx, &u);
+		RV_AnimationManager::gAnimationManager.RemoveRefFromAnimGroup(pHier, u, NULL);
+	}
+
+	animIdx = GetAnimFile3Index();
+	if (animIdx != -1) {
+		pHier = CStreaming::GetHierarchyFromIndex(animIdx, &u);
+		RV_AnimationManager::gAnimationManager.RemoveRefFromAnimGroup(pHier, u, NULL);
+	}
+
+	animIdx = GetAnimFile4Index();
+	if (animIdx != -1) {
+		pHier = CStreaming::GetHierarchyFromIndex(animIdx, &u);
+		RV_AnimationManager::gAnimationManager.RemoveRefFromAnimGroup(pHier, u, NULL);
+	}
+}
+
+void CBaseModelInfo::AddRef(void) {
+	m_wRefCount++;
+	CTxdStore::AddRef(m_txdSlot);
+	AddRefToAllAnimFiles();
+}
+
+void CBaseModelInfo::RemoveRef(void) {
+	m_wRefCount--;
+	CTxdStore::AddRef(m_txdSlot);
+	RemoveRefToAllAnimFiles();
 }
 
 void CBaseModelInfo::DeleteCollisionModel(void) {

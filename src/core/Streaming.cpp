@@ -34,3 +34,7 @@ void CStreaming::RemoveModel(int32_t modelId) {
 void CStreaming::RequestModel(int32_t modelId, int32_t flag) {
 	XCALL(0x532020);
 }
+
+AM_Hierarchy *CStreaming::GetHierarchyFromIndex(int32_t, uint32_t *) {
+	XCALL(0x52DB50);
+}

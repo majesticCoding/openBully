@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include "Hierarchy.h"
 
 class CStreaming {
 public:
@@ -13,4 +14,5 @@ public:
 	static void RemoveModel(int32_t modelId);
 	static bool RemoveLoadedVehicle(void);
 	static void RequestModel(int32_t, int32_t);
+	static AM_Hierarchy *CStreaming::GetHierarchyFromIndex(int32_t, uint32_t *);
 };
