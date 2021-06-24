@@ -1,4 +1,5 @@
 #pragma once
+#include "Entity.h"
 #include "BaseModelInfo.h"
 
 #define MODELINFOSIZE 10082
@@ -14,4 +15,5 @@ public:
 	}
 
 	static int Butes(int idx);
+	static CColModel *GetColModel(const CEntity *pEntity);
 };
