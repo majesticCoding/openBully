@@ -10,8 +10,11 @@ public:
 
 	float dword0;
 	float dword4;
-	float dword8; // maybe CVector
-	int dwordC[9];
+	float dword8;  // maybe CVector
+	float dwordC;
+	float dword10;
+	float dword14;
+	int dword18[6];
 	short short30;
 	short short32;
 	char byte34;

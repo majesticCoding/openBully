@@ -59,12 +59,6 @@ CMatrix *CPlaceable::GetTransform() {
 }
 
 bool CPlaceable::IsWithinArea(float x1, float y1, float x2, float y2) {
-	CVector *vec;
-	if (m_matrix)
-		vec = &m_matrix->pos;
-	else
-		vec = &m_placement.m_vPosn;
-	
 	float left = x1, right = x2;
 	if (x2 < x1) {
 		left = x2;
@@ -77,19 +71,14 @@ bool CPlaceable::IsWithinArea(float x1, float y1, float x2, float y2) {
 		bottom = y1;
 	}
 
-	return vec->x >= left && vec->x <= right
-		&& vec->y >= top  && vec->y <= bottom;
+	CVector &vec = GetPosition();
+	return vec.x >= left && vec.x <= right
+		&& vec.y >= top  && vec.y <= bottom;
 }
 
 bool CPlaceable::IsWithinArea(float x1, float y1, float z1, float x2, float y2, float z2) {
 	if (!IsWithinArea(x1, y1, x2, y2))
 		return false;
-
-	CVector *vec;
-	if (m_matrix)
-		vec = &m_matrix->pos;
-	else
-		vec = &m_placement.m_vPosn;
 
 	float up = z1, down = z2;
 	if (z2 < z1) {
@@ -97,7 +86,8 @@ bool CPlaceable::IsWithinArea(float x1, float y1, float z1, float x2, float y2, 
 		down = z1;
 	}
 
-	return vec->z >= up && vec->z <= down;
+	CVector &vec = GetPosition();
+	return vec.z >= up && vec.z <= down;
 }
 
 void CPlaceable::RemoveMatrix() {
@@ -118,6 +108,12 @@ void CPlaceable::SetMatrix(const CMatrix &mat, bool bAllocMatrix) {
 		m_matrix->m_pAttachMatrix = mat.m_pAttachMatrix;
 		m_matrix->UpdateRw();
 	}
+}
+
+CVector &CPlaceable::GetPosition() {
+	if (m_matrix)
+		return m_matrix->pos;
+	return m_placement.m_vPosn;
 }
 
 void CPlaceable::InitMatrixArray() {

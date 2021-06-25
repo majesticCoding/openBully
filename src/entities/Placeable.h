@@ -26,6 +26,8 @@ public:
 	void RemoveMatrix();
 	void SetMatrix(const CMatrix &mat, bool bAllocMatrix);
 
+	CVector &GetPosition();
+
 	static void InitMatrixArray();
 	static void InjectHooks();
 };
