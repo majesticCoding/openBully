@@ -108,7 +108,7 @@ void CEntity::PruneReferences() {
 	XCALL(0x450970);
 }
 
-char CEntity::HasPreRenderEffects() {
+bool CEntity::HasPreRenderEffects() {
 	XCALL(0x465780);
 }
 
@@ -120,7 +120,7 @@ void CEntity::ProcessLightsForEntity() {
 	XCALL(0x512790);
 }
 
-char CEntity::IsBreakableLight() {
+bool CEntity::IsBreakableLight() {
 	XCALL(0x512760);
 }
 
@@ -168,7 +168,7 @@ void CEntity::ProcessControl() {}
 void CEntity::ProcessShift(bool arg0) {}
 void CEntity::Teleport(CVector position) {}
 
-char CEntity::PlayHitReaction(float a2, float a3, CPed *a4, int a5, CVector *a6, CVector *a7,
+bool CEntity::PlayHitReaction(float a2, float a3, CPed *a4, int a5, CVector *a6, CVector *a7,
 		ActionNode *a8, bool a9, const char *a10, bool a11, float a12, float a13, bool a14, bool a15,
 		bool a16, int a17, float a18, CollisionType a19) {
 	return 0;
@@ -182,7 +182,7 @@ bool CEntity::CollidePostAnimUpdate() {
 	return false;
 }
 
-char CEntity::ShouldUpdateAnim() {
+bool CEntity::ShouldUpdateAnim() {
 	return !m_flags.dword88 || m_flags.dwordC8;
 }
 
@@ -202,11 +202,11 @@ float CEntity::GetBoundRadius() {
 	return CModelInfo::GetColModel(this)->dwordC;
 }
 
-char CEntity::IsDestroyed() {
+bool CEntity::IsDestroyed() {
 	return m_flags.m_bIsDestroyed != 0;
 }
 
-char CEntity::IsDamageable() {
+bool CEntity::IsDamageable() {
 	return IsBreakableLight();
 }
 

@@ -97,10 +97,10 @@ public:
 	void CleanUpOldReference(CEntity **ppEntity);
 	void ResolveReferences();
 	void PruneReferences();
-	char HasPreRenderEffects();
+	bool HasPreRenderEffects();
 	void DeleteRwObject();
 	void ProcessLightsForEntity();
-	char IsBreakableLight();
+	bool IsBreakableLight();
 
 	virtual bool IsType(short type);
 	virtual void Add() = 0;
@@ -116,7 +116,7 @@ public:
 	virtual void ProcessControl();
 	virtual void ProcessShift(bool arg0);
 	virtual void Teleport(CVector position);
-	virtual char PlayHitReaction(float a2, float a3, CPed *a4, int a5, CVector *a6, CVector *a7,
+	virtual bool PlayHitReaction(float a2, float a3, CPed *a4, int a5, CVector *a6, CVector *a7,
 		ActionNode *a8, bool a9, const char *a10, bool a11, float a12, float a13, bool a14, bool a15,
 		bool a16, int a17, float a18, CollisionType a19);
 	virtual void *GetContext();
@@ -124,17 +124,17 @@ public:
 	virtual void Render() = 0;
 	virtual void UpdateAnim() = 0;
 	virtual bool CollidePostAnimUpdate();
-	virtual char ShouldUpdateAnim();
+	virtual bool ShouldUpdateAnim();
 	virtual void SetupLighting() = 0;
 	virtual void FlagToDestroyWhenNextProcessed();
 	virtual void GetClosestPoint(const CVector &arg0) = 0;
 	virtual float GetHeight();
 	virtual float GetWidth();
 	virtual float GetBoundRadius();
-	virtual char IsDestroyed();
-	virtual char IsDamageable();
+	virtual bool IsDestroyed();
+	virtual bool IsDamageable();
 	virtual float GetHitPoints();
-	virtual char HasObstacle() = 0;
+	virtual bool HasObstacle() = 0;
 
 	static short GetCEntity();
 };
