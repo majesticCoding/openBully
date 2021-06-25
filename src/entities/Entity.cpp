@@ -217,5 +217,5 @@ float CEntity::GetHitPoints() {
 // static
 short CEntity::GetCEntity() {
 	static short s_id = g_FakeRTTI_ID++;
-    return s_id;
+	return s_id;
 }
