@@ -2,6 +2,8 @@
 #include "ModelInfo.h"
 #include "References.h"
 
+short &g_FakeRTTI_ID = memory::read<short>(0xBF3830);
+
 void CEntityFlags::Clear() {
 	dword0 = 1;
 	dword4 = 0;
@@ -43,7 +45,7 @@ void CEntityFlags::Clear() {
 	dword94 = 0;
 	dword98 = 0;
 	dword9C = 0;
-	dwordA0 = 0;
+	m_bHasPreRenderEffects = 0;
 	dwordA4 = 0;
 	dwordA8 = 0;
 	dwordAC = 0;
@@ -71,7 +73,7 @@ CEntity::CEntity() {
 	word10A = 0;
 	word112 = 0;
 	m_nModelIndex = -1;
-	dword18 = 0;
+	m_pRwObject = nullptr;
 	byte110 = -1;
 	byte111 = 0;
 	dword114 = nullptr;
@@ -106,7 +108,7 @@ void CEntity::PruneReferences() {
 	XCALL(0x450970);
 }
 
-bool CEntity::HasPreRenderEffects() {
+char CEntity::HasPreRenderEffects() {
 	XCALL(0x465780);
 }
 
@@ -114,7 +116,19 @@ void CEntity::DeleteRwObject(void) {
 	XCALL(0x4667A0);
 }
 
+void CEntity::ProcessLightsForEntity() {
+	XCALL(0x512790);
+}
+
+char CEntity::IsBreakableLight() {
+	XCALL(0x512760);
+}
+
 // virtual methods
+bool CEntity::IsType(short type) {
+	return type == GetCEntity();
+}
+
 bool CEntity::IsBike() {
 	return false;
 }
@@ -129,4 +143,79 @@ void CEntity::SetStatus(int nStatus) {
 
 void CEntity::SetIsStatic(bool bIsStatic) {
 	m_flags.m_bIsStatic = bIsStatic;
+}
+
+void CEntity::SetModelIndex(short nModelIndex, bool arg1) {
+	if (m_nModelIndex != -1)
+		DeleteRwObject();
+
+	m_nModelIndex = nModelIndex;
+	if (nModelIndex == -1) {
+		m_flags.m_bHasPreRenderEffects = 0;
+		return;
+	}
+
+	m_flags.m_bHasPreRenderEffects = HasPreRenderEffects();
+	CreateRwObject(true, arg1);
+}
+
+void CEntity::SetModelIndexNoCreate(short nModelIndex) {
+	m_nModelIndex = nModelIndex;
+	m_flags.m_bHasPreRenderEffects = HasPreRenderEffects();
+}
+
+void CEntity::ProcessControl() {}
+void CEntity::ProcessShift(bool arg0) {}
+void CEntity::Teleport(CVector position) {}
+
+char CEntity::PlayHitReaction(float a2, float a3, CPed *a4, int a5, CVector *a6, CVector *a7,
+		ActionNode *a8, bool a9, const char *a10, bool a11, float a12, float a13, bool a14, bool a15,
+		bool a16, int a17, float a18, CollisionType a19) {
+	return 0;
+}
+
+void *CEntity::GetContext() {
+	return nullptr;
+}
+
+bool CEntity::CollidePostAnimUpdate() {
+	return false;
+}
+
+char CEntity::ShouldUpdateAnim() {
+	return !m_flags.dword88 || m_flags.dwordC8;
+}
+
+void CEntity::FlagToDestroyWhenNextProcessed() {}
+
+float CEntity::GetHeight() {
+	float radius = GetBoundRadius();
+	return radius + radius;
+}
+
+float CEntity::GetWidth() {
+	float radius = GetBoundRadius();
+	return radius + radius;
+}
+
+float CEntity::GetBoundRadius() {
+	return CModelInfo::GetColModel(this)->dwordC;
+}
+
+char CEntity::IsDestroyed() {
+	return m_flags.m_bIsDestroyed != 0;
+}
+
+char CEntity::IsDamageable() {
+	return IsBreakableLight();
+}
+
+float CEntity::GetHitPoints() {
+	return 10000.f;
+}
+
+// static
+short CEntity::GetCEntity() {
+	static short s_id = g_FakeRTTI_ID++;
+    return s_id;
 }

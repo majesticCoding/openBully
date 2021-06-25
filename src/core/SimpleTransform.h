@@ -1,8 +1,9 @@
 #pragma once
+#include "hook.h"
 #include "Matrix.h"
 
 class CSimpleTransform {
-	CSimpleTransform *Constructor(const CMatrix &mat);
+	HOOKED_CONSTRUCTOR_CLASS(CSimpleTransform)
 public:
 	CSimpleTransform() = default;
 	CSimpleTransform(const CMatrix &mat);
@@ -11,6 +12,7 @@ public:
 	float m_fHeading;
 
 	void UpdateMatrix(CMatrix *out);
+	void UpdateRwMatrix(RwMatrix *out);
 
 	static void InjectHooks();
 };
