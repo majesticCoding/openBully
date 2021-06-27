@@ -1,20 +1,8 @@
 #pragma once
 #include <cstdint>
+#include "GlobalButes.h"
 
 #define NUM_PERIODS 12
-
-//size = 0x38(56) bytes
-struct TimePeriodButes {
-	int32_t aUnk[6];
-	char const *text; 
-	char const *str1;
-	char const *str2;
-	int32_t startHour; 
-	int32_t startMin; 
-	int32_t endHour; 
-	int32_t endMin; 
-	int32_t type; 
-};
 
 class CClassSchedule {
 	TimePeriodButes *m_pPeriods[NUM_PERIODS];

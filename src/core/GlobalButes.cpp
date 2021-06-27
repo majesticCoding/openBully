@@ -15,6 +15,10 @@ void *GlobalButes::Find(ActionTreeNamePath const &path, int32_t n, ActionTreeNam
 	XCALL(0x72B810);
 }
 
+void *GlobalButes::Find(ActionTreeNamePath const &path, ActionTreeName &name) {
+	XCALL(0x72AEA0);
+}
+
 void GlobalButes::RegisterCB(void(*f)(void *), void *p) {
 	XCALL(0x72B870);
 }

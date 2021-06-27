@@ -25,7 +25,7 @@ struct sMissionDatas{
 };
 
 //first field is a state: CMissiongMgr::State();
-struct sUnkStruct {
+struct sUnkMissMgrStruct {
 	char _pad[0x6];
 };
 
@@ -36,7 +36,7 @@ private:
 	CMissionRunInst primInst; //1212 //sizeof(CMissionRunInst) = 228
 	CMissionRunInst secInst; //1440
 	char _pad2[4]; //1668
-	sUnkStruct *pUnkStr; //1672
+	sUnkMissMgrStruct *pUnkStr; //1672
 	char _pad3[184];
 	int32_t m_nMissionsNum; //1860
 	int32_t m_nSuccesCount; //1864
