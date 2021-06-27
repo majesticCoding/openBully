@@ -5,8 +5,8 @@ ActionTreeName::ActionTreeName(void) {
 	;
 }
 
-ActionTreeName::ActionTreeName(int32_t) {
-	;
+ActionTreeName::ActionTreeName(int32_t hash) {
+	XCALL(0x5FA870);
 }
 
 ActionTreeName::ActionTreeName(ActionTreeName const &name) {

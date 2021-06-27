@@ -4,6 +4,7 @@
 enum MemIDsTableEnum : int32_t {
 	TEXTURES_MEM_ID = 23,
 	DATMANAGER_MEM_ID = 33,
+	MINFO_MEM_ID = 42,
 	CUTS_MEM_ID = 51
 };
 

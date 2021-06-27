@@ -52,8 +52,8 @@ void CClassSchedule::Term(void) {
 }
 
 void CClassSchedule::Init(void) {
-	ActionTreeName *nameTC(&GlobalButes::TimeCycle);
-	ActionTreeName *nameTP(&GlobalButes::TimePeriods);
+	ActionTreeName *nameTC = &GlobalButes::TimeCycle;
+	ActionTreeName *nameTP = &GlobalButes::TimePeriods;
 
 	ActionTreeNamePath *path = new ActionTreeNamePath(2, nameTC);
 	m_count = GlobalButes::FindGetCount(*path);
@@ -66,6 +66,8 @@ void CClassSchedule::Init(void) {
 	printf("ClassSchedule was initialized!\n");
 
 	delete path;
+
+	(delete nameTC), (nameTP);
 }
 
 void CClassSchedule::Reset(void) {

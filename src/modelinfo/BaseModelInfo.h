@@ -1,7 +1,8 @@
 #pragma once
 #include <cstdint>
-
+#include "hook.h"
 #include "ColModel.h"
+#include "GlobalButes.h"
 
 enum ModelInfoType  : uint8_t {
 	MITYPE_NA,
@@ -16,8 +17,9 @@ enum ModelInfoType  : uint8_t {
 };
 
 class CBaseModelInfo {
+	HOOKED_CONSTRUCTOR_CLASS(CBaseModelInfo);
 protected:
-	char const *m_hash; //0x4
+	int m_hash; //0x4
 	ModelInfoType m_type;
 	bool m_bOwnsColModel;
 	int8_t m_fieldA;
@@ -27,7 +29,8 @@ protected:
 	int16_t m_objectId;
 	uint16_t m_wRefCount;
 	int16_t m_txdSlot;
-	char _pad[8];
+	ObjectButes *pButes;
+	bool bUnkFlag;
 
 public:
 	CBaseModelInfo(ModelInfoType Type);
@@ -55,4 +58,6 @@ public:
 	void DeleteCollisionModel(void);
 	void Delete2dEffects(void);
 	bool IsModelName(char const *name);
+
+	static void InjectHooks();
 };

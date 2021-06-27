@@ -14,6 +14,8 @@ struct TimePeriodButes {
 	int32_t type;
 };
 
+class ObjectButes;
+
 class GlobalButes {
 public:
 	static ActionTreeName &TimeCycle;
@@ -25,4 +27,13 @@ public:
 	static void *Find(ActionTreeNamePath const &path, ActionTreeName &name);
 	static void	RegisterCB(void (*f)(void *), void *p);
 	static void	UnRegisterCB(void(*f)(void *), void *p);
+};
+
+class GlobalName {
+public:
+	static ActionTreeName &Weapons;
+	static ActionTreeName &Info;
+	static ActionTreeName &ObjectButes;
+	static ActionTreeName &Items;
+	static ActionTreeName &OtherPickups;
 };

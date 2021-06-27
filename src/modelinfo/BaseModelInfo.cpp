@@ -4,10 +4,27 @@
 #include "TxdStore.h"
 #include "Streaming.h"
 #include "AnimationManager.h"
+#include "ActionTree.h"
+#include "MemoryHeap.h"
+
+void CBaseModelInfo::InjectHooks() {
+	using namespace memory::hook;
+
+	inject_hook(0x50E8C0, &CBaseModelInfo::Constructor<ModelInfoType>);
+	inject_hook(0x50EB30, &CBaseModelInfo::SetColModel);
+	//inject_hook(0x50EBF0, &CBaseModelInfo::FindBute);
+	inject_hook(0x50E900, &CBaseModelInfo::SetTexDictionary);
+	inject_hook(0x50E960, &CBaseModelInfo::AddRefToAllAnimFiles);
+	inject_hook(0x50EA40, &CBaseModelInfo::RemoveRefToAllAnimFiles);
+	inject_hook(0x50EB90, &CBaseModelInfo::AddRef);
+	inject_hook(0x50EBC0, &CBaseModelInfo::RemoveRef);
+	inject_hook(0x50E940, &CBaseModelInfo::IsModelName);
+	inject_hook(0x50EE70, &CBaseModelInfo::Shutdown);
+}
 
 CBaseModelInfo::CBaseModelInfo(ModelInfoType Type) {
 	//XCALL(0x50E8C0);
-	m_hash = nullptr;
+	m_hash = 0;
 	m_type = Type;
 	m_bOwnsColModel = false;
 	m_fieldA = -1;
@@ -16,7 +33,7 @@ CBaseModelInfo::CBaseModelInfo(ModelInfoType Type) {
 	m_2dEffectId = -1;
 	m_objectId = -1;
 	m_wRefCount = 0;
-	//_pad[4] = 0;
+	bUnkFlag = false;
 }
 
 void CBaseModelInfo::SetColModel(CColModel *pCol, bool bOwns) {
@@ -30,7 +47,34 @@ void CBaseModelInfo::SetModelName(char const *name) {
 }
 
 void CBaseModelInfo::FindBute() {
-	XCALL(0x50EBF0);
+	//XCALL(0x50EBF0);
+	CMemoryHeap::PushMemId(MINFO_MEM_ID);
+
+	ActionTreeName *tmpName = &GlobalName::Weapons;
+	ActionTreeName *nameI = &GlobalName::Info;
+	ActionTreeName hash = m_hash;
+
+	ActionTreeNamePath *path = new ActionTreeNamePath(3, tmpName);
+	pButes = reinterpret_cast<ObjectButes *>(GlobalButes::Find(*path, GlobalName::ObjectButes));
+
+	if (pButes == nullptr) {
+		tmpName = &GlobalName::Items;
+		hash = m_hash;
+		path = new ActionTreeNamePath(2, tmpName);
+		pButes = reinterpret_cast<ObjectButes *>(GlobalButes::Find(*path, GlobalName::ObjectButes));
+	}
+
+	if (pButes == nullptr) {
+		tmpName = &GlobalName::OtherPickups;
+		hash = m_hash;
+		path = new ActionTreeNamePath(2, tmpName);
+		pButes = reinterpret_cast<ObjectButes *>(GlobalButes::Find(*path, GlobalName::ObjectButes));
+	}
+
+	CMemoryHeap::PopMemId();
+
+	delete path;
+	(delete tmpName), (nameI);
 }
 
 void CBaseModelInfo::SetTexDictionary(char const *texDictName, bool bParam) {
