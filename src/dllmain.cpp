@@ -14,6 +14,8 @@
 #include "SimpleTransform.h"
 #include "MatrixLink.h"
 #include "Placeable.h"
+#include "Rect.h"
+#include "Entity.h"
 
 #include "windowedMode.h"
 
@@ -38,8 +40,12 @@ void InjectHooks(void) {
 	CSimpleTransform::InjectHooks();
 	CTimer::InjectHooks();
 
+	// entities
+	CEntity::InjectHooks();
+
 	// math
 	CMatrix::InjectHooks();
+	CRect::InjectHooks();
 	CVector::InjectHooks();
 	
 	// animation
@@ -56,8 +62,8 @@ void InjectHooks(void) {
 }
 
 BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
+					   DWORD  ul_reason_for_call,
+					   LPVOID lpReserved
 					 )
 {
 	switch (ul_reason_for_call)

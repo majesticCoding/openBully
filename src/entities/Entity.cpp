@@ -4,6 +4,24 @@
 
 short &g_FakeRTTI_ID = memory::read<short>(0xBF3830);
 
+void CEntity::InjectHooks() {
+	using namespace memory::hook;
+
+	inject_hook(0x4656A0, &CEntity::Constructor<>);
+
+	inject_hook(0x450880, &CEntity::RegisterReference);
+	// inject_hook(0x4508D0, &CEntity::CleanUpOldReference);
+	inject_hook(0x450910, &CEntity::ResolveReferences);
+	inject_hook(0x450970, &CEntity::PruneReferences);
+	// inject_hook(0x465780, &CEntity::HasPreRenderEffects);
+	// inject_hook(0x4667A0, &CEntity::DeleteRwObject);
+	// inject_hook(0x512790, &CEntity::ProcessLightsForEntity);
+	// inject_hook(0x512760, &CEntity::IsBreakableLight);
+
+	inject_hook(0x4657E0, &HelperCleanupOldReference);
+	inject_hook(0x4657D0, &HelperRegisterReference);
+}
+
 void CEntityFlags::Clear() {
 	dword0 = 1;
 	dword4 = 0;
@@ -66,7 +84,7 @@ void CEntityFlags::Clear() {
 	dwordE8 = 0;
 }
 
-CEntity::CEntity() {
+CEntity::CEntity() : CPlaceable() {
 	m_flags.Clear();
 	m_nType = 1;
 	m_nStatus = 0;
@@ -93,19 +111,77 @@ CEntity::~CEntity() {
 }
 
 void CEntity::RegisterReference(CEntity **ppEntity) {
-	XCALL(0x450880);
+	CReference *ref = m_pReferences;
+	if (ref) {
+		while (ref->m_ppEntity != ppEntity) {
+			ref = ref->m_pNext;
+			if (!ref)
+				break;
+		}
+	}
+
+	CReference *empty = CReferences::pEmptyList;
+	if (!empty)
+		return;
+
+	CReferences::pEmptyList = CReferences::pEmptyList->m_pNext;
+	empty->m_pNext = m_pReferences;
+	m_pReferences = empty;
+	empty->m_ppEntity = ppEntity;
 }
 
-void CEntity::CleanUpOldReference(CEntity **pEntity) {
+void CEntity::CleanUpOldReference(CEntity **ppEntity) {
 	XCALL(0x4508D0);
+	/*if (!m_pReferences)
+		return;
+
+	CReference *ref = m_pReferences;
+	CReference **pref = &m_pReferences;
+	while (ref->m_ppEntity != ppEntity) {
+		pref = &ref->m_pNext;
+		ref = ref->m_pNext;
+		if (!ref)
+			return;
+		*pref = ref->m_pNext;
+		ref->m_pNext = CReferences::pEmptyList;
+		CReferences::pEmptyList = ref;
+	}*/
 }
 
 void CEntity::ResolveReferences() {
-	XCALL(0x450910);
+	CReference *ref = m_pReferences;
+	for (; ref; ref = ref->m_pNext) {
+		CEntity **entity = ref->m_ppEntity;
+		if (*entity == this)
+			*entity = nullptr;
+	}
+
+	ref = m_pReferences;
+	if (!ref)
+		return;
+
+	for (; ref->m_pNext; ref = ref->m_pNext);
+	ref->m_pNext = CReferences::pEmptyList;
+	CReferences::pEmptyList = m_pReferences;
+	m_pReferences = nullptr;
 }
 
 void CEntity::PruneReferences() {
-	XCALL(0x450970);
+	CReference *ref = m_pReferences;
+	CReference **pref = &m_pReferences;
+
+	while (ref) {
+		if (*ref->m_ppEntity == this) {
+			pref = &ref->m_pNext;
+			ref = ref->m_pNext;
+		} else {
+			CReference *next = ref->m_pNext;
+			*pref = ref->m_pNext;
+			ref->m_pNext = CReferences::pEmptyList;
+			CReferences::pEmptyList = ref;
+			ref = next;
+		}
+	}
 }
 
 bool CEntity::HasPreRenderEffects() {
@@ -127,6 +203,14 @@ bool CEntity::IsBreakableLight() {
 // virtual methods
 bool CEntity::IsType(short type) {
 	return type == GetCEntity();
+}
+
+void CEntity::Add() {
+	XCALL(0x465EB0);
+}
+
+void CEntity::Remove() {
+	XCALL(0x4678F0);
 }
 
 bool CEntity::IsBike() {
@@ -164,6 +248,14 @@ void CEntity::SetModelIndexNoCreate(short nModelIndex) {
 	m_flags.m_bHasPreRenderEffects = HasPreRenderEffects();
 }
 
+void CEntity::CreateRwObject(bool arg0, bool arg1) {
+	XCALL(0x4662F0);
+}
+
+void CEntity::GetBoundRect(CRect *out) {
+	XCALL(0x466970);
+}
+
 void CEntity::ProcessControl() {}
 void CEntity::ProcessShift(bool arg0) {}
 void CEntity::Teleport(CVector position) {}
@@ -176,6 +268,18 @@ bool CEntity::PlayHitReaction(float a2, float a3, CPed *a4, int a5, CVector *a6,
 
 void *CEntity::GetContext() {
 	return nullptr;
+}
+
+void CEntity::PreRender() {
+	XCALL(0x466CC0);
+}
+
+void CEntity::Render() {
+	XCALL(0x466D40);
+}
+
+void CEntity::UpdateAnim() {
+	XCALL(0x467EB0);
 }
 
 bool CEntity::CollidePostAnimUpdate() {
@@ -191,6 +295,10 @@ void CEntity::FlagToDestroyWhenNextProcessed() {}
 float CEntity::GetHeight() {
 	float radius = GetBoundRadius();
 	return radius + radius;
+}
+
+void CEntity::GetClosestPoint(CVector *out, const CVector &arg0) {
+	XCALL(0x467C00);
 }
 
 float CEntity::GetWidth() {
@@ -214,8 +322,21 @@ float CEntity::GetHitPoints() {
 	return 10000.f;
 }
 
+bool CEntity::HasObstacle() {
+	XCALL(0x467E30);
+}
+
 // static
 short CEntity::GetCEntity() {
 	static short s_id = g_FakeRTTI_ID++;
 	return s_id;
+}
+
+// global functions
+void HelperCleanupOldReference(CEntity *pEntity, CEntity **ppEntity) {
+	pEntity->CleanUpOldReference(ppEntity);
+}
+
+void HelperRegisterReference(CEntity *pEntity, CEntity **ppEntity) {
+	pEntity->RegisterReference(ppEntity);
 }

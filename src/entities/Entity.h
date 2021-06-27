@@ -75,6 +75,7 @@ struct CEntityFlags {
 };
 
 class CEntity : public CPlaceable {
+	HOOKED_CONSTRUCTOR_CLASS(CEntity);
 protected:
 	RwObject *m_pRwObject;
 	CEntityFlags m_flags;
@@ -103,16 +104,16 @@ public:
 	bool IsBreakableLight();
 
 	virtual bool IsType(short type);
-	virtual void Add() = 0;
-	virtual void Remove() = 0;
+	virtual void Add();
+	virtual void Remove();
 	virtual bool IsBike();
 	virtual bool IsCar();
 	virtual void SetStatus(int nStatus);
 	virtual void SetIsStatic(bool bIsStatic);
 	virtual void SetModelIndex(short nModelIndex, bool arg1);
 	virtual void SetModelIndexNoCreate(short nModelIndex);
-	virtual int CreateRwObject(bool arg0, bool arg1) = 0;
-	virtual void GetBoundRect(CRect *arg0) = 0;
+	virtual void CreateRwObject(bool arg0, bool arg1);
+	virtual void GetBoundRect(CRect *out);
 	virtual void ProcessControl();
 	virtual void ProcessShift(bool arg0);
 	virtual void Teleport(CVector position);
@@ -120,14 +121,14 @@ public:
 		ActionNode *a8, bool a9, const char *a10, bool a11, float a12, float a13, bool a14, bool a15,
 		bool a16, int a17, float a18, CollisionType a19);
 	virtual void *GetContext();
-	virtual void PreRender() = 0;
-	virtual void Render() = 0;
-	virtual void UpdateAnim() = 0;
+	virtual void PreRender();
+	virtual void Render();
+	virtual void UpdateAnim();
 	virtual bool CollidePostAnimUpdate();
 	virtual bool ShouldUpdateAnim();
 	virtual void SetupLighting() = 0;
 	virtual void FlagToDestroyWhenNextProcessed();
-	virtual void GetClosestPoint(const CVector &arg0) = 0;
+	virtual void GetClosestPoint(CVector *out, const CVector &arg0);
 	virtual float GetHeight();
 	virtual float GetWidth();
 	virtual float GetBoundRadius();
@@ -137,6 +138,10 @@ public:
 	virtual bool HasObstacle() = 0;
 
 	static short GetCEntity();
+	static void InjectHooks();
 };
 
 extern short &g_FakeRTTI_ID;
+
+void HelperCleanupOldReference(CEntity *pEntity, CEntity **ppEntity);
+void HelperRegisterReference(CEntity *pEntity, CEntity **ppEntity);
