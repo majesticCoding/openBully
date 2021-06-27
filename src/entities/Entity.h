@@ -135,7 +135,7 @@ public:
 	virtual bool IsDestroyed();
 	virtual bool IsDamageable();
 	virtual float GetHitPoints();
-	virtual bool HasObstacle() = 0;
+	virtual bool HasObstacle();
 
 	static short GetCEntity();
 	static void InjectHooks();
