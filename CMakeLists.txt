@@ -47,7 +47,11 @@ set_target_properties(openBully PROPERTIES
 )
 
 if (MSVC)
-  target_compile_options(openBully PRIVATE /O2)
+  target_compile_options(openBully PRIVATE
+    $<$<NOT:$<CONFIG:Debug>>:/O2>
+  )
 else()
-  target_compile_options(openBully PRIVATE -O2)
+  target_compile_options(openBully PRIVATE
+    $<$<NOT:$<CONFIG:Debug>>:-O2>
+  )
 endif()

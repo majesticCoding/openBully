@@ -86,7 +86,7 @@ void CEntityFlags::Clear() {
 
 CEntity::CEntity() : CPlaceable() {
 	m_flags.Clear();
-	m_nType = 1;
+	m_nType = eEntityType::ENTITY_TYPE_NOTHING;
 	m_nStatus = 0;
 	word10A = 0;
 	word112 = 0;
@@ -198,6 +198,14 @@ void CEntity::ProcessLightsForEntity() {
 
 bool CEntity::IsBreakableLight() {
 	XCALL(0x512760);
+}
+
+void CEntity::AttachToRwObject(RwObject *pObject) {
+	XCALL(0x4666F0);
+}
+
+void CEntity::DetachFromRwObject() {
+	XCALL(0x466740);
 }
 
 // virtual methods
