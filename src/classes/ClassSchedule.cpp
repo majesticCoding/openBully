@@ -55,19 +55,15 @@ void CClassSchedule::Init(void) {
 	ActionTreeName *nameTC = &GlobalButes::TimeCycle;
 	ActionTreeName *nameTP = &GlobalButes::TimePeriods;
 
-	ActionTreeNamePath *path = new ActionTreeNamePath(2, nameTC);
-	m_count = GlobalButes::FindGetCount(*path);
+	ActionTreeNamePath path = ActionTreeNamePath(2, nameTC);
+	m_count = GlobalButes::FindGetCount(path);
 
 	for (int32_t i = 0; i < m_count; i++) 
-		m_pPeriods[i] = reinterpret_cast<TimePeriodButes*>(GlobalButes::Find(*path, i, GlobalButes::TimePeriodButes));
+		m_pPeriods[i] = reinterpret_cast<TimePeriodButes*>(GlobalButes::Find(path, i, GlobalButes::TimePeriodButes));
 
 	GlobalButes::RegisterCB(ClassScheduleCB, this);
 
 	printf("ClassSchedule was initialized!\n");
-
-	delete path;
-
-	(delete nameTC), (nameTP);
 }
 
 void CClassSchedule::Reset(void) {

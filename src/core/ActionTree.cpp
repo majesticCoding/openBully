@@ -18,7 +18,7 @@ ActionTreeName::ActionTreeName(char const *) {
 }
 
 ActionTreeName::~ActionTreeName() {
-	;
+	; //empty
 }
 
 ActionTreeNamePath::ActionTreeNamePath(int32_t n, ActionTreeName *name) {

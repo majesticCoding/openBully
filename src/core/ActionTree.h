@@ -16,6 +16,7 @@ public:
 };
 
 class ActionTreeNamePath {
+	char _pad[0x8];
 public:
 	ActionTreeNamePath(int32_t n, ActionTreeName *name);
 };

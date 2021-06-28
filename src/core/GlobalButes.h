@@ -14,7 +14,9 @@ struct TimePeriodButes {
 	int32_t type;
 };
 
-class ObjectButes;
+class ObjectButes {
+	char _pad[0xA4];
+};
 
 class GlobalButes {
 public:

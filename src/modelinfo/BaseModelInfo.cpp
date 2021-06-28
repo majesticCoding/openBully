@@ -12,14 +12,14 @@ void CBaseModelInfo::InjectHooks() {
 
 	inject_hook(0x50E8C0, &CBaseModelInfo::Constructor<ModelInfoType>);
 	inject_hook(0x50EB30, &CBaseModelInfo::SetColModel);
-	//inject_hook(0x50EBF0, &CBaseModelInfo::FindBute);
+	//inject_hook(0x50EBF0, &CBaseModelInfo::FindBute); //broken, ObjectButes has vmt
 	inject_hook(0x50E900, &CBaseModelInfo::SetTexDictionary);
 	inject_hook(0x50E960, &CBaseModelInfo::AddRefToAllAnimFiles);
 	inject_hook(0x50EA40, &CBaseModelInfo::RemoveRefToAllAnimFiles);
 	inject_hook(0x50EB90, &CBaseModelInfo::AddRef);
 	inject_hook(0x50EBC0, &CBaseModelInfo::RemoveRef);
 	inject_hook(0x50E940, &CBaseModelInfo::IsModelName);
-	inject_hook(0x50EE70, &CBaseModelInfo::Shutdown);
+	//inject_hook(0x50EE70, &CBaseModelInfo::Shutdown); //currently unstable, needs to check CClumpModelInfo
 }
 
 CBaseModelInfo::CBaseModelInfo(ModelInfoType Type) {
@@ -74,7 +74,6 @@ void CBaseModelInfo::FindBute() {
 	CMemoryHeap::PopMemId();
 
 	delete path;
-	(delete tmpName), (nameI);
 }
 
 void CBaseModelInfo::SetTexDictionary(char const *texDictName, bool bParam) {
