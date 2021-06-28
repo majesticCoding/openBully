@@ -10,6 +10,17 @@ class CPed;
 class ActionNode;
 class RwObject;
 
+enum class eEntityType : unsigned char {
+	ENTITY_TYPE_NOTHING = 0,
+	ENTITY_TYPE_BUILDING,
+	ENTITY_TYPE_VEHICLE,
+	ENTITY_TYPE_PED,
+	ENTITY_TYPE_OBJECT,
+	ENTITY_TYPE_DUMMY,
+	ENTITY_TYPE_PROPANIM,
+	ENTITY_TYPE_ACCESSORY
+};
+
 struct CEntityFlags {
 	int dword0;
 	int dword4;
@@ -79,7 +90,7 @@ class CEntity : public CPlaceable {
 protected:
 	RwObject *m_pRwObject;
 	CEntityFlags m_flags;
-	unsigned char m_nType : 3;
+	eEntityType m_nType : 3;
 	unsigned char m_nStatus : 5;
 	short word10A;
 	unsigned short m_nRandomSeed;
@@ -102,6 +113,8 @@ public:
 	void DeleteRwObject();
 	void ProcessLightsForEntity();
 	bool IsBreakableLight();
+	void AttachToRwObject(RwObject *pObject);
+	void DetachFromRwObject();
 
 	virtual bool IsType(short type);
 	virtual void Add();
