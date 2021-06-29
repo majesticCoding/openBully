@@ -1,5 +1,8 @@
 #pragma once
 #include "Entity.h"
+#include "EntryInfo.h"
+
+class CColPoint;
 
 class CPhysical : public CEntity {
 public:
@@ -7,12 +10,8 @@ public:
 	~CPhysical();
 
 	float float120;
-	float float124;
-	float float128;
-	float float12C;
-	float float130;
-	float float134;
-	float float138;
+	CVector m_vecMoveSpeed;
+	CVector m_vecTurnSpeed;
 	float float13C;
 	float float140;
 	float float144;
@@ -24,17 +23,17 @@ public:
 	float float16C;
 	float float170;
 	float float174;
-	unsigned int dword178;
-	unsigned int dword17C;
+	CEntryInfoList dword178;
+	short *dword17C;
 	unsigned char byte180;
 	unsigned char byte181;
 	unsigned char gap182[2];
-	unsigned int dword184;
-	unsigned int dword188;
-	unsigned int dword18C;
-	unsigned int dword190;
-	unsigned int dword194;
-	unsigned int dword198;
+	int dword184;
+	int dword188;
+	int dword18C;
+	int dword190;
+	int dword194;
+	int dword198;
 	float float19C;
 	float float1A0;
 	unsigned int dword1A4;
@@ -51,5 +50,19 @@ public:
 	bool IsType(short type);
 	void Add();
 	void Remove();
-	// not all virtual methods
+	void GetBoundRect(CRect *out);
+	void ProcessControl();
+	void ProcessShift(bool arg0);
+
+	virtual bool GetUsesSimpleIntegration();
+	virtual float GetGravityForce();
+	virtual void ApplyGravity();
+	virtual void ApplyMoveSpeed();
+	virtual void ApplyTurnSpeed();
+	virtual void SetOldMat(const CMatrix &mat);
+	virtual void GetOldMat(CMatrix &out);
+	virtual bool ProcessEntityCollision(CMatrix &arg0, CEntity *arg1,
+		CColPoint *arg2, int arg3);
+
+	static short GetCPhysical();
 };

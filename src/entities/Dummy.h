@@ -12,9 +12,9 @@ public:
 	int dword124;
 
 	// virtual methods
-	void Add() = 0;
-	void Remove() = 0;
-	void SetupLighting() = 0;
+	void Add();
+	void Remove();
+	void SetupLighting();
 };
 
 class CDummyObject : public CDummy {

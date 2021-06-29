@@ -115,6 +115,7 @@ public:
 	bool IsBreakableLight();
 	void AttachToRwObject(RwObject *pObject);
 	void DetachFromRwObject();
+	void GetBoundCentre(CVector &vec);
 
 	virtual bool IsType(short type);
 	virtual void Add();

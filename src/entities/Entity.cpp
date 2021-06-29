@@ -87,7 +87,7 @@ void CEntityFlags::Clear() {
 CEntity::CEntity() : CPlaceable() {
 	m_flags.Clear();
 	m_nType = eEntityType::ENTITY_TYPE_NOTHING;
-	m_nStatus = 32;
+	m_nStatus = 4;
 	word10A = 0;
 	word112 = 0;
 	m_nModelIndex = -1;
@@ -206,6 +206,10 @@ void CEntity::AttachToRwObject(RwObject *pObject) {
 
 void CEntity::DetachFromRwObject() {
 	XCALL(0x466740);
+}
+
+void CEntity::GetBoundCentre(CVector &vec) {
+	XCALL(0x466C70);
 }
 
 // virtual methods
