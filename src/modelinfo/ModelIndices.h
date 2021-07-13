@@ -7,3 +7,7 @@ extern int32_t &MI_FIRSTWEAPON;
 extern int32_t &MI_LASTWEAPON;
 extern int32_t &MI_FIRSTSPECIALCHAR;
 extern int32_t &MI_LASTSPECIALCHAR;
+extern int32_t &MI_QUARTER;
+extern int32_t &MI_DOLLAR;
+
+bool IsMILight(int model);

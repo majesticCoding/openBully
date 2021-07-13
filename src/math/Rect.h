@@ -3,6 +3,10 @@
 
 class CRect {
 public:
+	CRect() = default;
+	CRect(float l, float t, float r, float b):
+		left(l), bottom(b), right(r), top(t) {}
+
 	float left;
 	float bottom;
 	float right;

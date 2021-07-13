@@ -26,3 +26,7 @@ void CRwLights::SetPropsAmbientColors(float color) {
 void CRwLights::SetSkyColors() {
 	;
 }
+
+void CRwLights::LightsUpload(unsigned int arg0) {
+	// arg0 & 4;
+}

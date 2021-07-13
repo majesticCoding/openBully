@@ -3,6 +3,8 @@
 #include "ColModel.h"
 #include "GlobalButes.h"
 
+class C2dEffect;
+
 enum ModelInfoType  : uint8_t {
 	MITYPE_NA,
 	MITYPE_SIMPLE,
@@ -57,6 +59,7 @@ public:
 	void DeleteCollisionModel(void);
 	void Delete2dEffects(void);
 	bool IsModelName(char const *name);
+	C2dEffect *GetFirst2dEffect();
 
 	static void InjectHooks();
 };

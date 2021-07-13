@@ -1,4 +1,5 @@
 #include "Physical.h"
+#include "Timer.h"
 #include "Rect.h"
 
 CPhysical::CPhysical() {
@@ -7,6 +8,19 @@ CPhysical::CPhysical() {
 
 CPhysical::~CPhysical() {
 	XCALL(0x46A720);
+}
+
+CRect *CPhysical::GetBoundRectIncludingMoveSpeed(CRect *out) {
+	CVector bound_centre;
+	GetBoundCentre(bound_centre);
+
+	float radius = GetBoundRadius();
+	if (m_flags.dwordA8 && !m_flags.m_bIsStatic)
+		radius += m_vecMoveSpeed.Magnitude() * CTimer::ms_fTimeStep;
+
+	*out = CRect(bound_centre.x - radius, bound_centre.y - radius,
+				 bound_centre.x + radius, bound_centre.y + radius);
+	return out;
 }
 
 // virtual methods

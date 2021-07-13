@@ -2,11 +2,11 @@
 #include "Entity.h"
 #include "BaseModelInfo.h"
 
-#define MODELINFOSIZE 10082
+#define MODELINFOSIZE 12200
 
 class CModelInfo {
 private:
-	static CBaseModelInfo **ms_modelInfoPtrs; //MODELINFOSIZE
+	static CBaseModelInfo *(&ms_modelInfoPtrs)[MODELINFOSIZE];
 
 public:
 	//custom method

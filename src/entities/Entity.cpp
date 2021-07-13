@@ -1,6 +1,9 @@
+#include "Object.h"
 #include "Entity.h"
+#include "2dEffect.h"
 #include "ModelInfo.h"
 #include "References.h"
+#include "ModelIndices.h"
 
 short &g_FakeRTTI_ID = memory::read<short>(0xBF3830);
 
@@ -13,10 +16,11 @@ void CEntity::InjectHooks() {
 	// inject_hook(0x4508D0, &CEntity::CleanUpOldReference);
 	inject_hook(0x450910, &CEntity::ResolveReferences);
 	inject_hook(0x450970, &CEntity::PruneReferences);
-	// inject_hook(0x465780, &CEntity::HasPreRenderEffects);
+	inject_hook(0x465780, &CEntity::HasPreRenderEffects);
 	// inject_hook(0x4667A0, &CEntity::DeleteRwObject);
 	// inject_hook(0x512790, &CEntity::ProcessLightsForEntity);
 	// inject_hook(0x512760, &CEntity::IsBreakableLight);
+	// inject_hook(0x465AB0, &CEntity::UpdateRW);
 
 	inject_hook(0x4657E0, &HelperCleanupOldReference);
 	inject_hook(0x4657D0, &HelperRegisterReference);
@@ -95,7 +99,7 @@ CEntity::CEntity() : CPlaceable() {
 	byte110 = -1;
 	byte111 = 0;
 	dword114 = nullptr;
-	m_nRandomSeed = rand();
+	m_nRandomSeed = static_cast<unsigned short>(rand());
 	float11C = 0.f;
 	m_pReferences = nullptr;
 }
@@ -185,10 +189,15 @@ void CEntity::PruneReferences() {
 }
 
 bool CEntity::HasPreRenderEffects() {
-	XCALL(0x465780);
+	if (!m_flags.dwordA8 && !IsMILight(m_nModelIndex)) {
+		int model = m_nModelIndex;
+		if (model != MI_QUARTER && model != MI_DOLLAR && !static_cast<CObject*>(this)->b0x1)
+			return false;
+	}
+	return true;
 }
 
-void CEntity::DeleteRwObject(void) {
+void CEntity::DeleteRwObject() {
 	XCALL(0x4667A0);
 }
 
@@ -197,7 +206,13 @@ void CEntity::ProcessLightsForEntity() {
 }
 
 bool CEntity::IsBreakableLight() {
-	XCALL(0x512760);
+	CBaseModelInfo *info = CModelInfo::GetModelInfo(m_nModelIndex);
+	for (C2dEffect* effect = info->GetFirst2dEffect(); effect;
+		effect = effect->Next()) {
+		if (effect->byte38)
+			return true;
+	}
+	return false;
 }
 
 void CEntity::AttachToRwObject(RwObject *pObject) {
@@ -210,6 +225,10 @@ void CEntity::DetachFromRwObject() {
 
 void CEntity::GetBoundCentre(CVector &vec) {
 	XCALL(0x466C70);
+}
+
+void CEntity::UpdateRW() {
+	XCALL(0x465AB0);
 }
 
 // virtual methods
@@ -233,7 +252,7 @@ bool CEntity::IsCar() {
 	return false;
 }
 
-void CEntity::SetStatus(int nStatus) {
+void CEntity::SetStatus(unsigned char nStatus) {
 	m_nStatus = nStatus;
 }
 
