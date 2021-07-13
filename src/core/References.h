@@ -1,5 +1,13 @@
 #pragma once
-#include "Reference.h"
+
+class CReference;
+class CEntity;
+
+class CReference {
+public:
+	CReference* m_pNext;
+	CEntity** m_ppEntity;
+};
 
 class CReferences {
 public:

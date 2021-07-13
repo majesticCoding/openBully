@@ -2,8 +2,7 @@
 #include "hook.h"
 #include "ColModel.h"
 #include "GlobalButes.h"
-
-class C2dEffect;
+#include "2dEffect.h"
 
 enum ModelInfoType  : uint8_t {
 	MITYPE_NA,

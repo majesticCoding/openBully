@@ -1,7 +1,7 @@
 #pragma once
 #include "hook.h"
 #include "Placeable.h"
-#include "Reference.h"
+#include "References.h"
 #include "CollisionType.h"
 
 class AM_RenObj;
