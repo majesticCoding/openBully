@@ -1,4 +1,3 @@
-#include "hook.h"
 #include "BaseModelInfo.h"
 #include "BullyHash.h"
 #include "TxdStore.h"

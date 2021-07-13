@@ -64,6 +64,16 @@ public:
 	float ux, uy, uz, uw;
 	float px, py, pz, pw;
 
+	MyMatrix44() = default;
+	MyMatrix44(float _rx, float _ry, float _rz, float _rw, float _fx, float _fy, float _fz, float _fw,
+		float _ux, float _uy, float _uz, float _uw, float _px, float _py, float _pz, float _pw) {
+		
+		rx = _rx; ry = _ry; rz = _rz; rw = _rw;
+		fx = _fx, fy = _fy, fz = _fz, fw = _fw;
+		ux = _ux, uy = _uy, uz = _uz, uw = _uw;
+		px = _px, py = _py, pz = _pz, pw = _pw;
+	};
+
 	void operator=(MyMatrix44 const &m);
 	MyMatrix44 &operator*=(MyMatrix44 const &m);
 };

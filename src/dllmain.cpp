@@ -17,6 +17,7 @@
 #include "Rect.h"
 #include "Entity.h"
 #include "BaseModelInfo.h"
+#include "SplineInterpolater.h"
 
 #include "windowedMode.h"
 
@@ -48,6 +49,7 @@ void InjectHooks(void) {
 	CMatrix::InjectHooks();
 	CRect::InjectHooks();
 	CVector::InjectHooks();
+	SplineInterpolater::InjectHooks();
 
 	//modelinfo
 	//CBaseModelInfo::InjectHooks();
