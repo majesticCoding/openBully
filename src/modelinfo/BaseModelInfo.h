@@ -34,7 +34,7 @@ protected:
 public:
 	CBaseModelInfo(ModelInfoType Type);
 
-	virtual ~CBaseModelInfo() { XCALL(0x50EEC0); }
+	virtual ~CBaseModelInfo() {}
 	virtual void SetModelName(char const *name);
 	virtual void Shutdown(void);
 	virtual void DeleteRwObject(void) = 0;

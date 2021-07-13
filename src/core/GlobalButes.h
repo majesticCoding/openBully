@@ -15,7 +15,7 @@ struct TimePeriodButes {
 };
 
 class ObjectButes {
-	char _pad[0xA4];
+	char _pad[0xA0];
 };
 
 class GlobalButes {

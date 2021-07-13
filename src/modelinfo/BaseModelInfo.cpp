@@ -54,26 +54,24 @@ void CBaseModelInfo::FindBute() {
 	ActionTreeName *nameI = &GlobalName::Info;
 	ActionTreeName hash = m_hash;
 
-	ActionTreeNamePath *path = new ActionTreeNamePath(3, tmpName);
-	pButes = reinterpret_cast<ObjectButes *>(GlobalButes::Find(*path, GlobalName::ObjectButes));
+	ActionTreeNamePath path = ActionTreeNamePath(3, tmpName);
+	pButes = reinterpret_cast<ObjectButes *>(GlobalButes::Find(path, GlobalName::ObjectButes));
 
 	if (pButes == nullptr) {
 		tmpName = &GlobalName::Items;
 		hash = m_hash;
-		path = new ActionTreeNamePath(2, tmpName);
-		pButes = reinterpret_cast<ObjectButes *>(GlobalButes::Find(*path, GlobalName::ObjectButes));
+		path = ActionTreeNamePath(2, tmpName);
+		pButes = reinterpret_cast<ObjectButes *>(GlobalButes::Find(path, GlobalName::ObjectButes));
 	}
 
 	if (pButes == nullptr) {
 		tmpName = &GlobalName::OtherPickups;
 		hash = m_hash;
-		path = new ActionTreeNamePath(2, tmpName);
-		pButes = reinterpret_cast<ObjectButes *>(GlobalButes::Find(*path, GlobalName::ObjectButes));
+		path = ActionTreeNamePath(2, tmpName);
+		pButes = reinterpret_cast<ObjectButes *>(GlobalButes::Find(path, GlobalName::ObjectButes));
 	}
 
 	CMemoryHeap::PopMemId();
-
-	delete path;
 }
 
 void CBaseModelInfo::SetTexDictionary(char const *texDictName, bool bParam) {

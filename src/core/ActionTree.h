@@ -6,6 +6,15 @@ class ActionNode {
 };
 
 class ActionTreeName {
+	union {
+		struct {
+			char const *name;
+		};
+
+		struct {
+			int hash_name;
+		};
+	};
 public:
 	ActionTreeName(void);
 	ActionTreeName(int32_t);
