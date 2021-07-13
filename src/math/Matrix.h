@@ -59,13 +59,10 @@ public:
 
 class MyMatrix44 {
 public:
-	struct
-	{
-		float rx, ry, rz, rw;
-		float fx, fy, fz, fw;
-		float ux, uy, uz, uw;
-		float px, py, pz, pw;
-	};
+	float rx, ry, rz, rw;
+	float fx, fy, fz, fw;
+	float ux, uy, uz, uw;
+	float px, py, pz, pw;
 
 	void operator=(MyMatrix44 const &m);
 	MyMatrix44 &operator*=(MyMatrix44 const &m);

@@ -116,13 +116,14 @@ public:
 	void AttachToRwObject(RwObject *pObject);
 	void DetachFromRwObject();
 	void GetBoundCentre(CVector &vec);
+	void UpdateRW();
 
 	virtual bool IsType(short type);
 	virtual void Add();
 	virtual void Remove();
 	virtual bool IsBike();
 	virtual bool IsCar();
-	virtual void SetStatus(int nStatus);
+	virtual void SetStatus(unsigned char nStatus);
 	virtual void SetIsStatic(bool bIsStatic);
 	virtual void SetModelIndex(short nModelIndex, bool arg1);
 	virtual void SetModelIndexNoCreate(short nModelIndex);

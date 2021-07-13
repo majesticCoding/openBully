@@ -175,3 +175,7 @@ void CBaseModelInfo::Shutdown(void) {
 bool CBaseModelInfo::IsModelName(char const *name) {
 	return m_hash == HashUCstring(name);
 }
+
+C2dEffect *CBaseModelInfo::GetFirst2dEffect() {
+	XCALL(0x50ED70);
+}

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#include "common.h"
 #include "Placeable.h"
 
 CMatrix &g_mLastUpdated = memory::read<CMatrix>(0xC2AB18);
@@ -60,16 +61,12 @@ CMatrix *CPlaceable::GetTransform() {
 
 bool CPlaceable::IsWithinArea(float x1, float y1, float x2, float y2) {
 	float left = x1, right = x2;
-	if (x2 < x1) {
-		left = x2;
-		right = x1;
-	}
+	if (x2 < x1)
+		swap(left, right);
 
 	float top = y1, bottom = y2;
-	if (y2 < y1) {
-		top = y2;
-		bottom = y1;
-	}
+	if (y2 < y1)
+		swap(top, bottom);
 
 	CVector &vec = GetPosition();
 	return vec.x >= left && vec.x <= right
@@ -81,10 +78,8 @@ bool CPlaceable::IsWithinArea(float x1, float y1, float z1, float x2, float y2, 
 		return false;
 
 	float up = z1, down = z2;
-	if (z2 < z1) {
-		up = z2;
-		down = z1;
-	}
+	if (z2 < z1)
+		swap(up, down);
 
 	CVector &vec = GetPosition();
 	return vec.z >= up && vec.z <= down;

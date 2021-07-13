@@ -46,6 +46,8 @@ public:
 	unsigned char byte1BC;
 	unsigned char byte1BD;
 
+	CRect *GetBoundRectIncludingMoveSpeed(CRect *out);
+
 	// virtual methods
 	bool IsType(short type);
 	void Add();
