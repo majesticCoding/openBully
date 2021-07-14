@@ -1,33 +1,52 @@
 #pragma once
+#include "hook.h"
 #include "Vector.h"
 #include "common.h"
 
 class SplineInterpolater {
+	HOOKED_CONSTRUCTOR_CLASS(SplineInterpolater);
+
 	CVector m_pos;
-	CVector p1;
-	CVector p2;
+	CVector pStart;
+	CVector pEnd;
 	int m_controlIndex;
 	float m_fAcceleration;
 	float m_fDeceleration;
 	float m_fMaxSpeed;
 	float m_fSpeed;
-	float m_fUnk;
-	char _pad[12];
+	float m_fDist;
+	float m_fractPortion;
+
+	struct ControlPointInfo {
+		CVector point;
+		float fLength;
+	} *m_pInfos[2];
+	
 	int m_nNumControlPoints;
 
 public:
 	SplineInterpolater();
-	virtual ~SplineInterpolater() {}
+	virtual ~SplineInterpolater() {
+		if (m_pInfos[0] != nullptr) {
+			delete[] m_pInfos[0];
+			m_pInfos[0] = nullptr;
+		}
+	}
 
 	CVector &GetPosition();
 	void SetAcceleration(float fAcceleration);
 	void SetDeceleration(float fDeceleration);
 	void SetMaxSpeed(float fMaxSpeed);
-	void UpdateSpeed(float f);
-	void UpdatePosition(float f);
+	void UpdateSpeed(float t);
+	void UpdateDistance(float t);
+	void UpdatePosition(float t);
 	void ResetInterpolation(void);
+	void IncrementControlIndex(void);
+	void CreateInterpolationVector(CVector*, CVector, CVector, CVector*);
+	void ClearControlPoints(void);
 	float CalculateDistanceToStop(void);
 	int &GetNumControlPoints(void);
+	ControlPointInfo *GetControlPointInfo(int controlIndex); //TODO: the returning value is incorrect!
 
 	static void InjectHooks(void);
 };

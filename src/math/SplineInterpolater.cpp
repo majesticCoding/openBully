@@ -1,6 +1,6 @@
 #include "SplineInterpolater.h"
 #include "Matrix.h"
-#include "hook.h"
+
 
 static const MyMatrix44 CatmullRomMatrix = MyMatrix44
 (
@@ -10,10 +10,15 @@ static const MyMatrix44 CatmullRomMatrix = MyMatrix44
 	-0.5f, 1.5f, -1.5f, 0.5f
 );
 
-void SplineInterpolater::InjectHooks() {
+void SplineInterpolater::InjectHooks() {	
 	using namespace memory::hook;
 
 	inject_hook(0x412400, &CatmullRomCurve3);
+	inject_hook(0x5091C0, &SplineInterpolater::Constructor<>);
+	//inject_hook(0x508530, &SplineInterpolater::UpdateSpeed); //crashes
+	inject_hook(0x5083A0, &SplineInterpolater::SetAcceleration);
+	inject_hook(0x5083C0, &SplineInterpolater::SetDeceleration);
+	inject_hook(0x5083D0, &SplineInterpolater::SetMaxSpeed);
 }
 
 CVector CatmullRomCurve3(CVector const *right, CVector const *forward, CVector const *up, CVector const *pos, float u) {
@@ -67,17 +72,24 @@ void CalculateSplinePoint(CVector& result, CVector right, CVector forward, CVect
 
 SplineInterpolater::SplineInterpolater(void) {
 	m_pos = CVector::Zero;
-	p1 = CVector::Zero;
-	p2 = CVector::Zero;
+	pStart = CVector::Zero;
+	pEnd = CVector::Zero;
 	m_fAcceleration = 5.0f;
 	m_fDeceleration = 5.0f;
 	m_controlIndex = 0;
 	m_fMaxSpeed = 30.0f;
 	m_fSpeed = 0.0f;
-	m_fUnk = 0.0f;
+	m_fDist = 0.0f;
 	m_nNumControlPoints = 0;
+	m_pInfos[0] = nullptr;
+	m_pInfos[1] = nullptr;
+}
 
-	//TODO: add the rest with ControlPointsInfo
+void SplineInterpolater::ResetInterpolation(void) {
+	m_controlIndex = 0;
+	m_fDist = 0.0;
+	m_fSpeed = 0.0;
+	m_fractPortion = 0.0;
 }
 
 CVector &SplineInterpolater::GetPosition(void) {
@@ -99,12 +111,81 @@ void SplineInterpolater::SetMaxSpeed(float fMaxSpeed) {
 	m_fMaxSpeed = fMaxSpeed;
 }
 
-void SplineInterpolater::UpdateSpeed(float f) {
+void SplineInterpolater::UpdateSpeed(float t) {
+	int newControlIdx = m_controlIndex + 2;
+	ControlPointInfo *p = GetControlPointInfo(newControlIdx);
+
+	float fDeltaDist = p->fLength - m_fDist;
+	if (m_nNumControlPoints - 1 > newControlIdx) {
+		do {
+			p = GetControlPointInfo(newControlIdx++);
+			fDeltaDist += p->fLength;
+		} while (m_nNumControlPoints - 1 != newControlIdx);
+	}
+
+	if (CalculateDistanceToStop() < fDeltaDist)
+		m_fSpeed += m_fAcceleration * t;
+	else
+		m_fSpeed -= m_fDeceleration * t;
+
+	m_fSpeed = Clamp(m_fSpeed, 0.0f, m_fMaxSpeed);
+}
+
+void SplineInterpolater::UpdateDistance(float t) {
+	m_fDist += m_fSpeed * t;
+	ControlPointInfo *p = GetControlPointInfo(m_controlIndex + 2);
+	
+	if (p->fLength < m_fDist) {
+		IncrementControlIndex();
+		m_fDist = m_fDist * 2.0f - p->fLength;
+	}
+}
+
+void SplineInterpolater::UpdatePosition(float t) {
+	if (m_nNumControlPoints == 0)
+		return;
+
+	UpdateSpeed(t);
+	UpdateDistance(t);
+
+	ControlPointInfo *pMid1 = GetControlPointInfo(m_controlIndex + 1);
+	ControlPointInfo *pMid2 = GetControlPointInfo(m_controlIndex + 2);
+	if (pMid2->fLength > 0.0f)
+		m_fractPortion = m_fDist / pMid2->fLength;
+
+	m_pos = CatmullRomCurve3(&pStart, &pMid1->point, &pMid2->point, &pEnd, m_fractPortion);
+}
+
+void SplineInterpolater::ClearControlPoints(void) {
+	if (m_pInfos[0] != nullptr) {
+		delete[] m_pInfos[0];
+		m_pInfos[0] = nullptr;
+	}
+
+	//why isn't it deleted the same way as 1st? Bug?
+	m_pInfos[1] = nullptr;
+
+	m_nNumControlPoints = 0;
+}
+
+void SplineInterpolater::CreateInterpolationVector(CVector *, CVector, CVector, CVector *) {
 	;
 }
 
-void SplineInterpolater::UpdatePosition(float f) {
-	;
+void SplineInterpolater::IncrementControlIndex(void) {
+	m_controlIndex++;
+	m_fDist = 0.0f;
+	m_fractPortion = 0.0f;
+
+	ControlPointInfo *p1 = GetControlPointInfo(m_controlIndex);
+	pStart = CVector(p1->point.x, p1->point.y, p1->point.z);
+	ControlPointInfo *p2 = GetControlPointInfo(m_controlIndex + 3);
+	pEnd = CVector(p2->point.x, p2->point.y, p2->point.z);
+
+	ControlPointInfo *pMid1 = GetControlPointInfo(m_controlIndex + 1);
+	ControlPointInfo *pMid2 = GetControlPointInfo(m_controlIndex + 2);
+
+	CreateInterpolationVector(&pStart, pMid1->point, pMid2->point, &pEnd);
 }
 
 float SplineInterpolater::CalculateDistanceToStop(void) {
@@ -117,4 +198,12 @@ float SplineInterpolater::CalculateDistanceToStop(void) {
 
 int &SplineInterpolater::GetNumControlPoints(void) {
 	return m_nNumControlPoints;
+}
+
+SplineInterpolater::ControlPointInfo* SplineInterpolater::GetControlPointInfo(int controlIndex) {
+	int newIdx = m_nNumControlPoints - 1;
+	if (controlIndex <= newIdx)
+		newIdx = controlIndex & ~(controlIndex >> 31);
+
+	return m_pInfos[newIdx];
 }
