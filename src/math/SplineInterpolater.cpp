@@ -15,10 +15,15 @@ void SplineInterpolater::InjectHooks() {
 
 	inject_hook(0x412400, &CatmullRomCurve3);
 	inject_hook(0x5091C0, &SplineInterpolater::Constructor<>);
-	//inject_hook(0x508530, &SplineInterpolater::UpdateSpeed); //crashes
+	inject_hook(0x508530, &SplineInterpolater::UpdateSpeed); 
 	inject_hook(0x5083A0, &SplineInterpolater::SetAcceleration);
 	inject_hook(0x5083C0, &SplineInterpolater::SetDeceleration);
 	inject_hook(0x5083D0, &SplineInterpolater::SetMaxSpeed);
+	inject_hook(0x509240, &SplineInterpolater::SetControlPoints);
+	inject_hook(0x509280, &SplineInterpolater::UpdateDistance);
+	inject_hook(0x5092F0, &SplineInterpolater::UpdatePosition);
+	inject_hook(0x5090E0, &SplineInterpolater::IncrementControlIndex);
+	//inject_hook(0x508420, &SplineInterpolater::ClearControlPoints); //currently crashes
 }
 
 CVector CatmullRomCurve3(CVector const *right, CVector const *forward, CVector const *up, CVector const *pos, float u) {
@@ -81,8 +86,8 @@ SplineInterpolater::SplineInterpolater(void) {
 	m_fSpeed = 0.0f;
 	m_fDist = 0.0f;
 	m_nNumControlPoints = 0;
-	m_pInfos[0] = nullptr;
-	m_pInfos[1] = nullptr;
+	m_pAInfos = nullptr;
+	m_field48 = 0.0f;
 }
 
 void SplineInterpolater::ResetInterpolation(void) {
@@ -157,19 +162,27 @@ void SplineInterpolater::UpdatePosition(float t) {
 }
 
 void SplineInterpolater::ClearControlPoints(void) {
-	if (m_pInfos[0] != nullptr) {
-		delete[] m_pInfos[0];
-		m_pInfos[0] = nullptr;
+	if (m_pAInfos != nullptr) {
+		delete m_pAInfos;
+		m_pAInfos = nullptr;
 	}
 
-	//why isn't it deleted the same way as 1st? Bug?
-	m_pInfos[1] = nullptr;
-
 	m_nNumControlPoints = 0;
+	m_field48 = 0.0f;
+}
+
+void SplineInterpolater::SetControlPointsNoReset(Path const* pPath) {
+	XCALL(0x508930);
+}
+
+void SplineInterpolater::SetControlPoints(Path const* pPath) {
+	ClearControlPoints();
+	ResetInterpolation();
+	SetControlPointsNoReset(pPath);
 }
 
 void SplineInterpolater::CreateInterpolationVector(CVector *, CVector, CVector, CVector *) {
-	;
+	XCALL(0x5086C0);
 }
 
 void SplineInterpolater::IncrementControlIndex(void) {
@@ -200,10 +213,10 @@ int &SplineInterpolater::GetNumControlPoints(void) {
 	return m_nNumControlPoints;
 }
 
-SplineInterpolater::ControlPointInfo* SplineInterpolater::GetControlPointInfo(int controlIndex) {
+SplineInterpolater::ControlPointInfo *SplineInterpolater::GetControlPointInfo(int controlIndex) {
 	int newIdx = m_nNumControlPoints - 1;
 	if (controlIndex <= newIdx)
 		newIdx = controlIndex & ~(controlIndex >> 31);
 
-	return m_pInfos[newIdx];
+	return m_pAInfos + newIdx;
 }

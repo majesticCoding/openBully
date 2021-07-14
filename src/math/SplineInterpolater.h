@@ -3,6 +3,8 @@
 #include "Vector.h"
 #include "common.h"
 
+class Path;
+
 class SplineInterpolater {
 	HOOKED_CONSTRUCTOR_CLASS(SplineInterpolater);
 
@@ -20,16 +22,17 @@ class SplineInterpolater {
 	struct ControlPointInfo {
 		CVector point;
 		float fLength;
-	} *m_pInfos[2];
+	} *m_pAInfos;
 	
+	float m_field48;
 	int m_nNumControlPoints;
 
 public:
 	SplineInterpolater();
 	virtual ~SplineInterpolater() {
-		if (m_pInfos[0] != nullptr) {
-			delete[] m_pInfos[0];
-			m_pInfos[0] = nullptr;
+		if (m_pAInfos != nullptr) {
+			delete m_pAInfos;
+			m_pAInfos = nullptr;
 		}
 	}
 
@@ -44,6 +47,8 @@ public:
 	void IncrementControlIndex(void);
 	void CreateInterpolationVector(CVector*, CVector, CVector, CVector*);
 	void ClearControlPoints(void);
+	void SetControlPointsNoReset(Path const* pPath);
+	void SetControlPoints(Path const *pPath);
 	float CalculateDistanceToStop(void);
 	int &GetNumControlPoints(void);
 	ControlPointInfo *GetControlPointInfo(int controlIndex); //TODO: the returning value is incorrect!
