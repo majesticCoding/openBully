@@ -1,6 +1,11 @@
 #pragma once
+#include "hook.h"
 
 #define FIX_STRANGE_MATH
+
+
+void  operator delete(void*);
+
 
 template <typename T>
 void swap(T &a, T &b) {
@@ -16,3 +21,4 @@ T sqr(T x) { return x*x; }
 #define Min(a,b) ((a) < (b) ? (a) : (b))
 
 #define Clamp(v, low, high) ((v)<(low) ? (low) : (v)>(high) ? (high) : (v))
+

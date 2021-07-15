@@ -282,7 +282,7 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 	}
 
 	for (uint32_t i = 0; i < ms_uNumModels; i++) {
-		int32_t *tmpModel = *(int32_t**)(ms_pModels + 0x4 * i);
+		int32_t *tmpModel = (int32_t*)(ms_pModels + 0x4 * i);
 		if (*(int32_t*)(tmpModel + 0x8))
 			*(int32_t*)(tmpModel + 0x4) &= 0xFFFFFFFB;
 		else
@@ -292,7 +292,7 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 	}
 
 	if (ms_pModels != nullptr)
-		delete []ms_pModels;
+		operator delete(ms_pModels);
 	ms_pModels = nullptr;
 
 	ms_uNumModels = 0;
@@ -336,7 +336,7 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 	}
 
 	if (ms_SubtitleInfoArray != nullptr) {
-		delete ms_SubtitleInfoArray;
+		operator delete(ms_SubtitleInfoArray);
 		ms_SubtitleInfoArray = nullptr;
 	}
 

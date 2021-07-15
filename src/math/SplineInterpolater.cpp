@@ -23,7 +23,7 @@ void SplineInterpolater::InjectHooks() {
 	inject_hook(0x509280, &SplineInterpolater::UpdateDistance);
 	inject_hook(0x5092F0, &SplineInterpolater::UpdatePosition);
 	inject_hook(0x5090E0, &SplineInterpolater::IncrementControlIndex);
-	//inject_hook(0x508420, &SplineInterpolater::ClearControlPoints); //currently crashes
+	inject_hook(0x508420, &SplineInterpolater::ClearControlPoints);
 }
 
 CVector CatmullRomCurve3(CVector const *right, CVector const *forward, CVector const *up, CVector const *pos, float u) {
@@ -163,7 +163,7 @@ void SplineInterpolater::UpdatePosition(float t) {
 
 void SplineInterpolater::ClearControlPoints(void) {
 	if (m_pAInfos != nullptr) {
-		delete m_pAInfos;
+		operator delete(m_pAInfos);
 		m_pAInfos = nullptr;
 	}
 

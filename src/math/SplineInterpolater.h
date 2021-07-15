@@ -31,7 +31,7 @@ public:
 	SplineInterpolater();
 	virtual ~SplineInterpolater() {
 		if (m_pAInfos != nullptr) {
-			delete m_pAInfos;
+			operator delete(m_pAInfos);
 			m_pAInfos = nullptr;
 		}
 	}
@@ -51,7 +51,7 @@ public:
 	void SetControlPoints(Path const *pPath);
 	float CalculateDistanceToStop(void);
 	int &GetNumControlPoints(void);
-	ControlPointInfo *GetControlPointInfo(int controlIndex); //TODO: the returning value is incorrect!
+	ControlPointInfo *GetControlPointInfo(int controlIndex);
 
 	static void InjectHooks(void);
 };
