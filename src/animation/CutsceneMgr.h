@@ -10,6 +10,7 @@
 #include "UserInputManager.h"
 #include "ColModel.h"
 #include "TempColModels.h"
+#include "Allocation.h"
 
 #define CUTSCNAMESIZE 72
 #define NUM_HIERARCHIES 10

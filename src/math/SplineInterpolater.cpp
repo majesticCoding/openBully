@@ -133,7 +133,7 @@ void SplineInterpolater::UpdateSpeed(float t) {
 	else
 		m_fSpeed -= m_fDeceleration * t;
 
-	m_fSpeed = Clamp(m_fSpeed, 0.0f, m_fMaxSpeed);
+	m_fSpeed = clamp(m_fSpeed, 0.0f, m_fMaxSpeed);
 }
 
 void SplineInterpolater::UpdateDistance(float t) {

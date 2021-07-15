@@ -3,10 +3,6 @@
 
 #define FIX_STRANGE_MATH
 
-
-void  operator delete(void*);
-
-
 template <typename T>
 void swap(T &a, T &b) {
 	T temp = a;
@@ -17,8 +13,20 @@ void swap(T &a, T &b) {
 template <typename T>
 T sqr(T x) { return x*x; }
 
-#define Max(a,b) ((a) > (b) ? (a) : (b))
-#define Min(a,b) ((a) < (b) ? (a) : (b))
+#ifdef max
+#undef max
+#endif
 
-#define Clamp(v, low, high) ((v)<(low) ? (low) : (v)>(high) ? (high) : (v))
+#ifdef min
+#undef min
+#endif
+
+template <typename T>
+T max(T a, T b) { return a > b ? a : b; }
+
+template <typename T>
+T min(T a, T b) { return a > b ? a : b; }
+
+template <typename T>
+T clamp(T v, T low, T high) { return max(min(v, high), low); }
 

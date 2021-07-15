@@ -2,6 +2,7 @@
 #include "hook.h"
 #include "Vector.h"
 #include "common.h"
+#include "Allocation.h"
 
 class Path;
 
