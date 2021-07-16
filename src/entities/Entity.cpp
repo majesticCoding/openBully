@@ -19,8 +19,12 @@ void CEntity::InjectHooks() {
 	inject_hook(0x465780, &CEntity::HasPreRenderEffects);
 	// inject_hook(0x4667A0, &CEntity::DeleteRwObject);
 	// inject_hook(0x512790, &CEntity::ProcessLightsForEntity);
-	// inject_hook(0x512760, &CEntity::IsBreakableLight);
+	inject_hook(0x512760, &CEntity::IsBreakableLight);
+	// inject_hook(0x4666F0, &CEntity::AttachToRwObject);
+	// inject_hook(0x466740, &CEntity::DetachFromRwObject);
+	inject_hook(0x466C70, &CEntity::GetBoundCentre);
 	// inject_hook(0x465AB0, &CEntity::UpdateRW);
+	inject_hook(0x466200, &CEntity::TransformFromObjectSpace);
 
 	inject_hook(0x4657E0, &HelperCleanupOldReference);
 	inject_hook(0x4657D0, &HelperRegisterReference);
@@ -224,11 +228,19 @@ void CEntity::DetachFromRwObject() {
 }
 
 void CEntity::GetBoundCentre(CVector &vec) {
-	XCALL(0x466C70);
+	vec = CVector();
+	TransformFromObjectSpace(vec, CModelInfo::GetColModel(this)->vec0);
 }
 
 void CEntity::UpdateRW() {
 	XCALL(0x465AB0);
+}
+
+void CEntity::TransformFromObjectSpace(CVector &out, const CVector &offset) {
+	if (m_matrix)
+		out = *m_matrix * offset;
+	else
+		SimpleTransformPoint(out, m_placement, offset);
 }
 
 // virtual methods

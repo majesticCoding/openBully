@@ -29,6 +29,8 @@ void CMatrix::InjectHooks(void) {
 
 	inject_hook(0x413A80, &CMatrix::Reorthogonalize);
 
+	inject_hook(0x41A9A0, static_cast<CVector(*)(const CMatrix &, const CVector &)>(&operator*));
+
 	inject_hook(0x4120E0, &MyMatrix44::operator*=);
 }
 
@@ -281,6 +283,10 @@ CMatrix& CMatrix::operator=(const CMatrix& b) {
 	pos = b.pos;
 
 	return *this;
+}
+
+CVector operator*(const CMatrix &a, const CVector &b) {
+	return a.pos + a.right * b.x + a.forward * b.y + a.up * b.z;
 }
 
 void MyMatrix44::operator=(MyMatrix44 const &m) {

@@ -13,7 +13,7 @@ struct Vector3 : public RwV3d {
 
 class CVector : public RwV3d {
 public:
-	CVector(void) {}
+	CVector() { x = 0.f; y = 0.f; z = 0.f; }
 	CVector(float x, float y, float z) {
 		this->x = x;
 		this->y = y;
@@ -31,6 +31,20 @@ public:
 		x /= coefficient;
 		y /= coefficient;
 		z /= coefficient;
+		return *this;
+	}
+
+	CVector &operator+=(const CVector &b) {
+		x += b.x;
+		y += b.y;
+		z += b.z;
+		return *this;
+	}
+
+	CVector &operator-=(const CVector &b) {
+		x -= b.x;
+		y -= b.y;
+		z -= b.z;
 		return *this;
 	}
 

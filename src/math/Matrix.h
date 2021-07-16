@@ -57,6 +57,8 @@ public:
 	static void InjectHooks(void);
 };
 
+CVector operator*(const CMatrix &a, const CVector &b);
+
 class MyMatrix44 {
 public:
 	float rx, ry, rz, rw;

@@ -16,3 +16,5 @@ public:
 
 	static void InjectHooks();
 };
+
+void SimpleTransformPoint(CVector &out, const CSimpleTransform &a, const CVector &b);
