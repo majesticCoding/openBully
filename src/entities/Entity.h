@@ -117,6 +117,7 @@ public:
 	void DetachFromRwObject();
 	void GetBoundCentre(CVector &vec);
 	void UpdateRW();
+	void TransformFromObjectSpace(CVector &out, const CVector &offset);
 
 	virtual bool IsType(short type);
 	virtual void Add();

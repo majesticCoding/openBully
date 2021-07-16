@@ -1,4 +1,5 @@
 #pragma once
+#include "Vector.h"
 
 class CColData;
 class CEntity;
@@ -8,9 +9,7 @@ public:
 	CColModel();
 	~CColModel();
 
-	float dword0;
-	float dword4;
-	float dword8;  // maybe CVector
+	CVector vec0;
 	float dwordC;
 	float dword10;
 	float dword14;

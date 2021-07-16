@@ -9,6 +9,8 @@ void CSimpleTransform::InjectHooks() {
 
 	inject_hook(0x46DCA0, &CSimpleTransform::UpdateMatrix);
 	inject_hook(0x46D8F0, &CSimpleTransform::UpdateRwMatrix);
+	
+	inject_hook(0x46D850, &SimpleTransformPoint);
 }
 
 CSimpleTransform::CSimpleTransform(const CMatrix &mat) {
@@ -48,4 +50,19 @@ void CSimpleTransform::UpdateRwMatrix(RwMatrix *out) {
 	out->upz = 1.f;
 
 	out->pos = m_vPosn;
+}
+
+void SimpleTransformPoint(CVector &out, const CSimpleTransform &a, const CVector &b) {
+	out = a.m_vPosn;
+	if (a.m_fHeading == 0.f) {
+		out += b;
+		return;
+	}
+
+	float c = cos(a.m_fHeading), s = sin(a.m_fHeading);
+	out += CVector(
+		b.x * c - b.y * s,
+		b.x * s + b.y * c,
+		b.z
+	);
 }
