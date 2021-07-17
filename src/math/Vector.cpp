@@ -70,22 +70,22 @@ void CVector::LimitDirection(CVector const& vec, float coefficient) {
 	}
 }
 
-inline CVector operator-(CVector const &v1, CVector const &v2) {
+CVector operator-(CVector const &v1, CVector const &v2) {
 	return CVector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
 }
 
-inline CVector operator-(Vector3 const &v1, CVector const &v2) {
+CVector operator-(Vector3 const &v1, CVector const &v2) {
 	return CVector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
 }
 
-inline CVector operator+(CVector const &v1, CVector const &v2) {
+CVector operator+(CVector const &v1, CVector const &v2) {
 	return CVector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
 }
 
-inline CVector operator*(CVector const &v, float coefficient) {
+CVector operator*(CVector const &v, float coefficient) {
 	return CVector(v.x * coefficient, v.y * coefficient, v.z * coefficient);
 }
 
-inline float DotProduct(const CVector &v1, const CVector &v2) {
+float DotProduct(const CVector &v1, const CVector &v2) {
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
