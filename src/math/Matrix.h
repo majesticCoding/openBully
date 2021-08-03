@@ -1,13 +1,7 @@
 #pragma once
 #include "hook.h"
 #include "Vector.h"
-
-struct RwMatrix {
-	float rightx, forwardx, upx;
-	float righty, forwardy, upy;
-	float rightz, forwardz, upz;
-	RwV3d pos;
-};
+#include "rwplcore.h"
 
 class CMatrix {
 	HOOKED_CONSTRUCTOR_CLASS(CMatrix)
@@ -44,6 +38,7 @@ public:
 	void SetUnity(void);
 	void ResetOrientation(void);
 	void UpdateRwMatrix(RwMatrix *mat);
+	void UpdateMatrix(RwMatrix *mat);
 
 	void Reorthogonalize(void);
 

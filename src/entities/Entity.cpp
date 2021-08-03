@@ -23,8 +23,9 @@ void CEntity::InjectHooks() {
 	// inject_hook(0x4666F0, &CEntity::AttachToRwObject);
 	// inject_hook(0x466740, &CEntity::DetachFromRwObject);
 	inject_hook(0x466C70, &CEntity::GetBoundCentre);
-	// inject_hook(0x465AB0, &CEntity::UpdateRW);
+	inject_hook(0x465AB0, &CEntity::UpdateMatrix);
 	inject_hook(0x466200, &CEntity::TransformFromObjectSpace);
+	inject_hook(0x465760, &CEntity::UpdateRwFrame);
 
 	inject_hook(0x4657E0, &HelperCleanupOldReference);
 	inject_hook(0x4657D0, &HelperRegisterReference);
@@ -232,8 +233,25 @@ void CEntity::GetBoundCentre(CVector &vec) {
 	TransformFromObjectSpace(vec, CModelInfo::GetColModel(this)->vec0);
 }
 
-void CEntity::UpdateRW() {
-	XCALL(0x465AB0);
+void CEntity::UpdateMatrix() {
+	RwMatrix *rwmat = GetModellingMatrix();
+	if (!rwmat)
+		return;
+
+	if (m_matrix) {
+		if (m_matrix->m_pAttachMatrix)
+			m_matrix->UpdateMatrix(m_matrix->m_pAttachMatrix);
+		else {
+			m_matrix->m_pAttachMatrix = rwmat;
+			m_matrix->UpdateMatrix(rwmat);
+		}
+	} else {
+		CMatrix upmat;
+		upmat.m_pAttachMatrix = rwmat;
+		upmat.UpdateMatrix(rwmat);
+
+		m_placement = CSimpleTransform(upmat);
+	}
 }
 
 void CEntity::TransformFromObjectSpace(CVector &out, const CVector &offset) {
@@ -241,6 +259,25 @@ void CEntity::TransformFromObjectSpace(CVector &out, const CVector &offset) {
 		out = *m_matrix * offset;
 	else
 		SimpleTransformPoint(out, m_placement, offset);
+}
+
+void CEntity::UpdateRwFrame() {
+	if (!m_pRwObject)
+		return;
+	RwFrame *frame = RwObjectGetFrame(m_pRwObject);
+	if (frame)
+		RwFrameUpdateObjects(frame);
+}
+
+// custom
+RwMatrix *CEntity::GetModellingMatrix() {
+	if (!m_pRwObject)
+		return nullptr;
+
+	RwFrame *frame = RwObjectGetFrame(m_pRwObject);
+	if (!frame)
+		return nullptr;
+	return RwFrameGetMatrix(frame);
 }
 
 // virtual methods
@@ -325,6 +362,10 @@ void CEntity::UpdateAnim() {
 	XCALL(0x467EB0);
 }
 
+void CEntity::UpdateAnimPreRender() {
+	XCALL(0x468190);
+}
+
 bool CEntity::CollidePostAnimUpdate() {
 	return false;
 }
@@ -335,13 +376,17 @@ bool CEntity::ShouldUpdateAnim() {
 
 void CEntity::FlagToDestroyWhenNextProcessed() {}
 
+void CEntity::GetClosestPoint(CVector *out, const CVector &arg0) {
+	XCALL(0x467C00);
+}
+
+float CEntity::GetDistanceFromPoint(const CVector &point) {
+	XCALL(0x4661B0);
+}
+
 float CEntity::GetHeight() {
 	float radius = GetBoundRadius();
 	return radius + radius;
-}
-
-void CEntity::GetClosestPoint(CVector *out, const CVector &arg0) {
-	XCALL(0x467C00);
 }
 
 float CEntity::GetWidth() {

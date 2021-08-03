@@ -148,7 +148,7 @@ void CCutsceneMgr::RemoveEverythingBecauseCutsceneDoesntFitInMemory(void) {
 
 		bEverythingRemoved = true;
 
-		if (&CWorld::Player != nullptr) { // CWorld::Player.pPed here, but currently this option
+		if (CWorld::Player.m_pPed != nullptr) {
 			for (int32_t idx = MI_FIRSTWEAPON; idx <= MI_LASTWEAPON; idx++) {
 				if ( (*(CWeaponInventory**)(&CWorld::Player + 0x1C4))->Find(idx) != -1)
 					CStreaming::SetModelIsDeletable(idx);
@@ -264,7 +264,7 @@ void CCutsceneMgr::DeleteCutsceneData(void) {
 
 	for (int32_t i = 0; i < NUM_CUTSSPECIALS; i++) {
 		CStreaming::RemoveModel(i + MI_FIRSTSPECIALCHAR);
-		((CPedModelInfo *)CModelInfo::GetModelInfo(i + MI_FIRSTSPECIALCHAR))->SetModelName('\0', 1);
+		((CPedModelInfo *)CModelInfo::GetModelInfo(i + MI_FIRSTSPECIALCHAR))->SetModelName("\0", 1);
 	}
 
 	//why do we clean it again?
