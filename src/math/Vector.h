@@ -1,11 +1,6 @@
 #pragma once
 #include "math.h"
-
-struct RwV3d {
-	float x;
-	float y;
-	float z;
-};
+#include "rwcore.h"
 
 struct Vector3 : public RwV3d {
 	float w;
@@ -19,6 +14,7 @@ public:
 		this->y = y;
 		this->z = z;
 	}
+	CVector(RwV3d vec) { x = vec.x; y = vec.y; z = vec.z; }
 
 	const CVector &operator*=(float coefficient) {
 		x *= coefficient;

@@ -116,8 +116,11 @@ public:
 	void AttachToRwObject(RwObject *pObject);
 	void DetachFromRwObject();
 	void GetBoundCentre(CVector &vec);
-	void UpdateRW();
+	void UpdateMatrix();
 	void TransformFromObjectSpace(CVector &out, const CVector &offset);
+	void UpdateRwFrame();
+
+	RwMatrix* GetModellingMatrix();
 
 	virtual bool IsType(short type);
 	virtual void Add();
@@ -140,11 +143,13 @@ public:
 	virtual void PreRender();
 	virtual void Render();
 	virtual void UpdateAnim();
+	virtual void UpdateAnimPreRender();
 	virtual bool CollidePostAnimUpdate();
 	virtual bool ShouldUpdateAnim();
 	virtual void SetupLighting() = 0;
 	virtual void FlagToDestroyWhenNextProcessed();
 	virtual void GetClosestPoint(CVector *out, const CVector &arg0);
+	virtual float GetDistanceFromPoint(const CVector &point);
 	virtual float GetHeight();
 	virtual float GetWidth();
 	virtual float GetBoundRadius();

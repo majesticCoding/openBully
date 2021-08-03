@@ -26,6 +26,7 @@ void CMatrix::InjectHooks(void) {
 	inject_hook(0x412770, &CMatrix::SetUnity);
 	inject_hook(0x4127A0, &CMatrix::ResetOrientation);
 	inject_hook(0x412AC0, &CMatrix::UpdateRwMatrix);
+	inject_hook(0x412A70, &CMatrix::UpdateMatrix);
 
 	inject_hook(0x413A80, &CMatrix::Reorthogonalize);
 
@@ -274,6 +275,22 @@ void CMatrix::UpdateRwMatrix(RwMatrix *mat) {
 	mat->upz = up.z;
 
 	mat->pos = GetPosition();
+}
+
+void CMatrix::UpdateMatrix(RwMatrix *mat) {
+	right.x = mat->rightx;
+	right.y = mat->righty;
+	right.z = mat->rightz;
+
+	forward.x = mat->forwardx;
+	forward.y = mat->forwardy;
+	forward.z = mat->forwardz;
+
+	up.x = mat->upx;
+	up.y = mat->upy;
+	up.z = mat->upz;
+
+	pos = mat->pos;
 }
 
 CMatrix& CMatrix::operator=(const CMatrix& b) {

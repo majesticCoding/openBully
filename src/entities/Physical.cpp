@@ -81,7 +81,7 @@ void CPhysical::SetOldMat(const CMatrix &mat) {
 
 void CPhysical::GetOldMat(CMatrix &out) {
 	CMatrix *mat = GetMatrix();
-	out = CMatrix(*mat);
+	out = *mat;
 }
 
 bool CPhysical::ProcessEntityCollision(CMatrix &arg0, CEntity *arg1,
