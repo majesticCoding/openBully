@@ -3,12 +3,12 @@
 #include "Placeable.h"
 #include "References.h"
 #include "CollisionType.h"
+#include "rwplcore.h"
 
 class AM_RenObj;
 class CRect;
 class CPed;
 class ActionNode;
-class RwObject;
 
 enum class eEntityType : unsigned char {
 	ENTITY_TYPE_NOTHING = 0,
