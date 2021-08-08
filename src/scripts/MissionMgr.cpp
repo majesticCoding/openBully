@@ -66,7 +66,8 @@ bool CMissionMgr::IsOnGirlMission(void) {
 }
 
 void CMissionMgr::GetMissionName(int missionId, char *name, uint32_t size) {
-	;
+	if (missionId < 0)
+		return;
 }
 
 bool CMissionMgr::IsOnClassMission(void) {

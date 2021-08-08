@@ -8,6 +8,7 @@ class Path;
 
 class SplineInterpolater {
 	HOOKED_CONSTRUCTOR_CLASS(SplineInterpolater);
+	SplineInterpolater *Constructor();
 
 	CVector m_pos;
 	CVector pStart;

@@ -18,6 +18,7 @@
 #include "Entity.h"
 #include "BaseModelInfo.h"
 #include "SplineInterpolater.h"
+#include "TextParser.h"
 
 #include "windowedMode.h"
 
@@ -41,6 +42,7 @@ void InjectHooks(void) {
 	CPlaceable::InjectHooks();
 	CSimpleTransform::InjectHooks();
 	CTimer::InjectHooks();
+	TextParser::InjectHooks();
 
 	// entities
 	CEntity::InjectHooks();

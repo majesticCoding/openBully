@@ -26,6 +26,11 @@ void SplineInterpolater::InjectHooks() {
 	inject_hook(0x508420, &SplineInterpolater::ClearControlPoints);
 }
 
+SplineInterpolater *SplineInterpolater::Constructor() {
+	this->SplineInterpolater::SplineInterpolater();
+	return this;
+}
+
 CVector CatmullRomCurve3(CVector const *right, CVector const *forward, CVector const *up, CVector const *pos, float u) {
 	MyMatrix44 tmpMat;
 	tmpMat.rx = right->x;
