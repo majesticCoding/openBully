@@ -1,5 +1,6 @@
 #include "hook.h"
 #include "MissionMgr.h"
+#include "ScriptMgr.h"
 #include "CameraManager.h"
 
 CMissionMgr &g_MissionMgr = *reinterpret_cast<CMissionMgr *>(0x20C3CA0);
@@ -130,6 +131,51 @@ bool CMissionMgr::FadeFinished(void) {
 
 void CMissionMgr::MissionStart(int missionId, bool bIsPrimary) {
 	;
+}
+
+void CMissionMgr::StopAllThreads(void) {
+	int missionId = SecInst().GetMissionId();
+	if (missionId >= 0) {
+		gScriptManager->GetScriptByName(Data(missionId).getMissionName())->RemoveAllThreadsQueued();
+	}
+
+	missionId = PrimInst().GetMissionId();
+	if (missionId >= 0) {
+		gScriptManager->GetScriptByName(Data(missionId).getMissionName())->RemoveAllThreadsQueued();
+	}
+}
+
+void CMissionMgr::StopMission(CMissionRunInst &inst) {
+	int missionId = inst.GetMissionId();
+	if (missionId < 0)
+		return;
+
+	inst.MissionFail(false, false, false, false, false, '\0', false);
+	inst.MissionEndMain();
+
+	LuaScript *pScript = gScriptManager->GetScriptByName(g_MissionMgr.Data(missionId).getMissionName());
+
+	if (pScript != nullptr) {
+		while (pScript->IsThreadAlive("main")) {
+			gScriptManager->UpdateScript(pScript);
+		}
+		
+		pScript->AddThread("MissionCleanup");
+		pScript->bField_1150 = true;
+
+		while (pScript->IsThreadAlive("MissionCleanup")) {
+			gScriptManager->UpdateScript(pScript);
+		}
+	}
+
+	inst.MissionCleanup();
+	inst.ResetState();
+}
+
+void CMissionMgr::StopAllMissions() {
+	StopAllThreads();
+	StopMission(primInst);
+	StopMission(secInst);
 }
 
 void AdvanceToNextGoodMissionExitTime(void) {

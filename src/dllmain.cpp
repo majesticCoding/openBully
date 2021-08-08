@@ -59,6 +59,7 @@ void InjectHooks(void) {
 
 	// scripts
 	CMissionMgr::InjectHooks();
+	CMissionRunInst::InjectHooks();
 	
 	// classes
 	CClassSchedule::InjectHooks();

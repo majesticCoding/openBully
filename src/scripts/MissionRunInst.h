@@ -2,6 +2,7 @@
 #include "ActionController.h"
 #include "ActionTree.h"
 #include "Texture2D.h"
+#include "InputController.h"
 
 #define NUMTEXTURES 9
 
@@ -62,7 +63,11 @@ public:
 	bool m_bCancelled;
 	bool m_bCancellationRequested; //sets true while requesting cancellation
 	bool m_bIsActive;
-	char _pad1[90];
+	bool m_bUnk0;
+	InputController controller;
+	bool _pad1_0;
+	bool _pad1_1;
+	char _pad1_2[8];
 	int m_nUnk1;
 	bool m_bFlag12;
 	int m_nUnk2;
@@ -77,6 +82,7 @@ public:
 	~CMissionRunInst();
 
 	void Init();
+	void ResetState();
 	void Update();
 	int GetState() { return m_state; }
 	int GetMissionId() { return m_missionId; }  //custom
@@ -89,7 +95,12 @@ public:
 	void CancelForSecondaryMission(int secondaryMissionId);
 	void MissionStart(int missionId);
 	void MissionFail(bool, bool, bool, bool, bool, char const* , bool);
+	void MissionEndMain();
 	void MissionCleanup();
 	void AssociateModelIndiciesWithTextures();
 	void RemoveTextures();
+
+	static void InjectHooks();
 };
+
+static_assert(sizeof(CMissionRunInst) == 0xE4, "Invalid CMissionRunInst struct");
