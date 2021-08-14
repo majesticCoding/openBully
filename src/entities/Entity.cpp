@@ -24,7 +24,6 @@ void CEntity::InjectHooks() {
 	// inject_hook(0x466740, &CEntity::DetachFromRwObject);
 	inject_hook(0x466C70, &CEntity::GetBoundCentre);
 	inject_hook(0x465AB0, &CEntity::UpdateMatrix);
-	inject_hook(0x466200, &CEntity::TransformFromObjectSpace);
 	inject_hook(0x465760, &CEntity::UpdateRwFrame);
 
 	inject_hook(0x4657E0, &HelperCleanupOldReference);
@@ -230,7 +229,7 @@ void CEntity::DetachFromRwObject() {
 
 void CEntity::GetBoundCentre(CVector &vec) {
 	vec = CVector();
-	TransformFromObjectSpace(vec, CModelInfo::GetColModel(this)->vec0);
+	CPlaceable::TransformIntoWorldSpace(vec, CModelInfo::GetColModel(this)->vec0);
 }
 
 void CEntity::UpdateMatrix() {
@@ -252,13 +251,6 @@ void CEntity::UpdateMatrix() {
 
 		m_placement = CSimpleTransform(upmat);
 	}
-}
-
-void CEntity::TransformFromObjectSpace(CVector &out, const CVector &offset) {
-	if (m_matrix)
-		out = *m_matrix * offset;
-	else
-		SimpleTransformPoint(out, m_placement, offset);
 }
 
 void CEntity::UpdateRwFrame() {

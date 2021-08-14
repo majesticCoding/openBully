@@ -23,6 +23,8 @@ void CPlaceable::InjectHooks() {
 
 	// inject_hook(0x46DC00, &CPlaceable::RemoveMatrix);
 	inject_hook(0x46DE90, &CPlaceable::SetMatrix);
+	inject_hook(0x466200, static_cast<void(CPlaceable::*)(CVector &, 
+		const CVector &)>(&CPlaceable::TransformIntoWorldSpace));
 	
 	// inject_hook(0x46DBF0, &CPlaceable::InitMatrixArray);
 }
@@ -102,6 +104,19 @@ void CPlaceable::SetMatrix(const CMatrix &mat, bool bAllocMatrix) {
 	if (mat.m_pAttachMatrix) {
 		m_matrix->m_pAttachMatrix = mat.m_pAttachMatrix;
 		m_matrix->UpdateRw();
+	}
+}
+
+void CPlaceable::TransformIntoWorldSpace(CVector &v) {
+
+}
+
+void CPlaceable::TransformIntoWorldSpace(CVector &out, const CVector &offset) {
+	if (m_matrix) {
+		TransformPoint(out, *(CMatrix*)m_matrix, offset);
+	}
+	else {
+		SimpleTransformPoint(out, m_placement, offset);
 	}
 }
 

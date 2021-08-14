@@ -25,7 +25,9 @@ public:
 
 	void RemoveMatrix();
 	void SetMatrix(const CMatrix &mat, bool bAllocMatrix);
-
+	void TransformIntoWorldSpace(CVector &);
+	void TransformIntoWorldSpace(CVector &, const CVector &);
+	
 	CVector &GetPosition();
 
 	static void InitMatrixArray();

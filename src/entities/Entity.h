@@ -117,7 +117,6 @@ public:
 	void DetachFromRwObject();
 	void GetBoundCentre(CVector &vec);
 	void UpdateMatrix();
-	void TransformFromObjectSpace(CVector &out, const CVector &offset);
 	void UpdateRwFrame();
 
 	RwMatrix* GetModellingMatrix();

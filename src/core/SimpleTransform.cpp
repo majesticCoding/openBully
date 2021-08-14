@@ -34,7 +34,7 @@ void CSimpleTransform::UpdateRwMatrix(RwMatrix *out) {
 		out->forwardy = 1.f;
 		out->forwardz = 0.f;
 	} else {
-		float c = cos(m_fHeading), s = sin(m_fHeading);
+		float c = cosf(m_fHeading), s = sinf(m_fHeading);
 
 		out->rightx = c;
 		out->righty = s;
@@ -52,6 +52,12 @@ void CSimpleTransform::UpdateRwMatrix(RwMatrix *out) {
 	out->pos = m_vPosn;
 }
 
+void TransformPoint(CVector& out, CMatrix const& m, CVector const& v) {
+	out.x = m.right.x * v.x + m.forward.x * v.y + m.up.x * v.z + m.pos.x;
+	out.y = m.right.y * v.x + m.forward.y * v.y + m.up.y * v.z + m.pos.y;
+	out.z = m.right.z * v.x + m.forward.z * v.y + m.up.z * v.z + m.pos.z;
+}
+
 void SimpleTransformPoint(CVector &out, const CSimpleTransform &a, const CVector &b) {
 	out = a.m_vPosn;
 	if (a.m_fHeading == 0.f) {
@@ -59,7 +65,7 @@ void SimpleTransformPoint(CVector &out, const CSimpleTransform &a, const CVector
 		return;
 	}
 
-	float c = cos(a.m_fHeading), s = sin(a.m_fHeading);
+	float c = cosf(a.m_fHeading), s = sinf(a.m_fHeading);
 	out += CVector(
 		b.x * c - b.y * s,
 		b.x * s + b.y * c,
