@@ -9,6 +9,10 @@ void CPlayerInfo::MakePlayerSafe(bool bState) {
 	XCALL(0x445DA0);
 }
 
+void CPlayerInfo::SetUnlockPlayerUpgrade(ScriptSaveDataEnum eType, int missionId) {
+	XCALL(0x4466D0);
+}
+
 bool FindPlayerIsMovingTooFast(void) {
 	XCALL(0x4469A0);
 }

@@ -9,6 +9,7 @@ public:
 	static void SetCurrentTxd(int slot);
 	static void PushCurrentTxd(void);
 	static void PopCurrentTxd(void);
+	static void RemoveTxdSlot(int);
 	static int AddTxdSlot(char const *str);
 	static int FindTxdSlot(char const *str, bool);
 };

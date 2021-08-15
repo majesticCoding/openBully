@@ -53,7 +53,7 @@ void COcclusion::AddOne(float x, float y, float z, float width, float length, fl
 		aOccluders[prevFreeList].height = height;
 		while (angle < 0.0f) angle += 360.0f;
 		while (angle > 360.0f) angle -= 360.0f;
-		aOccluders[prevFreeList].angle = angle / 360.0f * UINT16_MAX;
+		aOccluders[prevFreeList].angle = static_cast<int16_t>(angle / 360.0f * UINT16_MAX);
 		aOccluders[prevFreeList].ch = ch;
 		aOccluders[prevFreeList].listIndex = FarAwayList;
 		NumOccludersOnMap++;

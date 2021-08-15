@@ -25,6 +25,10 @@ void CTxdStore::PopCurrentTxd(void) {
 	XCALL(0x5F0AA0);
 }
 
+void CTxdStore::RemoveTxdSlot(int) {
+	XCALL(0x5F2240);
+}
+
 void CTxdStore::SetCurrentTxd(int slot) {
 	XCALL(0x5F1100);
 }

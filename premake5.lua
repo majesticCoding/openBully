@@ -14,6 +14,7 @@ project "openBully"
 		includedirs { "src/animation" }
 		includedirs { "src/area" }
 		includedirs { "src/audio" }
+			includedirs { "src/audio/scream" }
 		includedirs { "src/camera" }
 		includedirs { "src/classes" }
 		includedirs { "src/collision" }
@@ -24,6 +25,7 @@ project "openBully"
 		includedirs { "src/entities"}
 		includedirs { "src/math" }
 		includedirs { "src/memory"}
+		includedirs { "src/minigames"}
 		includedirs { "src/modelinfo"}
 		includedirs { "src/objects" }
 		includedirs { "src/patch" }

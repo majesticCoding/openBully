@@ -17,8 +17,10 @@
 
 HUDRadar *CGame::m_pRadar = *(HUDRadar **)0xC674CC;
 char const *CGame::aDatFile = (char const *)0xBD0FA4;
-int32_t CGame::currArea = *(int32_t*)0xBD1008;
-int32_t CGame::currLevel = *(int32_t*)0xBD0FC4;
+int32_t &CGame::currArea = *(int32_t*)0xBD1008;
+int32_t &CGame::currLevel = *(int32_t*)0xBD0FC4;
+
+bool& CGame::m_sbRestartMission = *(bool*)0xBD0FDC;
 
 void CGame::InjectHooks(void) {
 	//InjectHook(0x42EFE0, &CGame::Initialise, PATCH_JUMP);

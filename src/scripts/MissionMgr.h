@@ -14,8 +14,11 @@ class CMissionData {
 	char const *missionName;
 	char _pad2[0x8];
 	eMissionTypes m_missionType;
-	char _pad3[0x20];
+	char _pad3[0x1D];
 public:
+	bool bTexturesAreEmpty;
+	bool bGotAnAchievement;
+
 	eMissionTypes GetType(void) {
 		return m_missionType;
 	}
@@ -30,14 +33,17 @@ struct sMissionDatas{
 	CMissionData aMissionData[MISSIONS_NUM];
 };
 
-//first field is a state: CMissiongMgr::State();
 struct CMissionState {
-	char _pad[0x6];
+	int16_t m_field0;
+	int16_t m_field2;
+	bool m_bFlag;
 };
+static_assert(sizeof(CMissionState) == 6, "Invalid CMissionState struct");
 
 class CMissionMgr {
 private:
-	char _pad1[1208]; //4
+	char _pad1[16]; //4
+	CMissionActiveInst m_aInstances[99];
 	sMissionDatas *pMissionDatas;
 	CMissionRunInst primInst; //1212 //sizeof(CMissionRunInst) = 228
 	CMissionRunInst secInst; //1440
@@ -51,14 +57,13 @@ public:
 
 	bool IsMissionRunning(void);
 	bool IsMissionRunning(int missionId);
-	bool IsOnMission(void);
 	bool IsOnGirlMission(void);
 	bool IsOnClassMission(void);
 	bool IsOnMinigameMission(void);
 	bool FadeFinished(void);
 	int32_t GetMissionsNum(void);
 	int32_t FindMissionInstSlot(void);
-	int32_t &State(int32_t id);
+	CMissionState State(int32_t id);
 	CMissionRunInst	PrimInst(void);
 	CMissionRunInst	SecInst(void);
 	CMissionRunInst TopInst(void);
@@ -68,6 +73,9 @@ public:
 	void StopAllThreads(void);
 	void StopMission(CMissionRunInst &inst);
 	void StopAllMissions(void);
+	void SetFadeOut(void);
+
+	static bool IsOnMission(void);
 
 	virtual ~CMissionMgr();
 	virtual void Init(const char *, const char *);

@@ -5,6 +5,7 @@
 #include "InputController.h"
 
 #define NUMTEXTURES 9
+#define MAX_MISSIONNAME_SIZE 64
 
 enum eMissionRunInstStates {
 	STATE_INACTIVE = 0,
@@ -41,8 +42,6 @@ public:
 	void RunNode(char const *strStatus);
 };
 
-//sizeof(CMissionRunInst) has to be 228
-//TODO: pay attention to _pad* bytes
 class CMissionRunInst {
 public:
 	int m_missionId;
@@ -55,8 +54,8 @@ public:
 	bool m_bFlag5;
 	bool m_bFlag6;
 	bool m_bFlag7;
-	bool m_bFlag8;
-	bool m_bFlag9;
+	bool m_bFadingFlag;
+	bool m_bPassedOutOrDead;
 	bool m_bFlag10;
 	bool m_bFlag11; //sets true while requesting cancellation
 	int m_secondaryMissionId; //not sure
@@ -84,7 +83,7 @@ public:
 	void Init();
 	void ResetState();
 	void Update();
-	int GetState() { return m_state; }
+	eMissionRunInstStates GetState() { return m_state; }
 	int GetMissionId() { return m_missionId; }  //custom
 	int FindTextureForModel(int modelId);
 	bool IsMissionRunning(int missionId);
@@ -93,9 +92,13 @@ public:
 	bool IsFadingMission(void);
 	void RequestCancelForSecondaryMission(int secondaryMissionId);
 	void CancelForSecondaryMission(int secondaryMissionId);
+	void MissionSetup(void);
 	void MissionStart(int missionId);
+	void MissionRun(void);
 	void MissionFail(bool, bool, bool, bool, bool, char const* , bool);
+	void MissionSucceed(bool, bool, bool);
 	void MissionEndMain();
+	void MissionStartCleanup();
 	void MissionCleanup();
 	void AssociateModelIndiciesWithTextures();
 	void RemoveTextures();

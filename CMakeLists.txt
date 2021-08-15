@@ -16,6 +16,7 @@ target_include_directories(openBully PRIVATE
     src/animation
     src/area
     src/audio
+		src/audio/scream
     src/camera
     src/classes
     src/collision
@@ -26,6 +27,7 @@ target_include_directories(openBully PRIVATE
     src/entities
     src/math
     src/memory
+    src/minigames
     src/modelinfo
     src/objects
     src/patch

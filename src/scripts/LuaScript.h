@@ -4,7 +4,7 @@
 class LuaScript {
 public:
 	char _pad[0x1150];
-	bool bField_1150;
+	bool bMissionCleanUpStarted;
 
 	int32_t ExecuteFunctionCall(char const *name, uint32_t param2, bool flag);
 	void RemoveAllThreadsQueued(void);

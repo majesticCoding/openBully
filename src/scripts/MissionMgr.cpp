@@ -2,12 +2,15 @@
 #include "MissionMgr.h"
 #include "ScriptMgr.h"
 #include "CameraManager.h"
+#include "TextParser.h"
 
 CMissionMgr &g_MissionMgr = *reinterpret_cast<CMissionMgr *>(0x20C3CA0);
 
 int &missionsMaxNum = *(int*)0x20C43E4;
 
 void CMissionMgr::InjectHooks(void) {
+	using namespace memory::hook;
+
 	//InjectHook(0x6AA680, &CMissionMgr::PrimInst, PATCH_JUMP);
 	//InjectHook(0x6AA690, &CMissionMgr::SecInst, PATCH_JUMP);
 	//InjectHook(0x6AA840, &CMissionMgr::IsOnClassMission, PATCH_JUMP);
@@ -41,7 +44,7 @@ bool CMissionMgr::IsMissionRunning(int missionId) {
 }
 
 bool CMissionMgr::IsOnMission(void) {
-	XCALL(0x6AA7E0);
+	return g_MissionMgr.PrimInst().IsOnMission() || g_MissionMgr.SecInst().IsOnMission();
 }
 
 bool CMissionMgr::IsOnGirlMission(void) {
@@ -68,6 +71,25 @@ bool CMissionMgr::IsOnGirlMission(void) {
 void CMissionMgr::GetMissionName(int missionId, char *name, uint32_t size) {
 	if (missionId < 0)
 		return;
+
+	char const *missionName = Data(missionId).getMissionName();
+	if (!missionName)
+		return;
+
+	TextParser parser(missionName, "\\/.");
+	while (parser.getStr())
+	{
+		parser.PushReadPosition();
+		parser.GetNextToken();
+	}
+
+	parser.PopReadPosition();
+	
+	if (parser.MatchCurrentTokenCaseInsensitive("lua"))
+	{
+		parser.PopReadPosition();
+		parser.copyTokenToBuffer(parser.getStr(), name, size, 0, true);
+	}
 }
 
 bool CMissionMgr::IsOnClassMission(void) {
@@ -98,24 +120,25 @@ bool CMissionMgr::IsOnMinigameMission(void) {
 	//XCALL(0x6AA890);
 }
 
-int32_t &CMissionMgr::State(int32_t id) {
-	//return *(int32_t*)(*(int32_t*)(&g_MissionMgr + 0x688) + 0x6 * id);
-	XCALL(0x6AA7C0);
+CMissionState CMissionMgr::State(int32_t id) {
+	return pMissionState[id];
+
+	//XCALL(0x6AA7C0);
 }
 
 CMissionRunInst CMissionMgr::TopInst(void) { //mission's id
-	//XCALL(0x6AA790);
-
 	return PrimInst().IsOnMission() ? PrimInst() : SecInst();
+	
+	//XCALL(0x6AA790);
 }
 
 CMissionData CMissionMgr::Data(int32_t missionId) {
-	//XCALL(0x6AA660);
-	
 	if (missionId >= 0 && missionId < GetMissionsNum())
 		return pMissionDatas->aMissionData[missionId];
 	else
 		return pMissionDatas->aMissionData[0];
+
+	//XCALL(0x6AA660);
 }
 
 int32_t CMissionMgr::GetMissionsNum(void) {
@@ -162,7 +185,7 @@ void CMissionMgr::StopMission(CMissionRunInst &inst) {
 		}
 		
 		pScript->AddThread("MissionCleanup");
-		pScript->bField_1150 = true;
+		pScript->bMissionCleanUpStarted = true;
 
 		while (pScript->IsThreadAlive("MissionCleanup")) {
 			gScriptManager->UpdateScript(pScript);
@@ -177,6 +200,10 @@ void CMissionMgr::StopAllMissions() {
 	StopAllThreads();
 	StopMission(primInst);
 	StopMission(secInst);
+}
+
+void CMissionMgr::SetFadeOut() {
+	XCALL(0x6AA0A0);
 }
 
 void AdvanceToNextGoodMissionExitTime(void) {

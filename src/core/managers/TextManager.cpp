@@ -10,3 +10,11 @@ void TextManager::LoadConversationText(char const *textName) {
 void TextManager::UnloadConversation(void) {
 	XCALL(0x68F520);
 }
+
+void TextManager::LoadMissionText(char const* textName) {
+	XCALL(0x68FCB0);
+}
+
+void TextManager::LoadSecondaryMissionText(char const* textName) {
+	XCALL(0x68FD00);
+}
