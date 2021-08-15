@@ -72,7 +72,7 @@ void CClassSchedule::Reset(void) {
 }
 
 bool CClassSchedule::IsTimeInRange(int32_t t1, int32_t t2) {
-	int32_t curTime = 3600 * Clock::ms_nGameClockHours + 60 * Clock::ms_nGameClockMinutes + Clock::ms_nGameClockSeconds;
+	int32_t curTime = 3600 * Clock::GetHours() + 60 * Clock::GetMinutes() + Clock::GetSeconds();
 
 	return (t1 <= t2) ? curTime >= t1 && curTime < t2 : curTime >= t1 || curTime < t2;
 }
@@ -160,7 +160,7 @@ int32_t CClassSchedule::GetTotalPeriodMinutes(int32_t perIdx) {
 
 int32_t CClassSchedule::GetMinutesLeftInPeriod(int32_t perIdx) {
 	int32_t t1 = m_pPeriods[perIdx]->endMin + 60 * m_pPeriods[perIdx]->endHour;
-	int32_t t2 = Clock::ms_nGameClockMinutes + 60 * Clock::ms_nGameClockHours;
+	int32_t t2 = Clock::GetMinutes() + 60 * Clock::GetHours();
 
 	return t2 > t1 ? t1 - t2 + 1440 : t1 - t2;
 }

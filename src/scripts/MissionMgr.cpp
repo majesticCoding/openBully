@@ -207,7 +207,7 @@ void CMissionMgr::SetFadeOut() {
 }
 
 void AdvanceToNextGoodMissionExitTime(void) {
-	switch (Clock::ms_nGameClockHours) {
+	switch (Clock::GetHours()) {
 	case 0:
 	case 23:
 	case 24:
@@ -226,7 +226,7 @@ void AdvanceToNextGoodMissionExitTime(void) {
 	case 9:
 	case 10:
 	case 11:
-		if (Clock::ms_nGameClockHours >= 11 && Clock::ms_nGameClockMinutes >= 30)
+		if (Clock::GetHours() >= 11 && Clock::GetMinutes() >= 30)
 			Clock::SetGameClock(13, 0);
 		else
 			Clock::SetGameClock(11, 30);
@@ -237,7 +237,7 @@ void AdvanceToNextGoodMissionExitTime(void) {
 	case 13:
 	case 14:
 	case 15:
-		if (Clock::ms_nGameClockHours >= 15 && Clock::ms_nGameClockMinutes >= 30)
+		if (Clock::GetHours() >= 15 && Clock::GetMinutes() >= 30)
 			Clock::SetGameClock(18, 0);
 		else
 			Clock::SetGameClock(15, 30);

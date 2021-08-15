@@ -68,7 +68,7 @@ void Clock::InjectHooks(void) {
 
 void Clock::Initialise(uint32_t scale) {
 	ms_nMillisecondsPerGameMinute = scale;
-	ms_nLastClockTick = CTimer::m_snTimeInMilliseconds;
+	ms_nLastClockTick = CTimer::GetTimeInMilliseconds();
 	ms_nGameClockHours = 12;
 	ms_nGameClockMinutes = 0;
 	ms_nGameClockSeconds = 0;
@@ -143,7 +143,7 @@ inline uint32_t Clock::GetGameClockMinutesUntil(uint8_t h, uint8_t m) {
 
 void Clock::SetGameClock(uint8_t h, uint8_t m) {
 	ms_nGameClockSeconds = 0;
-	ms_nLastClockTick = CTimer::m_snTimeInMilliseconds;
+	ms_nLastClockTick = CTimer::GetTimeInMilliseconds();
 	IncrementClock(GetGameClockMinutesUntil(h, m));
 }
 
@@ -184,7 +184,7 @@ void Clock::Update(void) {
 	DeterminePauseState();
 
 	if (m_bPaused) {
-		ms_nLastClockTick = CTimer::m_snTimeInMilliseconds;
+		ms_nLastClockTick = CTimer::GetTimeInMilliseconds();
 	}
 	else {
 		ms_nMillisecondsPerGameMinute = g_MissionMgr.IsOnMission() ?
@@ -192,11 +192,11 @@ void Clock::Update(void) {
 
 		uint32_t tMsec = ms_nLastClockTick;
 
-		if (CTimer::m_snTimeInMilliseconds - ms_nLastClockTick > ms_nMillisecondsPerGameMinute) {
-			tMsec = CTimer::m_snTimeInMilliseconds;
+		if (CTimer::GetTimeInMilliseconds() - ms_nLastClockTick > ms_nMillisecondsPerGameMinute) {
+			tMsec = CTimer::GetTimeInMilliseconds();
 
-			uint32_t tMin = (CTimer::m_snTimeInMilliseconds - ms_nLastClockTick) / ms_nMillisecondsPerGameMinute;
-			ms_nLastClockTick = CTimer::m_snTimeInMilliseconds;
+			uint32_t tMin = (CTimer::GetTimeInMilliseconds() - ms_nLastClockTick) / ms_nMillisecondsPerGameMinute;
+			ms_nLastClockTick = CTimer::GetTimeInMilliseconds();
 			ms_nGameClockMinutes += tMin;
 			m_bDoTheTimeWarp = tMin > 5;
 
@@ -213,7 +213,7 @@ void Clock::Update(void) {
 			}
 		}
 
-		ms_nGameClockSeconds = 60 * (CTimer::m_snTimeInMilliseconds - tMsec) / ms_nMillisecondsPerGameMinute % 60;
+		ms_nGameClockSeconds = 60 * (CTimer::GetTimeInMilliseconds() - tMsec) / ms_nMillisecondsPerGameMinute % 60;
 	}
 }
 

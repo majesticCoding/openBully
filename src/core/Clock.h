@@ -34,5 +34,9 @@ public:
 	static bool GetIsTimeInRange(uint32_t h1, uint32_t h2, uint32_t m1, uint32_t m2);
 	static void AdvanceToNightTime(void);
 
+	static uint8_t GetHours(void) { return ms_nGameClockHours; }
+	static uint8_t GetMinutes(void) { return ms_nGameClockMinutes; }
+	static uint16_t GetSeconds(void) { return ms_nGameClockSeconds; }
+
 	static void InjectHooks(void);
 };

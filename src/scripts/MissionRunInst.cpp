@@ -223,8 +223,8 @@ void CMissionRunInst::MissionFail(bool bParam1, bool bBusted, bool bPassOutOrDea
 				Minigame::SetCompletion("M_FAIL", false, 0.0f, "M_FAIL_BUSTED", nullptr, 0);
 			}
 			else if (m_bPassedOutOrDead) {
-				if (Clock::ms_nGameClockHours == 1 && Clock::ms_nGameClockMinutes >= 59
-					|| Clock::ms_nGameClockHours >= 2 && Clock::ms_nGameClockHours <= 4) 
+				if (Clock::GetHours() == 1 && Clock::GetMinutes() >= 59
+					|| Clock::GetHours() >= 2 && Clock::GetHours() <= 4)
 				{
 					Minigame::SetCompletion("M_FAIL", false, 0.0f, "M_FAIL_PASSOUT", nullptr, 0);
 				}

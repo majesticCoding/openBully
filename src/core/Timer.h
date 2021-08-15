@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 
 class CTimer {
 public:
@@ -17,6 +16,8 @@ public:
 	static bool GetIsPaused(void);
 	static float GetFrameDurationInSeconds(void);
 	static int64_t GetPerformanceFrequency(void);
+
+	static const uint32_t& GetTimeInMilliseconds(void) { return m_snTimeInMilliseconds; }
 
 	static void InjectHooks(void);
 
@@ -43,8 +44,4 @@ public:
 	static float &ms_fTimeScale;
 	static float &ms_fTimeStep;
 	static float &ms_fTimeStepNonClipped;
-};
-
-class TimeTracker {
-
 };
